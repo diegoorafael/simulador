@@ -3,80 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Matemática do Carro | Simulador</title>
+    <title>Matemática do Carro | Diego Autoselic</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #00ff88; --bg: #0a0e14; --card: #151b23; --text: #f0f6fc; --red: #ff4444; }
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; box-sizing: border-box; overflow-x: hidden; }
-        .container { background: var(--card); border: 1px solid #30363d; border-radius: 12px; padding: 20px; width: 100%; max-width: 1100px; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; box-sizing: border-box; }
+        .container { background: var(--card); border: 1px solid #30363d; border-radius: 12px; padding: 20px; width: 100%; max-width: 1100px; }
+        h1 { color: var(--primary); text-align: center; margin-bottom: 5px; font-size: 1.6rem; text-transform: uppercase; }
+        .subtitle { text-align: center; font-size: 12px; color: #8b949e; margin-bottom: 20px; }
+        
         .main-layout { display: flex; flex-direction: column; gap: 15px; }
-        @media (min-width: 900px) { .main-layout { flex-direction: row; align-items: flex-start; } }
-        .inputs-section { flex: 1; display: flex; flex-direction: column; gap: 12px; width: 100%; }
-        .chart-section { flex: 2; width: 100%; }
-        h1 { color: var(--primary); text-align: center; margin: 0 0 20px 0; font-size: 1.6rem; text-transform: uppercase; letter-spacing: 1px; }
+        @media (min-width: 900px) { .main-layout { flex-direction: row; } }
+        
+        .inputs-section { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+        .chart-section { flex: 2; position: relative; }
+        
         .label-group { display: flex; flex-direction: column; gap: 4px; }
         .label-text { font-size: 11px; color: #8b949e; text-transform: uppercase; font-weight: bold; border-bottom: 1px dotted #333; }
-        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #fff; font-size: 17px; outline: none; box-sizing: border-box; }
-        .chart-container { background: #1c2128; border-radius: 10px; padding: 15px; border: 1px solid #30363d; height: 350px; width: 100%; position: relative; }
-        @media (min-width: 900px) { .chart-container { height: 500px; } }
-        .results-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 20px; }
-        @media (min-width: 700px) { .results-grid { grid-template-columns: repeat(5, 1fr); } }
-        .res-card { padding: 15px; border-radius: 10px; border: 1px solid #30363d; text-align: center; background: rgba(255, 255, 255, 0.02); }
-        .res-card small { display: block; font-size: 10px; color: #8b949e; text-transform: uppercase; margin-bottom: 6px; min-height: 25px; font-weight: bold; }
-        .value { font-size: 14px; font-weight: bold; color: var(--primary); display: block; }
-        .cost-details { font-size: 10px; color: #abb2bf; margin-top: 10px; text-align: left; border-top: 1px solid #333; padding-top: 8px; line-height: 1.4; }
-        .winner { border: 2px solid var(--primary) !important; box-shadow: 0 0 15px rgba(0, 255, 136, 0.2); }
-        .sub-input-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .mini-label { font-size: 9px; color: #8b949e; text-align: center; margin-top: 2px; }
-        .btn-whats { margin-top: 20px; background: var(--primary); color: #0a0e14; border: none; padding: 16px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; font-size: 14px; transition: 0.3s; }
+        
+        input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #fff; font-size: 16px; outline: none; }
+        
+        .chart-container { background: #1c2128; border-radius: 10px; padding: 15px; height: 400px; position: relative; }
+        .chart-icon { position: absolute; width: 45px; height: 45px; transform: translate(-50%, -50%); pointer-events: none; z-index: 10; display: none; }
+
+        /* Tabela de Custos Ocultos */
+        .ocultos-table { width: 100%; margin-top: 20px; border-collapse: collapse; font-size: 12px; background: rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; }
+        .ocultos-table th { background: #21262d; padding: 10px; text-align: left; color: var(--primary); }
+        .ocultos-table td { padding: 10px; border-bottom: 1px solid #30363d; }
+        .zero-cost { color: var(--primary); font-weight: bold; }
+
+        .results-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px; }
+        @media (min-width: 600px) { .results-grid { grid-template-columns: 1fr 1fr; } }
+
+        .res-card { padding: 20px; border-radius: 12px; border: 1px solid #30363d; text-align: center; position: relative; }
+        .value { font-size: 26px; font-weight: bold; display: block; margin: 10px 0; }
+        .winner { border: 2px solid var(--primary); box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); }
+        .winner::after { content: "🏆 MELHOR ESTRATÉGIA"; position: absolute; top: -10px; right: 10px; background: var(--primary); color: #000; font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
+
+        .btn-whats { margin-top: 20px; background: var(--primary); color: #000; border: none; padding: 18px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; }
     </style>
 </head>
 <body>
+
 <div class="container">
     <h1>MATEMÁTICA DO CARRO</h1>
+    <p class="subtitle">Diego @matematicadocarro | Especialista em Autoselic</p>
+    
     <div class="main-layout">
         <div class="inputs-section">
-            <div class="label-group"><span class="label-text">Valor do Carro (R$)</span><input type="text" id="vCarro" value="120.000,00" oninput="mask(this); calc()"></div>
-            <div class="label-group"><span class="label-text">Entrada (R$)</span><input type="text" id="entrada" value="40.000,00" oninput="mask(this); calc()"></div>
-            <div class="label-group"><span class="label-text">Meses</span><input type="number" id="meses" value="36" oninput="calc()"></div>
-            <div class="label-group"><span class="label-text">Assinatura (R$)</span><input type="text" id="assin" value="2.600,00" oninput="mask(this); calc()"></div>
             <div class="label-group">
-                <span class="label-text">Custos Comprador (% AA)</span>
-                <div class="sub-input-row">
-                    <div><input type="number" id="ipva" value="4" oninput="calc()"><div class="mini-label">IPVA</div></div>
-                    <div><input type="number" id="seguro" value="3.5" oninput="calc()"><div class="mini-label">Seg.</div></div>
-                    <div><input type="number" id="manut" value="1.5" oninput="calc()"><div class="mini-label">Man.</div></div>
-                </div>
+                <span class="label-text">Veículo de Referência</span>
+                <select id="modeloPreset" onchange="aplicarPreset()">
+                    <option value="tcross" selected>VW T-Cross Comfortline</option>
+                    <option value="polo">VW Polo Highline</option>
+                </select>
             </div>
+            <div class="label-group"><span class="label-text">Valor FIPE (R$)</span><input type="text" id="vCarro" value="160.000,00" oninput="mask(this); calc()"></div>
+            <div class="label-group"><span class="label-text">Entrada (R$)</span><input type="text" id="entrada" value="60.000,00" oninput="mask(this); calc()"></div>
+            <div class="label-group"><span class="label-text">Prazo (Meses)</span><input type="number" id="meses" value="36" oninput="calc()"></div>
+            <div class="label-group"><span class="label-text">Mensalidade Assinatura (R$)</span><input type="text" id="assin" value="3.490,00" oninput="mask(this); calc()"></div>
+            
             <div class="label-group">
-                <span class="label-text">Mercado (%)</span>
-                <div class="sub-input-row" style="grid-template-columns: 1fr 1fr;">
-                    <div><input type="number" id="juros" value="1.5" oninput="calc()"><div class="mini-label">Juros AM</div></div>
-                    <div><input type="number" id="selic" value="12" oninput="calc()"><div class="mini-label">Selic AA</div></div>
-                </div>
+                <span class="label-text">Configuração Técnica (AM)</span>
+                <input type="number" id="juros" value="1.35" step="0.01" oninput="calc()">
+                <div class="mini-label">Taxa de Juros do Financiamento</div>
             </div>
         </div>
-        <div class="chart-section"><div class="chart-container"><canvas id="evolucaoChart"></canvas></div></div>
+
+        <div class="chart-section">
+            <div class="chart-container">
+                <canvas id="evolucaoChart"></canvas>
+                <img id="patrimonioIcon" src="https://i.imgur.com/G5Z5Y7r.png" class="chart-icon">
+                <img id="carroIcon" src="https://i.imgur.com/Fw91Q4j.png" class="chart-icon">
+            </div>
+            
+            <table class="ocultos-table">
+                <thead><tr><th>Custos Ocultos (36 meses)</th><th>Financiamento</th><th>Assinatura</th></tr></thead>
+                <tbody>
+                    <tr><td>IPVA + Licenciamento</td><td id="tabIpva">R$ 0,00</td><td class="zero-cost">INCLUSO</td></tr>
+                    <tr><td>Seguro Completo</td><td id="tabSeguro">R$ 0,00</td><td class="zero-cost">INCLUSO</td></tr>
+                    <tr><td>Revisões (Oficina)</td><td id="tabRevisao">R$ 0,00</td><td class="zero-cost">INCLUSO</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
+
     <div class="results-grid">
-        <div class="res-card"><small>Custo Mensal (Financ)</small><span id="resA" class="value" style="color:var(--red)">R$ 0,00</span><div id="detalheCusto" class="cost-details"></div></div>
-        <div class="res-card"><small>Custo (Assinatura)</small><span id="custoAssinante" class="value">R$ 0,00</span></div>
-        <div class="res-card"><small>Sobra Investida</small><span id="sobra" class="value">R$ 0,00</span></div>
-        <div class="res-card"><small>Carro Final</small><span id="valorCarroFinal" class="value" style="color: #ff9f43;">R$ 0,00</span></div>
-        <div id="patriCard" class="res-card"><small>Patrimônio Líquido</small><span id="patriB" class="value">R$ 0,00</span></div>
+        <div id="cardComprador" class="res-card">
+            <small>Cenário: Comprar</small>
+            <span id="valorCarroFinal" class="value" style="color: var(--red);">R$ 0,00</span>
+            <div class="label-text" style="border:none">Patrimônio em Lata (Depreciado)</div>
+        </div>
+        <div id="cardAssinante" class="res-card">
+            <small>Cenário: Autoselic</small>
+            <span id="patriB" class="value" style="color: var(--primary);">R$ 0,00</span>
+            <div class="label-text" style="border:none">Patrimônio Líquido (Dinheiro)</div>
+        </div>
     </div>
-    <button class="btn-whats" onclick="gerarRelatorio()">📲 Relatório WhatsApp</button>
+
+    <button class="btn-whats" onclick="gerarRelatorio()">📲 Relatório WhatsApp para o Cliente</button>
 </div>
 
 <script>
 let chart;
+const presets = {
+    tcross: { v: "160.000,00", a: "3.490,00", ipva: 4, seguro: 5500, revisao: 3500 },
+    polo: { v: "125.000,00", a: "2.750,00", ipva: 4, seguro: 4200, revisao: 2800 }
+};
+
+function aplicarPreset() {
+    const p = presets[document.getElementById('modeloPreset').value];
+    document.getElementById('vCarro').value = p.v;
+    document.getElementById('assin').value = p.a;
+    calc();
+}
+
 function mask(i) {
     let v = i.value.replace(/\D/g, '');
     v = (v / 100).toFixed(2) + '';
-    v = v.replace(".", ",");
-    v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+    v = v.replace(".", ",").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
     i.value = v;
 }
+
 function parseMoney(v) { return parseFloat(v.toString().replace(/\./g, '').replace(',', '.')) || 0; }
 
 function calc() {
@@ -85,69 +133,77 @@ function calc() {
     const a_ini = parseMoney(document.getElementById('assin').value);
     const n = parseInt(document.getElementById('meses').value) || 0;
     const j = parseFloat(document.getElementById('juros').value) / 100 || 0;
-    const sAA = parseFloat(document.getElementById('selic').value) / 100 || 0;
-    const ipva = parseFloat(document.getElementById('ipva').value) / 100 || 0;
-    const seguro = parseFloat(document.getElementById('seguro').value) / 100 || 0;
-    const manut = parseFloat(document.getElementById('manut').value) / 100 || 0;
-    if (v === 0 || n === 0) return;
+    const selicAA = 0.1275;
+    const p = presets[document.getElementById('modeloPreset').value];
 
-    const s_mensal = (Math.pow(1 + sAA, 1/12) - 1);
-    const desval_anual = 0.10; 
-    const valorFinanciado = (e < v) ? (v - e) : 0;
-    const parcela = (valorFinanciado > 0 && j > 0) ? valorFinanciado * (j * Math.pow(1 + j, n)) / (Math.pow(1 + j, n) - 1) : 0;
+    // Cálculos de Custos Ocultos (Base Diego Mecânico)
+    const ipvaTotal = (v * (p.ipva/100)) * (n/12);
+    const seguroTotal = (p.seguro / 12) * n;
+    const revisaoTotal = p.revisao;
+    
+    document.getElementById('tabIpva').innerText = ipvaTotal.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+    document.getElementById('tabSeguro').innerText = seguroTotal.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+    document.getElementById('tabRevisao').innerText = revisaoTotal.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
 
-    let labels = [], dInvestido = [], dPatrimonioComprador = [];
-    let capAssinante = e, somaCustoC = 0, i_t = 0, s_t = 0, m_t = 0;
+    const valorFinan = (v - e);
+    const parcela = valorFinan * (j * Math.pow(1 + j, n)) / (Math.pow(1 + j, n) - 1);
+    
+    let labels = [], dInvestido = [], dCarro = [];
+    let capAssinante = e;
+    const s_mensal = Math.pow(1 + selicAA, 1/12) - 1;
 
     for (let i = 0; i <= n; i++) {
         labels.push(i + "m");
-        let vCarroAtual = v * Math.pow(1 - (desval_anual/12), i);
-        let saldoDevedor = (valorFinanciado > 0 && i < n && j > 0) ? valorFinanciado * (Math.pow(1 + j, n) - Math.pow(1 + j, i)) / (Math.pow(1 + j, n) - 1) : 0;
-        dPatrimonioComprador.push(Math.max(0, vCarroAtual - (i === n ? 0 : saldoDevedor)));
+        let vCarroAtual = v * Math.pow(1 - 0.11/12, i);
+        let saldoDevedor = valorFinan * (Math.pow(1 + j, n) - Math.pow(1 + j, i)) / (Math.pow(1 + j, n) - 1);
+        dCarro.push(Math.max(0, vCarroAtual - (i === n ? 0 : saldoDevedor)));
+
         if (i > 0) {
-            let im = (vCarroAtual * ipva / 12), sm = (v * seguro / 12), mm = (v * manut / 12);
-            i_t += im; s_t += sm; m_t += mm;
-            let custoM = parcela + im + sm + mm;
-            somaCustoC += custoM;
-            let a_atual = a_ini * Math.pow(1.06, Math.floor((i-1)/12));
+            let custoM = parcela + (vCarroAtual * (p.ipva/100) / 12) + (p.seguro/12) + (p.revisao/n);
+            let a_atual = a_ini * Math.pow(1.05, Math.floor((i-1)/12));
             capAssinante = capAssinante * (1 + s_mensal) + (custoM - a_atual);
         }
         dInvestido.push(capAssinante);
     }
-    const custoMedioC = somaCustoC / n;
-    document.getElementById('resA').innerText = custoMedioC.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-    document.getElementById('detalheCusto').innerHTML = `<b>Parcela:</b> ${(parcela).toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}<br><b>Manut/IPVA:</b> ${((i_t+s_t+m_t)/n).toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}`;
-    document.getElementById('custoAssinante').innerText = (a_ini).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-    document.getElementById('sobra').innerText = (custoMedioC - a_ini).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-    document.getElementById('patriB').innerText = capAssinante.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-    document.getElementById('valorCarroFinal').innerText = dPatrimonioComprador[n].toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
 
-    if (capAssinante > dPatrimonioComprador[n]) document.getElementById('patriCard').classList.add('winner'); else document.getElementById('patriCard').classList.remove('winner');
+    document.getElementById('valorCarroFinal').innerText = dCarro[n].toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+    document.getElementById('patriB').innerText = capAssinante.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
 
-    const ctx = document.getElementById('evolucaoChart').getContext('2d');
+    document.getElementById('cardAssinante').className = capAssinante > dCarro[n] ? 'res-card winner' : 'res-card';
+    document.getElementById('cardComprador').className = dCarro[n] > capAssinante ? 'res-card winner' : 'res-card';
+
     if (chart) chart.destroy();
-    chart = new Chart(ctx, { 
-        type: 'line', 
+    chart = new Chart(document.getElementById('evolucaoChart').getContext('2d'), {
+        type: 'line',
         data: { labels: labels, datasets: [
-            { label: 'Assinante (Patrimônio)', data: dInvestido, borderColor: '#00ff88', borderWidth: 4, tension: 0.4, pointRadius: 0, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.05)' },
-            { label: 'Comprador (Carro)', data: dPatrimonioComprador, borderColor: '#ff4444', borderDash: [5, 5], borderWidth: 2, pointRadius: 0, fill: false }
+            { label: 'Patrimônio Dinheiro', data: dInvestido, borderColor: '#00ff88', borderWidth: 4, pointRadius: 0, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.05)' },
+            { label: 'Patrimônio Carro', data: dCarro, borderColor: '#ff4444', borderDash: [5,5], pointRadius: 0 }
         ]},
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#fff' } } }, scales: { y: { ticks: { color: '#8b949e' } }, x: { ticks: { color: '#8b949e' } } } }
+        options: { responsive: true, maintainAspectRatio: false, animation: { onComplete: positionIcons } }
     });
 }
 
+function positionIcons() {
+    const iconP = document.getElementById('patrimonioIcon');
+    const iconC = document.getElementById('carroIcon');
+    const metaA = chart.getDatasetMeta(0).data;
+    const metaC = chart.getDatasetMeta(1).data;
+    const lastA = metaA[metaA.length - 1];
+    const lastC = metaC[metaC.length - 1];
+    iconP.style.left = lastA.x + 'px'; iconP.style.top = lastA.y + 'px'; iconP.style.display = 'block';
+    iconC.style.left = lastC.x + 'px'; iconC.style.top = lastC.y + 'px'; iconC.style.display = 'block';
+}
+
 function gerarRelatorio() {
-    const texto = `*📊 RELATÓRIO: MATEMÁTICA DO CARRO*\n` +
+    const diff = parseMoney(document.getElementById('patriB').innerText) - parseMoney(document.getElementById('valorCarroFinal').innerText);
+    const texto = `*📊 RELATÓRIO @MATEMATICADOCARRO*\n` +
         `------------------------------------\n` +
-        `🚗 *Veículo:* R$ ${document.getElementById('vCarro').value}\n\n` +
-        `🔹 *Cenário Comprador:*\n` +
-        `- Custo Médio: ${document.getElementById('resA').innerText}\n` +
-        `- Carro Final: ${document.getElementById('valorCarroFinal').innerText}\n\n` +
-        `🔹 *Cenário Assinante:*\n` +
-        `- Mensalidade: ${document.getElementById('custoAssinante').innerText}\n` +
-        `- Patrimônio Líquido: ${document.getElementById('patriB').innerText}\n\n` +
-        `🏁 *Vantagem:* A assinatura deixa você mais rico.\n\n` +
-        `_@matematicadocarro_`;
+        `🚙 *Veículo:* ${document.getElementById('modeloPreset').options[document.getElementById('modeloPreset').selectedIndex].text}\n\n` +
+        `*RESULTADO APÓS 36 MESES:*\n` +
+        `❌ *Comprar:* ${document.getElementById('valorCarroFinal').innerText}\n` +
+        `✅ *Assinar:* ${document.getElementById('patriB').innerText}\n\n` +
+        `💰 *Lucro da Assinatura:* ${diff.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}\n\n` +
+        `_Acesse: matematicadocarro.com_`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
 }
 window.onload = calc;
