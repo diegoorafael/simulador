@@ -11,7 +11,6 @@
         
         .container { background: var(--card); border: 1px solid #30363d; border-radius: 16px; padding: 20px; width: 100%; max-width: 1200px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        /* Layout Responsivo */
         .layout { display: grid; grid-template-columns: 1fr; gap: 20px; }
         @media (min-width: 900px) { .layout { grid-template-columns: 350px 1fr; } }
 
@@ -25,14 +24,19 @@
 
         .chart-box { background: #1c2128; border-radius: 12px; padding: 15px; border: 1px solid #30363d; min-height: 350px; position: relative; }
 
-        /* Resultados Adaptáveis */
         .results-bar { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
         @media (min-width: 700px) { .results-bar { grid-template-columns: repeat(5, 1fr); } }
 
-        .res-card { padding: 12px; border-radius: 10px; border: 1px solid #30363d; text-align: center; background: rgba(255, 255, 255, 0.02); cursor: help; }
+        .res-card { padding: 12px; border-radius: 10px; border: 1px solid #30363d; text-align: center; background: rgba(255, 255, 255, 0.02); cursor: help; transition: 0.3s; }
         .res-card small { display: block; font-size: 8px; color: #8b949e; text-transform: uppercase; margin-bottom: 5px; min-height: 20px; line-height: 1.2; }
         .value { font-size: 13px; font-weight: bold; display: block; color: var(--primary); }
         
+        /* Efeito de Destaque no Vencedor */
+        .winner { border: 2px solid var(--primary) !important; box-shadow: 0 0 15px rgba(0, 255, 136, 0.4); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+
+        .winner-announce { grid-column: 1 / -1; text-align: center; background: rgba(0, 255, 136, 0.1); color: var(--primary); padding: 10px; border-radius: 8px; font-weight: bold; font-size: 14px; margin-top: 10px; border: 1px solid var(--primary); }
+
         .btn-projeto { grid-column: 1 / -1; display: block; text-align: center; padding: 20px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 10px; background: var(--primary); color: #000; font-size: 18px; text-transform: uppercase; }
     </style>
 </head>
@@ -41,16 +45,16 @@
     <h1>MATEMÁTICA DO CARRO</h1>
     <div class="layout">
         <div class="inputs-group">
-            <span class="label-text" title="Preço total de mercado do veículo.">Valor do Carro (R$)</span>
+            <span class="label-text" title="Preço de tabela ou mercado do veículo.">Valor do Carro (R$)</span>
             <input type="text" id="vCarro" value="100.000,00" oninput="mask(this); calc()">
             
             <span class="label-text" title="Valor pago à vista. No assinante, fica rendendo na Selic.">Entrada Paga (R$)</span>
             <input type="text" id="entrada" value="40.000,00" oninput="mask(this); calc()">
             
-            <span class="label-text" title="Custo fixo mensal da assinatura.">Assinatura Mensal (R$)</span>
+            <span class="label-text" title="Mensalidade fixa inicial da assinatura.">Assinatura Mensal (R$)</span>
             <input type="text" id="assin" value="1.900,00" oninput="mask(this); calc()">
 
-            <span class="label-text" title="Taxas anuais (IPVA, Seguro e Manutenção) pagas apenas pelo comprador.">Custos Comprador (% AA)</span>
+            <span class="label-text" title="IPVA, Seguro e Manutenção (cobrados apenas do comprador).">Taxas Comprador (% AA)</span>
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
                 <input type="number" id="ipva" value="4" title="IPVA %" oninput="calc()">
                 <input type="number" id="seguro" value="3.5" title="Seguro %" oninput="calc()">
@@ -67,11 +71,13 @@
         <div class="chart-box"><canvas id="evolucaoChart"></canvas></div>
 
         <div class="results-bar">
-            <div class="res-card" title="Média mensal: Parcela + IPVA + Seguro + Manutenção."><small>Custo Comprador</small><span id="resA" class="value" style="color:var(--red)">R$ 0,00</span></div>
-            <div class="res-card" title="Mensalidade média da assinatura no período."><small>Custo Assinante</small><span id="custoAssinante" class="value">R$ 0,00</span></div>
-            <div class="res-card" title="Diferença mensal que o assinante investe na Selic."><small>Sobra Mensal</small><span id="sobra" class="value">R$ 0,00</span></div>
-            <div class="res-card" title="Valor estimado de venda do veículo após desvalorização."><small>Valor Usado</small><span id="valorCarroFinal" class="value" style="color: #ff9f43;">R$ 0,00</span></div>
-            <div class="res-card" style="border: 2px solid var(--primary)" title="Patrimônio nominal total (Capital + Rendimentos + Sobras)."><small>Patr. Nominal</small><span id="patriB" class="value">R$ 0,00</span></div>
+            <div class="res-card" title="Parcela + IPVA + Seguro + Manutenção."><small>Custo Comprador</small><span id="resA" class="value" style="color:var(--red)">R$ 0,00</span></div>
+            <div class="res-card" title="Mensalidade da assinatura corrigida pela inflação."><small>Custo Assinante</small><span id="custoAssinante" class="value">R$ 0,00</span></div>
+            <div class="res-card" title="Economia que o assinante investe por mês."><small>Sobra Mensal</small><span id="sobra" class="value">R$ 0,00</span></div>
+            <div class="res-card" title="Venda estimada do veículo após 48 meses."><small>Valor Usado</small><span id="valorCarroFinal" class="value" style="color: #ff9f43;">R$ 0,00</span></div>
+            <div id="patriCard" class="res-card" title="Saldo total nominal acumulado."><small>Patr. Nominal</small><span id="patriB" class="value">R$ 0,00</span></div>
+            
+            <div id="winnerAnnounce" class="winner-announce">🏆 CALCULANDO VENCEDOR...</div>
         </div>
         
         <a href="#" class="btn-projeto">MATEMÁTICA DO CARRO</a>
@@ -80,6 +86,7 @@
 
 <script>
 let chart;
+
 function mask(i) {
     let v = i.value.replace(/\D/g, '');
     v = (v / 100).toFixed(2) + '';
@@ -87,7 +94,11 @@ function mask(i) {
     v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
     i.value = v;
 }
-function parseMoney(v) { return parseFloat(v.toString().replace(/\./g, '').replace(',', '.')) || 0; }
+
+function parseMoney(v) { 
+    return parseFloat(v.toString().replace(/\./g, '').replace(',', '.')) || 0; 
+}
+
 function calc() {
     const v = parseMoney(document.getElementById('vCarro').value);
     const e = parseMoney(document.getElementById('entrada').value);
@@ -124,11 +135,27 @@ function calc() {
         dInvestido.push(capAssinante);
     }
 
+    // Atualiza resultados
     document.getElementById('resA').innerText = (somaCustoC / n).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
     document.getElementById('custoAssinante').innerText = (a_ini).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
     document.getElementById('sobra').innerText = ((somaCustoC - (a_ini * n)) / n).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
     document.getElementById('patriB').innerText = capAssinante.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
     document.getElementById('valorCarroFinal').innerText = dPatrimonioComprador[n].toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+
+    // Lógica do Vencedor
+    const announce = document.getElementById('winnerAnnounce');
+    const pCard = document.getElementById('patriCard');
+    if (capAssinante > dPatrimonioComprador[n]) {
+        announce.innerText = "🏆 O PATRIMÔNIO DO ASSINANTE VENCEU!";
+        announce.style.background = "rgba(0, 255, 136, 0.1)";
+        announce.style.color = "var(--primary)";
+        pCard.classList.add('winner');
+    } else {
+        announce.innerText = "🚗 O CARRO PRÓPRIO VENCEU!";
+        announce.style.background = "rgba(255, 68, 68, 0.1)";
+        announce.style.color = "var(--red)";
+        pCard.classList.remove('winner');
+    }
 
     const ctx = document.getElementById('evolucaoChart').getContext('2d');
     if (chart) chart.destroy();
@@ -141,7 +168,12 @@ function calc() {
                 { label: 'Patrimônio Comprador', data: dPatrimonioComprador, borderColor: '#ff4444', borderDash: [5, 5], pointRadius: 0, fill: false }
             ]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#fff' } } } }
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false, 
+            plugins: { legend: { labels: { color: '#fff' } } },
+            scales: { y: { ticks: { color: '#8b949e' }, grid: { color: '#30363d' } }, x: { ticks: { color: '#8b949e' }, grid: { display: false } } }
+        }
     });
 }
 calc();
