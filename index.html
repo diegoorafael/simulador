@@ -3,26 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matemática do Carro - Simulador</title>
+    <title>Matemática do Carro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #00ff88; --bg: #0a0e14; --card: #151b23; --text: #f0f6fc; --red: #ff4444; }
         body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 20px; margin: 0; }
-        .container { background: var(--card); border: 1px solid #30363d; border-radius: 16px; padding: 25px; width: 100%; max-width: 1200px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .container { background: var(--card); border: 1px solid #30363d; border-radius: 16px; padding: 25px; width: 100%; max-width: 1200px; }
         .layout { display: grid; grid-template-columns: 350px 1fr; gap: 25px; }
-        h1 { color: var(--primary); text-align: center; margin-bottom: 20px; font-size: 24px; grid-column: span 2; }
-        .inputs-group { display: flex; flex-direction: column; gap: 12px; }
-        .label-text { display: block; font-size: 10px; color: #8b949e; margin-bottom: 2px; text-transform: uppercase; font-weight: bold; border-bottom: 1px dotted #444; }
-        .input-wrapper { position: relative; }
-        .input-wrapper::before { content: "R$ "; position: absolute; left: 10px; top: 10px; font-size: 14px; color: #8b949e; }
-        .currency-input { padding-left: 35px !important; }
-        input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: #fff; box-sizing: border-box; outline: none; }
-        .chart-box { background: #1c2128; border-radius: 12px; padding: 20px; border: 1px solid #30363d; min-height: 450px; }
+        h1 { color: var(--primary); text-align: center; font-size: 24px; grid-column: span 2; margin-bottom: 20px; }
+        .inputs-group { display: flex; flex-direction: column; gap: 10px; }
+        .label-text { display: block; font-size: 10px; color: #8b949e; font-weight: bold; text-transform: uppercase; border-bottom: 1px dotted #444; margin-bottom: 2px; }
+        input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: #fff; outline: none; }
+        .chart-box { background: #1c2128; border-radius: 12px; padding: 20px; border: 1px solid #30363d; min-height: 400px; }
         .results-bar { grid-column: span 2; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 20px; }
         .res-card { padding: 12px; border-radius: 10px; border: 1px solid #30363d; text-align: center; background: rgba(255, 255, 255, 0.02); }
-        .res-card small { display: block; font-size: 8px; color: #8b949e; text-transform: uppercase; margin-bottom: 5px; height: 25px; }
-        .value { font-size: 14px; font-weight: bold; display: block; color: var(--primary); }
-        .btn-projeto { display: block; width: 100%; text-align: center; padding: 18px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 20px; background: var(--primary); color: #000; font-size: 18px; }
+        .res-card small { display: block; font-size: 8px; color: #8b949e; text-transform: uppercase; margin-bottom: 5px; height: 20px; }
+        .value { font-size: 13px; font-weight: bold; display: block; color: var(--primary); }
+        .btn-projeto { display: block; width: 100%; text-align: center; padding: 18px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 20px; background: var(--primary); color: #000; }
         @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .results-bar { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
@@ -31,14 +28,14 @@
     <h1>MATEMÁTICA DO CARRO</h1>
     <div class="layout">
         <div class="inputs-group">
-            <span class="label-text" title="Preço do veículo.">Valor do Carro</span>
-            <div class="input-wrapper"><input type="text" id="vCarro" class="currency-input" value="100.000,00" oninput="mask(this); calc()"></div>
+            <span class="label-text" title="Valor atual de mercado do carro.">Valor do Carro (R$)</span>
+            <input type="text" id="vCarro" value="100.000,00" oninput="mask(this); calc()">
             
-            <span class="label-text" title="Valor pago no ato. No assinante, fica rendendo Selic.">Entrada Paga</span>
-            <div class="input-wrapper"><input type="text" id="entrada" class="currency-input" value="40.000,00" oninput="mask(this); calc()"></div>
+            <span class="label-text" title="Valor pago à vista. No assinante, fica rendendo Selic.">Entrada Paga (R$)</span>
+            <input type="text" id="entrada" value="40.000,00" oninput="mask(this); calc()">
             
-            <span class="label-text" title="Custo mensal da assinatura.">Assinatura Mensal</span>
-            <div class="input-wrapper"><input type="text" id="assin" class="currency-input" value="2.500,00" oninput="mask(this); calc()"></div>
+            <span class="label-text" title="Assinatura mensal inicial.">Assinatura Mensal (R$)</span>
+            <input type="text" id="assin" value="2.500,00" oninput="mask(this); calc()">
             
             <span class="label-text">Juros Financiamento (% AM)</span>
             <input type="number" id="juros" value="1.5" step="0.1" oninput="calc()">
@@ -56,11 +53,11 @@
         <div class="chart-box"><canvas id="evolucaoChart"></canvas></div>
 
         <div class="results-bar">
-            <div class="res-card" title="Soma de parcela + impostos + seguro + manutenção."><small>Custo Comprador</small><span id="resA" class="value" style="color:var(--red)">R$ 0,00</span></div>
-            <div class="res-card" title="Mensalidade média corrigida pela inflação."><small>Custo Assinante</small><span id="custoAssinante" class="value">R$ 0,00</span></div>
-            <div class="res-card" title="Dinheiro que o assinante investe por mês."><small>Sobra Mensal</small><span id="sobra" class="value">R$ 0,00</span></div>
-            <div class="res-card" title="Venda estimada do veículo após 4 anos."><small>Valor Carro Usado</small><span id="valorCarroFinal" class="value" style="color: #ff9f43;">R$ 0,00</span></div>
-            <div class="res-card" style="border: 1px solid var(--primary)" title="Total acumulado em dinheiro vivo."><small>Patrimônio Líquido</small><span id="patriB" class="value">R$ 0,00</span></div>
+            <div class="res-card" title="Gastos mensais do comprador: Parcela + Taxas."><small>Custo Comprador</small><span id="resA" class="value" style="color:var(--red)">R$ 0,00</span></div>
+            <div class="res-card" title="Assinatura média mensal corrigida."><small>Custo Assinante</small><span id="custoAssinante" class="value">R$ 0,00</span></div>
+            <div class="res-card" title="Economia que o assinante investe por mês."><small>Sobra Mensal</small><span id="sobra" class="value">R$ 0,00</span></div>
+            <div class="res-card" title="Valor estimado de venda do carro após o prazo."><small>Valor Carro Usado</small><span id="valorCarroFinal" class="value" style="color: #ff9f43;">R$ 0,00</span></div>
+            <div class="res-card" style="border: 1px solid var(--primary)" title="Saldo total nominal acumulado (capital + rendimentos)."><small>Patrimônio Nominal</small><span id="patriB" class="value">R$ 0,00</span></div>
         </div>
     </div>
     <a href="https://instagram.com/matematicadocarro" class="btn-projeto">ACOMPANHE NO INSTAGRAM @MATEMATICADOCARRO</a>
@@ -77,21 +74,24 @@ function mask(i) {
     i.value = v;
 }
 
-function parseMoney(v) { 
-    return parseFloat(v.replace(/\./g, '').replace(',', '.')) || 0; 
+function parseMoney(v) {
+    if (!v) return 0;
+    return parseFloat(v.toString().replace(/\./g, '').replace(',', '.')) || 0;
 }
 
 function calc() {
     const v = parseMoney(document.getElementById('vCarro').value);
     const e = parseMoney(document.getElementById('entrada').value);
     const a_ini = parseMoney(document.getElementById('assin').value);
-    const n = parseInt(document.getElementById('meses').value) || 48;
-    const j = (parseFloat(document.getElementById('juros').value) || 0) / 100;
-    const sAA = parseFloat(document.getElementById('selic').value) || 0;
-    const inflaAA = (parseFloat(document.getElementById('infla').value) || 0) / 100;
+    const n = parseInt(document.getElementById('meses').value) || 0;
+    const j = parseFloat(document.getElementById('juros').value) / 100 || 0;
+    const sAA = parseFloat(document.getElementById('selic').value) / 100 || 0;
+    const inflaAA = parseFloat(document.getElementById('infla').value) / 100 || 0;
 
-    const s_mensal = (Math.pow(1 + (sAA/100), 1/12) - 1);
-    const infla_mensal = (Math.pow(1 + inflaAA/100, 1/12) - 1);
+    if (n === 0 || v === 0) return;
+
+    const s_mensal = (Math.pow(1 + sAA, 1/12) - 1);
+    const infla_mensal = (Math.pow(1 + inflaAA, 1/12) - 1);
     const desval_mensal = 0.08 / 12;
 
     const valorFinanciado = (e < v) ? (v - e) : 0;
@@ -111,15 +111,12 @@ function calc() {
             let ipva_m = (vCarroAtual * 0.04) / 12;
             let seguro_m = ((v * 0.035) / 12) * Math.pow(1 + infla_mensal, i);
             let manut_m = ((v * 0.013) / 12) * Math.pow(1 + infla_mensal, i);
-            
             let custoM_Comprador = parcela + ipva_m + seguro_m + manut_m;
             let custoM_Assinante = a_ini * Math.pow(1 + infla_mensal, i);
 
             somaCustoC += custoM_Comprador;
             somaCustoA += custoM_Assinante;
-
-            let sobra = custoM_Comprador - custoM_Assinante;
-            capAssinante = capAssinante * (1 + s_mensal) + sobra;
+            capAssinante = capAssinante * (1 + s_mensal) + (custoM_Comprador - custoM_Assinante);
         }
         dInvestido.push(capAssinante);
     }
@@ -137,7 +134,7 @@ function calc() {
         data: {
             labels: labels,
             datasets: [
-                { label: 'Patrimônio Líquido Assinante', data: dInvestido, borderColor: '#00ff88', pointRadius: 0, fill: false },
+                { label: 'Patrimônio Nominal Assinante', data: dInvestido, borderColor: '#00ff88', pointRadius: 0, fill: false },
                 { label: 'Patrimônio Líquido Comprador', data: dPatrimonioComprador, borderColor: '#ff4444', borderDash: [5, 5], pointRadius: 0, fill: false }
             ]
         },
