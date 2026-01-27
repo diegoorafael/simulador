@@ -7,40 +7,24 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #00ff88; --bg: #0a0e14; --card: #151b23; --text: #f0f6fc; --red: #ff4444; }
-        
         body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; box-sizing: border-box; display: flex; justify-content: center; overflow-x: hidden; }
-        
         .container { background: var(--card); border: 1px solid #30363d; border-radius: 12px; padding: 20px; width: 100%; max-width: 1100px; box-sizing: border-box; }
-        
         .main-layout { display: flex; flex-direction: column; gap: 15px; }
         @media (min-width: 900px) { .main-layout { flex-direction: row; align-items: flex-start; } }
-
         .inputs-section { flex: 1; display: flex; flex-direction: column; gap: 12px; width: 100%; }
         .chart-section { flex: 2; width: 100%; }
-
-        h1 { color: var(--primary); text-align: center; margin: 0 0 20px 0; font-size: 1.6rem; text-transform: uppercase; letter-spacing: 1px; }
-        
+        h1 { color: var(--primary); text-align: center; margin: 0 0 20px 0; font-size: 1.6rem; text-transform: uppercase; }
         .label-group { display: flex; flex-direction: column; gap: 4px; }
-        .label-text { font-size: 11px; color: #8b949e; text-transform: uppercase; font-weight: bold; border-bottom: 1px dotted #333; cursor: help; }
-        
+        .label-text { font-size: 11px; color: #8b949e; text-transform: uppercase; font-weight: bold; border-bottom: 1px dotted #333; }
         input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #fff; font-size: 17px; box-sizing: border-box; outline: none; }
-        input:focus { border-color: var(--primary); }
-
         .chart-container { background: #1c2128; border-radius: 10px; padding: 15px; border: 1px solid #30363d; height: 300px; width: 100%; position: relative; }
         @media (min-width: 900px) { .chart-container { height: 450px; } }
-
         .results-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 20px; }
         @media (min-width: 700px) { .results-grid { grid-template-columns: repeat(5, 1fr); } }
-
         .res-card { padding: 15px; border-radius: 10px; border: 1px solid #30363d; text-align: center; background: rgba(255, 255, 255, 0.02); }
         .res-card small { display: block; font-size: 10px; color: #8b949e; text-transform: uppercase; margin-bottom: 6px; min-height: 25px; font-weight: bold; }
         .value { font-size: 15px; font-weight: bold; color: var(--primary); display: block; }
-        
         .cost-details { font-size: 11px; color: #abb2bf; margin-top: 10px; text-align: left; border-top: 1px solid #333; padding-top: 8px; line-height: 1.5; }
-        
-        .winner { border: 2px solid var(--primary) !important; box-shadow: 0 0 15px rgba(0, 255, 136, 0.2); animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
-        
         .sub-input-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .mini-label { font-size: 9px; color: #8b949e; text-align: center; margin-top: 2px; }
     </style>
@@ -50,24 +34,12 @@
     <h1>MATEMÁTICA DO CARRO</h1>
     <div class="main-layout">
         <div class="inputs-section">
+            <div class="label-group"><span class="label-text">Valor do Carro (R$)</span><input type="text" id="vCarro" value="100.000,00" oninput="mask(this); calc()"></div>
+            <div class="label-group"><span class="label-text">Entrada (R$)</span><input type="text" id="entrada" value="40.000,00" oninput="mask(this); calc()"></div>
+            <div class="label-group"><span class="label-text">Tempo Financiamento (Meses)</span><input type="number" id="meses" value="48" oninput="calc()"></div>
+            <div class="label-group"><span class="label-text">Assinatura (R$)</span><input type="text" id="assin" value="1.900,00" oninput="mask(this); calc()"></div>
             <div class="label-group">
-                <span class="label-text" title="Preço de mercado do veículo.">Valor do Carro (R$)</span>
-                <input type="text" id="vCarro" value="100.000,00" oninput="mask(this); calc()">
-            </div>
-            <div class="label-group">
-                <span class="label-text" title="Capital inicial investido ou dado de entrada.">Entrada (R$)</span>
-                <input type="text" id="entrada" value="40.000,00" oninput="mask(this); calc()">
-            </div>
-            <div class="label-group">
-                <span class="label-text" title="Tempo total do financiamento e da análise.">Tempo Financiamento (Meses)</span>
-                <input type="number" id="meses" value="48" oninput="calc()">
-            </div>
-            <div class="label-group">
-                <span class="label-text" title="Mensalidade da assinatura.">Assinatura (R$)</span>
-                <input type="text" id="assin" value="1.900,00" oninput="mask(this); calc()">
-            </div>
-            <div class="label-group">
-                <span class="label-text" title="Taxas anuais pagas apenas pelo comprador.">Custos Comprador (% AA)</span>
+                <span class="label-text">Taxas Comprador (% AA)</span>
                 <div class="sub-input-row">
                     <div><input type="number" id="ipva" value="4" oninput="calc()"><div class="mini-label">IPVA</div></div>
                     <div><input type="number" id="seguro" value="3.5" oninput="calc()"><div class="mini-label">Seg.</div></div>
@@ -75,32 +47,23 @@
                 </div>
             </div>
             <div class="label-group">
-                <span class="label-text" title="Juros do financiamento e rendimento Selic.">Mercado (%)</span>
+                <span class="label-text">Mercado (%)</span>
                 <div class="sub-input-row" style="grid-template-columns: 1fr 1fr;">
                     <div><input type="number" id="juros" value="1.6" oninput="calc()"><div class="mini-label">Juros AM</div></div>
                     <div><input type="number" id="selic" value="13" oninput="calc()"><div class="mini-label">Selic AA</div></div>
                 </div>
             </div>
         </div>
-
-        <div class="chart-section">
-            <div class="chart-container"><canvas id="evolucaoChart"></canvas></div>
-        </div>
+        <div class="chart-section"><div class="chart-container"><canvas id="evolucaoChart"></canvas></div></div>
     </div>
-
     <div class="results-grid">
-        <div class="res-card">
-            <small>Custo Comprador</small>
-            <span id="resA" class="value" style="color:var(--red)">R$ 0,00</span>
-            <div id="detalheCusto" class="cost-details"></div>
-        </div>
+        <div class="res-card"><small>Custo Comprador</small><span id="resA" class="value" style="color:var(--red)">R$ 0,00</span><div id="detalheCusto" class="cost-details"></div></div>
         <div class="res-card"><small>Custo Assinante</small><span id="custoAssinante" class="value">R$ 0,00</span></div>
         <div class="res-card"><small>Sobra Mensal</small><span id="sobra" class="value">R$ 0,00</span></div>
         <div class="res-card"><small>Valor Usado</small><span id="valorCarroFinal" class="value" style="color: #ff9f43;">R$ 0,00</span></div>
         <div id="patriCard" class="res-card"><small>Patr. Nominal</small><span id="patriB" class="value">R$ 0,00</span></div>
     </div>
 </div>
-
 <script>
 let chart;
 function mask(i) {
@@ -140,7 +103,7 @@ function calc() {
         if (i > 0) {
             let im = (vCarroAtual * ipva / 12), sm = (v * seguro / 12), mm = (v * manut / 12);
             i_t += im; s_t += sm; m_t += mm;
-            let custoM = parcela + im + sm + mm;
+            let custoM = parcela + im + sm + m_m; // Corrigido m_m para mm
             somaCustoC += custoM;
             capAssinante = capAssinante * (1 + s_mensal) + (custoM - a_ini);
         }
@@ -153,9 +116,6 @@ function calc() {
     document.getElementById('sobra').innerText = ((somaCustoC - (a_ini * n)) / n).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
     document.getElementById('patriB').innerText = capAssinante.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
     document.getElementById('valorCarroFinal').innerText = dPatrimonioComprador[n].toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-
-    const pCard = document.getElementById('patriCard');
-    if (capAssinante > dPatrimonioComprador[n]) pCard.classList.add('winner'); else pCard.classList.remove('winner');
 
     const ctx = document.getElementById('evolucaoChart').getContext('2d');
     if (chart) chart.destroy();
