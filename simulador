@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulador Autoselic - Matemática do Carro</title>
+    <style>
+        body { background: #0a0e14; color: #fff; font-family: sans-serif; display: flex; justify-content: center; padding: 20px; }
+        .card { background: #151b23; border: 1px solid #30363d; border-radius: 12px; padding: 20px; width: 400px; }
+        h2 { color: #00ff88; text-align: center; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 12px; color: #8b949e; margin-bottom: 5px; }
+        input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: #fff; box-sizing: border-box; }
+        .results { margin-top: 20px; border-top: 1px solid #30363d; pt-10; }
+        .res-box { padding: 10px; margin-top: 10px; border-radius: 8px; }
+        .finan { border: 1px solid #ff4444; }
+        .assin { border: 2px solid #00ff88; position: relative; }
+        .vencedor { position: absolute; top: -10px; right: 10px; background: #00ff88; color: #000; font-weight: bold; padding: 2px 8px; border-radius: 4px; font-size: 10px; }
+        .highlight { font-size: 1.2rem; font-weight: bold; display: block; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Simulador Autoselic</h2>
+    
+    <div class="input-group">
+        <label>Valor do Carro (R$)</label>
+        <input type="number" id="valorCarro" value="100000" oninput="calcular()">
+    </div>
+    <div class="input-group">
+        <label>Entrada (R$)</label>
+        <input type="number" id="entrada" value="40000" oninput="calcular()">
+    </div>
+    <div class="input-group">
+        <label>Taxa de Juros Financiamento (% AM)</label>
+        <input type="number" id="juros" value="1.5" step="0.1" oninput="calcular()">
+    </div>
+    <div class="input-group">
+        <label>Mensalidade Assinatura (R$)</label>
+        <input type="number" id="mensalidade" value="2000" oninput="calcular()">
+    </div>
+
+    <div class="results">
+        <div class="res-box finan">
+            <small>Cenário A: Financiamento</small>
+            <span id="resFinan" class="highlight">R$ 0,00</span>
+            <small>Parcela + Custos (IPVA/Seg/Manu)</small>
+        </div>
+
+        <div class="res-box assin">
+            <div class="vencedor">VENCEDOR</div>
+            <small>Cenário B: Autoselic</small>
+            <span id="resAssin" class="highlight">R$ 0,00</span>
+            <small>Mensalidade - Rendimento Selic</small>
+        </div>
+    </div>
+</div>
+
+<script>
+function calcular() {
+    // Pegar valores
+    const vCarro = parseFloat(document.getElementById('valorCarro').value);
+    const entrada = parseFloat(document.getElementById('entrada').value);
+    const juros = parseFloat(document.getElementById('juros').value) / 100;
+    const assinatura = parseFloat(document.getElementById('mensalidade').value);
+    const prazo = 48; // Fixo para o exemplo
+    const selicMensal = 0.009; // Aprox. 11% ao ano
+
+    // Cálculo Financiamento (Tabela Price)
+    const principal = vCarro - entrada;
+    const parcela = principal * (juros * Math.pow(1 + juros, prazo)) / (Math.pow(1 + juros, prazo) - 1);
+    const custosOcultos = vCarro * 0.007; // Estimativa de 0.7% do valor do carro/mês
+    const totalA = parcela + custosOcultos;
+
+    // Cálculo Autoselic (Custo Real)
+    // Rendimento da entrada que ficaria no Tesouro Selic
+    const rendimento = entrada * selicMensal;
+    const totalB = assinatura - rendimento;
+
+    // Mostrar resultados
+    document.getElementById('resFinan').innerText = totalA.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    document.getElementById('resAssin').innerText = totalB.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+// Iniciar cálculo
+calcular();
+</script>
+
+</body>
+</html>
