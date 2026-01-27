@@ -2,38 +2,46 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Matemática do Carro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #00ff88; --bg: #0a0e14; --card: #151b23; --text: #f0f6fc; --red: #ff4444; }
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 15px; display: flex; justify-content: center; }
-        .container { background: var(--card); border: 1px solid #30363d; border-radius: 16px; padding: 25px; width: 100%; max-width: 1200px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .layout { display: grid; grid-template-columns: 1fr; gap: 25px; }
-        @media (min-width: 900px) { .layout { grid-template-columns: 380px 1fr; } }
-        h1 { color: var(--primary); text-align: center; margin-bottom: 25px; font-size: 26px; grid-column: 1 / -1; letter-spacing: 1px; }
         
-        /* Ajuste de Texto nos Parâmetros */
-        .inputs-group { display: flex; flex-direction: column; gap: 15px; }
-        .label-text { display: block; font-size: 11px; color: #8b949e; margin-bottom: 5px; text-transform: uppercase; font-weight: bold; border-bottom: 1px dotted #444; cursor: help; }
-        input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #fff; box-sizing: border-box; font-size: 18px; outline: none; }
-        .sub-label { font-size: 10px; color: #8b949e; text-transform: uppercase; margin-top: 2px; }
+        /* Ajuste base para não transbordar no celular */
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; box-sizing: border-box; overflow-x: hidden; }
+        
+        .container { background: var(--card); border: 1px solid #30363d; border-radius: 12px; padding: 15px; width: 100%; max-width: 1200px; box-sizing: border-box; margin: 0 auto; }
+        
+        .layout { display: flex; flex-direction: column; gap: 20px; }
+        @media (min-width: 900px) { .layout { display: grid; grid-template-columns: 350px 1fr; } }
 
-        .chart-box { background: #1c2128; border-radius: 12px; padding: 20px; border: 1px solid #30363d; min-height: 400px; }
+        h1 { color: var(--primary); text-align: center; margin-bottom: 20px; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
         
-        /* Ajuste de Texto nos Resultados */
-        .results-bar { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px; }
+        .inputs-group { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+        .label-text { display: block; font-size: 10px; color: #8b949e; margin-bottom: 4px; text-transform: uppercase; font-weight: bold; }
+        
+        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #fff; box-sizing: border-box; font-size: 16px; outline: none; }
+
+        /* Ajuste do Gráfico para Celular */
+        .chart-box { background: #1c2128; border-radius: 12px; padding: 10px; border: 1px solid #30363d; height: 300px; position: relative; width: 100%; box-sizing: border-box; }
+        @media (min-width: 900px) { .chart-box { height: 450px; } }
+
+        /* Grade de resultados ajustada */
+        .results-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
         @media (min-width: 700px) { .results-bar { grid-template-columns: repeat(5, 1fr); } }
-        .res-card { padding: 15px; border-radius: 12px; border: 1px solid #30363d; text-align: center; background: rgba(255, 255, 255, 0.02); cursor: help; }
-        .res-card small { display: block; font-size: 10px; color: #8b949e; text-transform: uppercase; margin-bottom: 8px; min-height: 25px; line-height: 1.2; font-weight: bold; }
-        .value { font-size: 16px; font-weight: bold; display: block; color: var(--primary); }
+
+        .res-card { padding: 10px; border-radius: 8px; border: 1px solid #30363d; text-align: center; background: rgba(255, 255, 255, 0.02); box-sizing: border-box; }
+        .res-card small { display: block; font-size: 9px; color: #8b949e; text-transform: uppercase; margin-bottom: 4px; min-height: 22px; font-weight: bold; }
+        .value { font-size: 14px; font-weight: bold; color: var(--primary); display: block; }
         
-        /* Texto de Detalhamento Maior */
-        .detail-text { font-size: 11px; color: #abb2bf; margin-top: 10px; line-height: 1.5; text-align: left; padding-left: 5px; border-top: 1px solid #30363d; pt: 5px; }
+        .detail-text { font-size: 10px; color: #abb2bf; margin-top: 8px; line-height: 1.4; text-align: left; border-top: 1px solid #333; padding-top: 5px; }
         
-        .winner { border: 2px solid var(--primary) !important; box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
-        .btn-projeto { grid-column: 1 / -1; display: block; text-align: center; padding: 22px; border-radius: 10px; text-decoration: none; font-weight: bold; margin-top: 15px; background: var(--primary); color: #000; font-size: 20px; text-transform: uppercase; }
+        .winner { border: 2px solid var(--primary) !important; box-shadow: 0 0 15px rgba(0, 255, 136, 0.2); }
+        
+        .btn-projeto { display: block; text-align: center; padding: 18px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 15px; background: var(--primary); color: #000; font-size: 16px; text-transform: uppercase; }
+        
+        .sub-label { font-size: 9px; color: #8b949e; text-align: center; margin-top: 2px; }
     </style>
 </head>
 <body>
@@ -41,24 +49,24 @@
     <h1>MATEMÁTICA DO CARRO</h1>
     <div class="layout">
         <div class="inputs-group">
-            <span class="label-text" title="Preço de mercado do carro.">Valor do Carro (R$)</span>
+            <span class="label-text">Valor do Carro (R$)</span>
             <input type="text" id="vCarro" value="100.000,00" oninput="mask(this); calc()">
             
-            <span class="label-text" title="Entrada que vira investimento no assinante.">Entrada Paga (R$)</span>
+            <span class="label-text">Entrada Paga (R$)</span>
             <input type="text" id="entrada" value="40.000,00" oninput="mask(this); calc()">
             
-            <span class="label-text" title="Valor da mensalidade da assinatura.">Assinatura Mensal (R$)</span>
+            <span class="label-text">Assinatura Mensal (R$)</span>
             <input type="text" id="assin" value="1.900,00" oninput="mask(this); calc()">
 
-            <span class="label-text" title="Impostos e custos do comprador.">Custos Comprador (% AA)</span>
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+            <span class="label-text">Custos Comprador (% AA)</span>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px;">
                 <div><input type="number" id="ipva" value="4" oninput="calc()"><div class="sub-label">IPVA</div></div>
-                <div><input type="number" id="seguro" value="3.5" oninput="calc()"><div class="sub-label">Seguro</div></div>
-                <div><input type="number" id="manut" value="1.3" oninput="calc()"><div class="sub-label">Manut.</div></div>
+                <div><input type="number" id="seguro" value="3.5" oninput="calc()"><div class="sub-label">Seg.</div></div>
+                <div><input type="number" id="manut" value="1.3" oninput="calc()"><div class="sub-label">Man.</div></div>
             </div>
 
-            <span class="label-text" title="Juros e rendimento Selic.">Mercado Financeiro (%)</span>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <span class="label-text">Mercado (%)</span>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
                 <div><input type="number" id="juros" value="1.6" oninput="calc()"><div class="sub-label">Juros AM</div></div>
                 <div><input type="number" id="selic" value="13" oninput="calc()"><div class="sub-label">Selic AA</div></div>
             </div>
@@ -67,7 +75,7 @@
         <div class="chart-box"><canvas id="evolucaoChart"></canvas></div>
 
         <div class="results-bar">
-            <div class="res-card" title="Custos médios mensais detalhados do comprador.">
+            <div class="res-card">
                 <small>Custo Comprador</small>
                 <span id="resA" class="value" style="color:var(--red)">R$ 0,00</span>
                 <div id="detalheCusto" class="detail-text"></div>
@@ -102,7 +110,6 @@ function calc() {
     const seguro = parseFloat(document.getElementById('seguro').value) / 100 || 0;
     const manut = parseFloat(document.getElementById('manut').value) / 100 || 0;
     const n = 48;
-
     if (v === 0) return;
 
     const s_mensal = (Math.pow(1 + sAA, 1/12) - 1);
@@ -129,18 +136,22 @@ function calc() {
     }
 
     document.getElementById('resA').innerText = (somaCustoC / n).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-    document.getElementById('detalheCusto').innerHTML = `<b>Parcela:</b> ${(parcela).toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}<br><b>IPVA:</b> ${(i_t/n).toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}<br><b>Seguro:</b> ${(s_t/n).toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}<br><b>Manut:</b> ${(m_t/n).toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}`;
+    document.getElementById('detalheCusto').innerHTML = `Parc: ${(parcela).toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}<br>IPVA: ${(i_t/n).toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}<br>Seg: ${(s_t/n).toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}<br>Man: ${(m_t/n).toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}`;
     document.getElementById('custoAssinante').innerText = (a_ini).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
     document.getElementById('sobra').innerText = ((somaCustoC - (a_ini * n)) / n).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
     document.getElementById('patriB').innerText = capAssinante.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
     document.getElementById('valorCarroFinal').innerText = dPatrimonioComprador[n].toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
 
-    const pCard = document.getElementById('patriCard');
-    if (capAssinante > dPatrimonioComprador[n]) pCard.classList.add('winner'); else pCard.classList.remove('winner');
+    if (capAssinante > dPatrimonioComprador[n]) document.getElementById('patriCard').classList.add('winner'); 
+    else document.getElementById('patriCard').classList.remove('winner');
 
     const ctx = document.getElementById('evolucaoChart').getContext('2d');
     if (chart) chart.destroy();
-    chart = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ label: 'Patrimônio Assinante', data: dInvestido, borderColor: '#00ff88', borderWidth: 3, pointRadius: 0, fill: false }, { label: 'Patrimônio Comprador', data: dPatrimonioComprador, borderColor: '#ff4444', borderDash: [5, 5], pointRadius: 0, fill: false }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#fff', font: { size: 14 } } } }, scales: { y: { ticks: { font: { size: 12 }, color: '#8b949e' } }, x: { ticks: { font: { size: 12 }, color: '#8b949e' } } } } });
+    chart = new Chart(ctx, { 
+        type: 'line', 
+        data: { labels: labels, datasets: [{ label: 'Assinante', data: dInvestido, borderColor: '#00ff88', borderWidth: 2, pointRadius: 0, fill: false }, { label: 'Comprador', data: dPatrimonioComprador, borderColor: '#ff4444', borderDash: [5, 5], borderWidth: 2, pointRadius: 0, fill: false }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#fff', font: { size: 10 } } } }, scales: { y: { ticks: { color: '#8b949e', font: { size: 9 } } }, x: { ticks: { color: '#8b949e', font: { size: 9 } } } } }
+    });
 }
 calc();
 </script>
