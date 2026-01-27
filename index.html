@@ -13,93 +13,78 @@
         h1 { color: var(--primary); text-align: center; margin-bottom: 20px; font-size: 24px; grid-column: span 2; }
         .inputs-group { display: flex; flex-direction: column; gap: 12px; }
         label { display: block; font-size: 10px; color: #8b949e; margin-bottom: 4px; text-transform: uppercase; font-weight: bold; }
-        input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: #fff; box-sizing: border-box; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 8px rgba(0,255,136,0.2); }
+        input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: #fff; box-sizing: border-box; outline: none; }
         .chart-box { background: #1c2128; border-radius: 12px; padding: 20px; border: 1px solid #30363d; min-height: 400px; }
-        .results-bar { grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .res-card { padding: 15px; border-radius: 10px; border: 1px solid #30363d; text-align: center; background: rgba(255, 255, 255, 0.02); }
+        .results-bar { grid-column: span 2; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 20px; }
+        .res-card { padding: 12px; border-radius: 10px; border: 1px solid #30363d; text-align: center; background: rgba(255, 255, 255, 0.02); }
         .winner { border: 2px solid var(--primary); background: rgba(0, 255, 136, 0.05); }
-        .value { font-size: 22px; font-weight: bold; display: block; color: var(--primary); margin-top: 5px; }
-        .cta { display: block; width: 100%; background: var(--primary); color: #000; text-align: center; padding: 15px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 20px; grid-column: span 2; }
-        @media (max-width: 800px) { .layout { grid-template-columns: 1fr; } .results-bar { grid-template-columns: 1fr; } }
+        .value { font-size: 18px; font-weight: bold; display: block; color: var(--primary); margin-top: 5px; }
+        .btn { display: block; width: 100%; text-align: center; padding: 15px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 10px; border: none; cursor: pointer; }
+        .btn-mentoria { background: var(--primary); color: #000; }
+        .btn-whatsapp { background: #25d366; color: #fff; }
+        @media (max-width: 800px) { .layout { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-
 <div class="container">
     <h1>AUTOSELIC</h1>
-    
     <div class="layout">
         <div class="inputs-group">
-            <label>Valor do Carro (R$)</label><input type="number" id="vCarro" value="100000" oninput="calc()">
-            <label>Entrada (R$)</label><input type="number" id="entrada" value="40000" oninput="calc()">
+            <label>Valor do Carro (R$)</label><input type="text" id="vCarro" value="100.000,00" oninput="mask(this); calc()">
+            <label>Entrada (R$)</label><input type="text" id="entrada" value="40.000,00" oninput="mask(this); calc()">
+            <label>Mensalidade Assinatura (R$)</label><input type="text" id="assin" value="2.500,00" oninput="mask(this); calc()">
             <label>Juros Financiamento (% AM)</label><input type="number" id="juros" value="1.5" step="0.1" oninput="calc()">
             <label>Taxa Selic (% AA)</label><input type="number" id="selic" value="11.75" step="0.25" oninput="calc()">
-            <label>Mensalidade Assinatura (R$)</label><input type="number" id="assin" value="2500" oninput="calc()">
-            <label>IPVA (% AA)</label><input type="number" id="ipva" value="4" step="0.5" oninput="calc()">
-            <label>Seguro (% AA)</label><input type="number" id="seguro" value="3.5" step="0.5" oninput="calc()">
-            <label>Manutenção (% AA)</label><input type="number" id="manut" value="1.3" step="0.1" oninput="calc()">
+            <label>IPVA (% AA)</label><input type="number" id="ipva" value="4" oninput="calc()">
+            <label>Seguro (% AA)</label><input type="number" id="seguro" value="3.5" oninput="calc()">
+            <label>Manutenção (% AA)</label><input type="number" id="manut" value="1.3" oninput="calc()">
         </div>
-
-        <div class="chart-box">
-            <canvas id="evolucaoChart"></canvas>
-        </div>
-
+        <div class="chart-box"><canvas id="evolucaoChart"></canvas></div>
         <div class="results-bar">
-            <div class="res-card">
-                <small style="color:var(--red)">CUSTO COMPRADOR</small>
-                <span id="resA" class="value" style="color:var(--red)">R$ 0,00</span>
-                <small style="font-size: 9px; color:#8b949e">Parcela + Taxas Mensais</small>
-            </div>
-            <div class="res-card">
-                <small>SOBRA MENSAL</small>
-                <span id="sobra" class="value">R$ 0,00</span>
-                <small style="font-size: 9px; color:#8b949e">Diferença investida na Selic</small>
-            </div>
-            <div class="res-card winner">
-                <small>PATRIMÔNIO FINAL (48m)</small>
-                <span id="patriB" class="value">R$ 0,00</span>
-                <small style="font-size: 9px; color:#fff">Capital Total Acumulado</small>
-            </div>
+            <div class="res-card"><small style="color:var(--red)">CUSTO COMPRADOR</small><span id="resA" class="value" style="color:var(--red)">R$ 0,00</span></div>
+            <div class="res-card"><small>VALOR CARRO (48m)</small><span id="valorCarroFinal" class="value" style="color: #ff9f43;">R$ 0,00</span></div>
+            <div class="res-card"><small>SOBRA MENSAL</small><span id="sobra" class="value">R$ 0,00</span></div>
+            <div class="res-card winner"><small>PATRIMÔNIO (48m)</small><span id="patriB" class="value">R$ 0,00</span></div>
         </div>
     </div>
-
-    <a href="https://instagram.com/matematicadocarro" class="cta">CONTRATAR MENTORIA AUTOSELIC</a>
+    <button onclick="shareWhatsApp()" class="btn btn-whatsapp">COMPARTILHAR NO WHATSAPP</button>
+    <a href="https://instagram.com/matematicadocarro" class="btn btn-mentoria">CONTRATAR MENTORIA AUTOSELIC</a>
 </div>
-
 <script>
 let chart;
+function mask(i) {
+    let v = i.value.replace(/\D/g, '');
+    v = (v / 100).toFixed(2) + '';
+    v = v.replace(".", ",");
+    v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+    i.value = v;
+}
+function parseMoney(v) { return parseFloat(v.replace(/\./g, '').replace(',', '.')) || 0; }
 function calc() {
-    const v = parseFloat(document.getElementById('vCarro').value) || 0;
-    const e = parseFloat(document.getElementById('entrada').value) || 0;
+    const v = parseMoney(document.getElementById('vCarro').value);
+    const e = parseMoney(document.getElementById('entrada').value);
+    const a = parseMoney(document.getElementById('assin').value);
     const j = (parseFloat(document.getElementById('juros').value) || 0) / 100;
     const sAA = parseFloat(document.getElementById('selic').value) || 0;
-    const a = parseFloat(document.getElementById('assin').value) || 0;
     const ip = (parseFloat(document.getElementById('ipva').value) || 0) / 100 / 12;
     const se = (parseFloat(document.getElementById('seguro').value) || 0) / 100 / 12;
     const ma = (parseFloat(document.getElementById('manut').value) || 0) / 100 / 12;
     const n = 48;
-
-    const s = (Math.pow(1 + (sAA/100), 1/12) - 1); // Selic Mensal
-    const d = (0.10 / 12); // Depreciação fixa de 10% AA
-
+    const s = (Math.pow(1 + (sAA/100), 1/12) - 1);
+    const dMensal = 0.08 / 12; // 8% desvalorização AA
     const parcela = (v - e) > 0 ? (v - e) * (j * Math.pow(1 + j, n)) / (Math.pow(1 + j, n) - 1) : 0;
     const custoTotalComprador = parcela + (v * ip) + (v * se) + (v * ma);
     const sobraMensal = custoTotalComprador - a;
-
     let labels = [], dInvestido = [], dCarro = [];
     for (let i = 0; i <= n; i++) {
         labels.push(i + "m");
-        const vfEntrada = e * Math.pow(1 + s, i);
-        const vfAportes = sobraMensal > 0 ? sobraMensal * (Math.pow(1 + s, i) - 1) / s : 0;
-        dInvestido.push(vfEntrada + vfAportes);
-        dCarro.push(v * Math.pow(1 - d, i));
+        dInvestido.push(e * Math.pow(1 + s, i) + (sobraMensal > 0 ? sobraMensal * (Math.pow(1 + s, i) - 1) / s : 0));
+        dCarro.push(v * Math.pow(1 - dMensal, i));
     }
-
     document.getElementById('resA').innerText = custoTotalComprador.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
     document.getElementById('sobra').innerText = (sobraMensal > 0 ? sobraMensal : 0).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
     document.getElementById('patriB').innerText = dInvestido[n].toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-
+    document.getElementById('valorCarroFinal').innerText = (v * Math.pow(1 - dMensal, n)).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
     const ctx = document.getElementById('evolucaoChart').getContext('2d');
     if (chart) chart.destroy();
     chart = new Chart(ctx, {
@@ -107,20 +92,16 @@ function calc() {
         data: {
             labels: labels,
             datasets: [
-                { label: 'Saldo Investido (Selic)', data: dInvestido, borderColor: '#00ff88', backgroundColor: 'rgba(0, 255, 136, 0.1)', fill: true, tension: 0.3, pointRadius: 0 },
-                { label: 'Valor do Carro (Ativo)', data: dCarro, borderColor: '#ff4444', borderDash: [5, 5], tension: 0.3, pointRadius: 0 }
+                { label: 'Saldo Investido (Selic)', data: dInvestido, borderColor: '#00ff88', pointRadius: 0, fill: false },
+                { label: 'Valor do Carro (Depreciado)', data: dCarro, borderColor: '#ff4444', pointRadius: 0, fill: false }
             ]
         },
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false,
-            plugins: { legend: { labels: { color: '#fff' } } },
-            scales: {
-                x: { ticks: { color: '#8b949e' }, grid: { display: false } },
-                y: { ticks: { color: '#8b949e' }, grid: { color: '#30363d' } }
-            }
-        }
+        options: { responsive: true, maintainAspectRatio: false }
     });
+}
+function shareWhatsApp() {
+    const msg = `🚗 Resultado Autoselic: Patrimônio em 48m: ${document.getElementById('patriB').innerText}. Simule em: diegoorafael.github.io/simulador/`;
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`);
 }
 calc();
 </script>
