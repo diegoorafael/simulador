@@ -104,7 +104,7 @@ function calc() {
         if (i > 0) {
             let im = (vCarroAtual * ipva / 12), sm = (v * seguro / 12), mm = (v * manut / 12);
             i_t += im; s_t += sm; m_t += mm;
-            let custoM = parcela + im + sm + mm;
+            let custoM = parcela + im + sm + mm; // CORRIGIDO: Era m_m
             somaCustoC += custoM;
             capAssinante = capAssinante * (1 + s_mensal) + (custoM - a_ini);
         }
@@ -125,7 +125,7 @@ function calc() {
     if (chart) chart.destroy();
     chart = new Chart(ctx, { 
         type: 'line', 
-        data: { labels: labels, datasets: [{ label: 'Assinante', data: dInvestido, borderColor: '#00ff88', borderWidth: 2, pointRadius: 0, fill: false }, { label: 'Comprador', data: dPatrimonioComprador, borderColor: '#ff4444', borderDash: [5, 5], borderWidth: 2, pointRadius: 0, fill: false }] },
+        data: { labels: labels, datasets: [{ label: 'Assinante', data: dInvestido, borderColor: '#00ff88', borderWidth: 3, pointRadius: 0, fill: false }, { label: 'Comprador', data: dPatrimonioComprador, borderColor: '#ff4444', borderDash: [5, 5], borderWidth: 2, pointRadius: 0, fill: false }] },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#fff', font: { size: 10 } } } }, scales: { y: { ticks: { color: '#8b949e', font: { size: 9 } } }, x: { ticks: { color: '#8b949e', font: { size: 9 } } } } }
     });
 }
