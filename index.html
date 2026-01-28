@@ -1,162 +1,145 @@
 import React, { useState, useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const App = () => {
-  // Estados dos inputs
+  // Inputs Financeiros
   const [valorCarro, setValorCarro] = useState(100000);
   const [entrada, setEntrada] = useState(40000);
   const [taxaJuros, setTaxaJuros] = useState(1.5);
   const [prazo, setPrazo] = useState(48);
-  const [mensalidadeAssinatura, setMensalidadeAssinatura] = useState(2000);
-  const [selic, setSelic] = useState(0.8); // % ao mês
+  const [assinatura, setAssinatura] = useState(2000);
+  const [selic, setSelic] = useState(0.85);
 
-  // Estados de Propriedade (Anuais)
-  const [ipvaPct, setIpvaPct] = useState(4);
-  const [seguroPct, setSeguroPct] = useState(3.5);
-  const [manutencaoPct, setManutencaoPct] = useState(1.3);
-
-  // Estados de Resultado
-  const [dadosFinanceiros, setDadosFinanceiros] = useState({
-    parcela: 0,
-    custoOculto: 0,
-    totalMensalFinanc: 0,
-    evolucao: []
-  });
+  const [dados, setDados] = useState({ pmt: 0, ocultos: 0, total: 0, evolucao: [] });
 
   useEffect(() => {
-    // 1. Cálculo da Parcela (Tabela Price)
+    // Cálculo Parcela
     const PV = valorCarro - entrada;
     const i = taxaJuros / 100;
     const n = prazo;
     const pmt = PV > 0 ? (PV * (i * Math.pow(1 + i, n))) / (Math.pow(1 + i, n) - 1) : 0;
 
-    // 2. Custos Ocultos Mensais
-    const custoOcultoMensal = (valorCarro * ((ipvaPct + seguroPct + manutencaoPct) / 100)) / 12;
-    const totalFinanc = pmt + custoOcultoMensal;
+    // Custos Ocultos (IPVA + Seguro + Manut) ~ 9% ao ano
+    const ocultos = (valorCarro * 0.09) / 12;
+    const totalFinanc = pmt + ocultos;
 
-    // 3. Simulação de Evolução Patrimonial
+    // Simulação Gráfico
     let evolucao = [];
-    let saldoInvestido = entrada; // Começa com o valor que seria a entrada
-    let valorDepreciado = valorCarro;
-    const taxaSelicMensal = selic / 100;
-    const depreciacaoMensal = 0.01; // 1% fixo para exemplo
+    let saldoInvestido = entrada;
+    let valorCarroDepreciado = valorCarro;
 
-    for (let mes = 0; mes <= prazo; mes += 2) {
-      // Valor do carro cai com o tempo
-      valorDepreciado = valorCarro * Math.pow(1 - depreciacaoMensal, mes);
-      
-      // O dinheiro rende. Aporte = Diferença entre o que gastaria no financiamento e o que paga na assinatura
-      const aporte = totalFinanc - mensalidadeAssinatura;
-      saldoInvestido = (saldoInvestido + aporte) * Math.pow(1 + taxaSelicMensal, 2); 
+    for (let mes = 0; mes <= prazo; mes += 4) {
+      valorCarroDepreciado = valorCarro * Math.pow(0.99, mes); // 1% depreciação/mês
+      const aporte = totalFinanc - assinatura;
+      saldoInvestido = (saldoInvestido + aporte) * Math.pow(1 + selic/100, 4);
 
       evolucao.push({
-        mes,
-        carro: Math.round(valorDepreciado),
+        mes: `Mês ${mes}`,
+        carro: Math.round(valorCarroDepreciado),
         investimento: Math.round(saldoInvestido)
       });
     }
-
-    setDadosFinanceiros({
-      parcela: pmt,
-      custoOculto: custoOcultoMensal,
-      totalMensalFinanc: totalFinanc,
-      evolucao
-    });
-  }, [valorCarro, entrada, taxaJuros, prazo, mensalidadeAssinatura, ipvaPct, seguroPct, manutencaoPct, selic]);
+    setDados({ pmt, ocultos, total: totalFinanc, evolucao });
+  }, [valorCarro, entrada, taxaJuros, prazo, assinatura, selic]);
 
   return (
-    <div className="min-h-screen bg-[#0b0f1a] text-white p-4 font-sans">
-      <header className="max-w-6xl mx-auto mb-8">
-        <h1 className="text-3xl font-bold text-[#00ff88] drop-shadow-[0_0_10px_#00ff88]">
-          $ MATEMÁTICA DO CARRO: FINANCIAMENTO X ASSINATURA
+    <div className="min-h-screen bg-[#0f121a] text-slate-200 p-6 md:p-12 font-sans selection:bg-emerald-500/30">
+      
+      {/* HEADER MODERNO */}
+      <header className="max-w-6xl mx-auto mb-12">
+        <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-white mb-2">
+          $ MATEMÁTICA DO <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">CARRO</span>
         </h1>
-        <p className="text-gray-400">Comparação financeira real considerando custo de oportunidade.</p>
+        <p className="text-slate-400 font-medium tracking-wide uppercase text-sm">Financiamento vs Assinatura • Custo de Oportunidade</p>
       </header>
 
-      <main className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+      <main className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        {/* COLUNA 1: INPUTS */}
-        <section className="bg-[#161b2b] p-6 rounded-xl border border-gray-800">
-          <h2 className="text-[#00ff88] font-bold mb-4 border-l-4 border-[#00ff88] pl-2 uppercase">Parâmetros</h2>
+        {/* LADO ESQUERDO: INPUTS (GLASSMORPHISM) */}
+        <div className="lg:col-span-4 bg-white/5 backdrop-blur-lg border border-white/10 p-8 rounded-3xl shadow-2xl">
+          <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-white">
+            <span className="w-1.5 h-6 bg-emerald-500 rounded-full"></span> Parâmetros
+          </h2>
+          <div className="space-y-5">
+            {[
+              { label: "Valor do Carro (R$)", val: valorCarro, set: setValorCarro },
+              { label: "Entrada (R$)", val: entrada, set: setEntrada },
+              { label: "Juros Financiamento (% AM)", val: taxaJuros, set: setTaxaJuros },
+              { label: "Mensalidade Assinatura (R$)", val: assinatura, set: setAssinatura },
+            ].map((input, idx) => (
+              <div key={idx}>
+                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">{input.label}</label>
+                <input 
+                  type="number" 
+                  value={input.val} 
+                  onChange={(e) => input.set(Number(e.target.value))}
+                  className="w-full bg-slate-900/50 border border-white/10 p-3 rounded-xl focus:outline-none focus:border-emerald-500/50 transition-all text-emerald-400 font-mono text-lg"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* LADO DIREITO: CARDS E GRÁFICO */}
+        <div className="lg:col-span-8 space-y-8">
           
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs text-gray-400 uppercase">Valor do Carro (R$)</label>
-              <input type="number" value={valorCarro} onChange={(e) => setValorCarro(Number(e.target.value))} className="w-full bg-[#0b0f1a] border border-gray-700 p-2 rounded mt-1 text-[#00ff88]" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* CARD FINANCIAMENTO */}
+            <div className="bg-gradient-to-br from-red-500/10 to-transparent border border-red-500/20 p-6 rounded-3xl relative overflow-hidden">
+               <div className="absolute top-0 right-0 p-4 opacity-10 text-red-500 font-black text-6xl">A</div>
+               <h3 className="text-red-400 font-bold uppercase tracking-widest text-xs mb-4">Cenário A: Financiamento</h3>
+               <div className="space-y-3">
+                  <div className="flex justify-between text-slate-300"><span>Parcela:</span> <span className="font-mono">R$ {dados.pmt.toLocaleString('pt-br', {maximumFractionDigits:0})}</span></div>
+                  <div className="flex justify-between text-slate-300"><span>Custos Ocultos:</span> <span className="font-mono text-red-400">R$ {dados.ocultos.toLocaleString('pt-br', {maximumFractionDigits:0})}</span></div>
+                  <div className="pt-4 border-t border-white/5 flex justify-between items-end">
+                    <span className="text-sm">Total Mensal:</span>
+                    <span className="text-2xl font-bold text-white tracking-tighter">R$ {dados.total.toLocaleString('pt-br', {maximumFractionDigits:0})}</span>
+                  </div>
+               </div>
             </div>
-            <div>
-              <label className="block text-xs text-gray-400 uppercase">Entrada (R$)</label>
-              <input type="number" value={entrada} onChange={(e) => setEntrada(Number(e.target.value))} className="w-full bg-[#0b0f1a] border border-gray-700 p-2 rounded mt-1" />
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className="block text-xs text-gray-400 uppercase">Juros (% AM)</label>
-                <input type="number" value={taxaJuros} onChange={(e) => setTaxaJuros(Number(e.target.value))} className="w-full bg-[#0b0f1a] border border-red-900 p-2 rounded mt-1 text-red-400" />
-              </div>
-              <div>
-                <label className="block text-xs text-gray-400 uppercase">Prazo (Meses)</label>
-                <input type="number" value={prazo} onChange={(e) => setPrazo(Number(e.target.value))} className="w-full bg-[#0b0f1a] border border-gray-700 p-2 rounded mt-1" />
-              </div>
-            </div>
-            <div>
-              <label className="block text-xs text-gray-400 uppercase">Mensalidade Assinatura (R$)</label>
-              <input type="number" value={mensalidadeAssinatura} onChange={(e) => setMensalidadeAssinatura(Number(e.target.value))} className="w-full bg-[#0b0f1a] border border-[#00ff88] p-2 rounded mt-1" />
-            </div>
-          </div>
-        </section>
 
-        {/* COLUNA 2 E 3: RESULTADOS E GRÁFICOS */}
-        <div className="md:col-span-2 space-y-6">
-          
-          {/* Banner Alerta */}
-          <div className="bg-red-900/20 border border-red-600/50 p-4 rounded-xl flex items-center gap-4">
-            <span className="text-2xl">⚠️</span>
-            <div>
-              <p className="text-red-400 font-bold uppercase text-sm">Custos Ocultos da Compra: R$ {dadosFinanceiros.custoOculto.toLocaleString('pt-br', {minimumFractionDigits: 2})}/mês</p>
-              <p className="text-xs text-gray-300">IPVA, Seguro e Manutenção são responsabilidade do dono.</p>
+            {/* CARD ASSINATURA (VENCEDOR) */}
+            <div className="bg-gradient-to-br from-emerald-500/20 to-transparent border border-emerald-500/40 p-6 rounded-3xl relative shadow-[0_0_40px_rgba(16,185,129,0.1)]">
+               <span className="absolute top-4 right-4 bg-emerald-500 text-[#0f121a] text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Vencedor</span>
+               <h3 className="text-emerald-400 font-bold uppercase tracking-widest text-xs mb-4">Cenário B: Assinatura + Selic</h3>
+               <div className="space-y-3">
+                  <div className="flex justify-between text-slate-300"><span>Mensalidade:</span> <span className="font-mono">R$ {assinatura.toLocaleString('pt-br')}</span></div>
+                  <div className="flex justify-between text-slate-300"><span>Aporte Mensal:</span> <span className="font-mono text-emerald-400">+ R$ {(dados.total - assinatura).toLocaleString('pt-br', {maximumFractionDigits:0})}</span></div>
+                  <div className="pt-4 border-t border-white/5 flex justify-between items-end">
+                    <span className="text-sm">Saldo Final:</span>
+                    <span className="text-2xl font-bold text-white tracking-tighter">R$ {dados.evolucao[dados.evolucao.length-1]?.investimento.toLocaleString('pt-br')}</span>
+                  </div>
+               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Cenário A */}
-            <div className="bg-[#161b2b] p-6 rounded-xl border border-gray-800">
-              <p className="text-gray-400 text-sm">CENÁRIO A</p>
-              <h3 className="text-xl font-bold mb-4">FINANCIAMENTO</h3>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm"><span>Parcela:</span><span className="text-[#00ff88]">R$ {dadosFinanceiros.parcela.toLocaleString('pt-br', {maximumFractionDigits: 2})}</span></div>
-                <div className="flex justify-between text-sm text-red-400"><span>Custos Ocultos:</span><span>R$ {dadosFinanceiros.custoOculto.toLocaleString('pt-br', {maximumFractionDigits: 2})}</span></div>
-                <div className="pt-2 border-t border-gray-700 flex justify-between font-bold text-lg"><span>Total Mensal:</span><span>R$ {dadosFinanceiros.totalMensalFinanc.toLocaleString('pt-br', {maximumFractionDigits: 2})}</span></div>
-              </div>
-            </div>
-
-            {/* Cenário B */}
-            <div className="bg-[#161b2b] p-6 rounded-xl border-2 border-[#00ff88] relative">
-              <span className="absolute -top-3 right-4 bg-[#00ff88] text-black text-[10px] font-bold px-2 py-1 rounded">VENCEDOR</span>
-              <p className="text-gray-400 text-sm">CENÁRIO B</p>
-              <h3 className="text-xl font-bold mb-4 uppercase text-[#00ff88]">Assinatura + Selic</h3>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm"><span>Custo Assinatura:</span><span className="text-red-400">R$ {mensalidadeAssinatura.toLocaleString('pt-br')}</span></div>
-                <div className="flex justify-between text-sm"><span>Aporte Mensal:</span><span className="text-[#00ff88]">R$ {(dadosFinanceiros.totalMensalFinanc - mensalidadeAssinatura).toLocaleString('pt-br', {maximumFractionDigits: 2})}</span></div>
-                <div className="pt-2 border-t border-gray-700 flex justify-between font-bold text-lg"><span>Saldo Final Estimado:</span><span className="text-[#00ff88]">R$ {dadosFinanceiros.evolucao[dadosFinanceiros.evolucao.length-1]?.investimento.toLocaleString('pt-br')}</span></div>
-              </div>
-            </div>
+          {/* GRÁFICO MODERNO */}
+          <div className="bg-white/5 border border-white/10 p-8 rounded-3xl h-[400px]">
+            <h3 className="text-white font-bold mb-6 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+              Evolução Patrimonial (Carro vs Investimento)
+            </h3>
+            <ResponsiveContainer width="100%" height="90%">
+              <AreaChart data={dados.evolucao}>
+                <defs>
+                  <linearGradient id="colorInv" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                <XAxis dataKey="mes" stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} />
+                <YAxis stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => `R$${val/1000}k`} />
+                <Tooltip 
+                  contentStyle={{backgroundColor: '#1e293b', border: 'none', borderRadius: '12px', fontSize: '12px'}}
+                  itemStyle={{color: '#fff'}}
+                />
+                <Area type="monotone" dataKey="carro" stroke="#ef4444" fill="transparent" strokeWidth={3} name="Valor do Carro" />
+                <Area type="monotone" dataKey="investimento" stroke="#10b981" fillOpacity={1} fill="url(#colorInv)" strokeWidth={3} name="Seu Patrimônio" />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
 
-          {/* Gráfico */}
-          <div className="bg-[#161b2b] p-6 rounded-xl border border-gray-800 h-80">
-             <h3 className="text-sm font-bold mb-4 uppercase text-gray-400">Evolução Patrimonial</h3>
-             <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={dadosFinanceiros.evolucao}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#2d3748" />
-                  <XAxis dataKey="mes" stroke="#718096" />
-                  <YAxis stroke="#718096" />
-                  <Tooltip contentStyle={{backgroundColor: '#161b2b', borderColor: '#2d3748'}} />
-                  <Legend />
-                  <Line name="Valor do Carro (Dono)" type="monotone" dataKey="carro" stroke="#ef4444" strokeWidth={2} dot={false} />
-                  <Line name="Saldo Investido (Assinatura)" type="monotone" dataKey="investimento" stroke="#00ff88" strokeWidth={2} dot={false} />
-                </LineChart>
-             </ResponsiveContainer>
-          </div>
         </div>
       </main>
     </div>
