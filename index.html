@@ -1,168 +1,166 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matemática do Carro | Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root { --primary: #10b981; --secondary: #3b82f6; --bg: #0b1120; --card: #161c2d; --text: #f8fafc; --sub: #94a3b8; }
-        body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding: 20px; margin: 0; }
-        
-        /* Título Moderno */
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { 
-            background: linear-gradient(90deg, #10b981, #3b82f6); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            text-transform: uppercase; 
-            font-size: 2rem; 
-            letter-spacing: 2px;
-            font-weight: 900;
-        }
+import React, { useState, useEffect } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
-        .container { max-width: 1300px; margin: auto; display: grid; grid-template-columns: 350px 1fr; gap: 25px; }
-        .card { background: var(--card); border-radius: 16px; padding: 25px; border: 1px solid #2d3748; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        
-        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-        label { display: block; font-size: 0.65rem; color: var(--sub); font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
-        
-        /* Input com formatação automática */
-        input { 
-            width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #2d3748; 
-            background: #0b1120; color: white; box-sizing: border-box; font-size: 0.9rem; 
-        }
+const App = () => {
+  // Estados dos inputs
+  const [valorCarro, setValorCarro] = useState(100000);
+  const [entrada, setEntrada] = useState(40000);
+  const [taxaJuros, setTaxaJuros] = useState(1.5);
+  const [prazo, setPrazo] = useState(48);
+  const [mensalidadeAssinatura, setMensalidadeAssinatura] = useState(2000);
+  const [selic, setSelic] = useState(0.8); // % ao mês
 
-        button { 
-            width: 100%; padding: 16px; background: linear-gradient(90deg, #10b981, #059669); 
-            color: white; border: none; border-radius: 10px; font-weight: 800; cursor: pointer; 
-            margin-top: 10px; transition: 0.3s; 
-        }
-        button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(16,185,129,0.3); }
+  // Estados de Propriedade (Anuais)
+  const [ipvaPct, setIpvaPct] = useState(4);
+  const [seguroPct, setSeguroPct] = useState(3.5);
+  const [manutencaoPct, setManutencaoPct] = useState(1.3);
 
-        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .res-box { background: #0b1120; padding: 15px; border-radius: 12px; border-bottom: 4px solid var(--primary); }
-        .res-box.blue { border-bottom-color: var(--secondary); }
-        .res-box span { font-size: 0.7rem; color: var(--sub); display: block; text-transform: uppercase; }
-        .res-box strong { font-size: 1.2rem; display: block; margin-top: 5px; }
+  // Estados de Resultado
+  const [dadosFinanceiros, setDadosFinanceiros] = useState({
+    parcela: 0,
+    custoOculto: 0,
+    totalMensalFinanc: 0,
+    evolucao: []
+  });
 
-        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 20px; }
-        th { text-align: right; padding: 12px; color: var(--sub); border-bottom: 2px solid #2d3748; }
-        td { padding: 12px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .highlight-sobra { color: #fbbf24; font-weight: bold; }
-    </style>
-</head>
-<body>
+  useEffect(() => {
+    // 1. Cálculo da Parcela (Tabela Price)
+    const PV = valorCarro - entrada;
+    const i = taxaJuros / 100;
+    const n = prazo;
+    const pmt = PV > 0 ? (PV * (i * Math.pow(1 + i, n))) / (Math.pow(1 + i, n) - 1) : 0;
 
-<div class="header"><h1>Matemática do Carro</h1></div>
+    // 2. Custos Ocultos Mensais
+    const custoOcultoMensal = (valorCarro * ((ipvaPct + seguroPct + manutencaoPct) / 100)) / 12;
+    const totalFinanc = pmt + custoOcultoMensal;
 
-<div class="container">
-    <div class="card">
-        <label>Valor do Veículo (R$)</label>
-        <input type="text" id="vCarro" value="100.000,00" onkeyup="fMoeda(this)" style="margin-bottom: 15px;">
-        
-        <div class="input-grid">
-            <div><label>Entrada (R$)</label><input type="text" id="vEnt" value="30.000,00" onkeyup="fMoeda(this)"></div>
-            <div><label>Assinatura (R$)</label><input type="text" id="vAss" value="3.500,00" onkeyup="fMoeda(this)"></div>
-            <div><label>Juros (% a.m.)</label><input type="text" id="vJuros" value="1,50"></div>
-            <div><label>Selic Anual (%)</label><input type="number" id="vSelic" value="13"></div>
-        </div>
+    // 3. Simulação de Evolução Patrimonial
+    let evolucao = [];
+    let saldoInvestido = entrada; // Começa com o valor que seria a entrada
+    let valorDepreciado = valorCarro;
+    const taxaSelicMensal = selic / 100;
+    const depreciacaoMensal = 0.01; // 1% fixo para exemplo
 
-        <label>Custos Anuais (% sobre FIPE)</label>
-        <div class="input-grid">
-            <div><label>IPVA</label><input type="text" id="tIpva" value="4,0"></div>
-            <div><label>Seguro</label><input type="text" id="tSeg" value="3,5"></div>
-            <div><label>Manutenção</label><input type="text" id="tMan" value="1,3"></div>
-            <div><label>Depreciação</label><input type="text" id="tDepre" value="8,0"></div>
-        </div>
-        <button onclick="calcular()">GERAR RELATÓRIO 48 MESES</button>
-    </div>
+    for (let mes = 0; mes <= prazo; mes += 2) {
+      // Valor do carro cai com o tempo
+      valorDepreciado = valorCarro * Math.pow(1 - depreciacaoMensal, mes);
+      
+      // O dinheiro rende. Aporte = Diferença entre o que gastaria no financiamento e o que paga na assinatura
+      const aporte = totalFinanc - mensalidadeAssinatura;
+      saldoInvestido = (saldoInvestido + aporte) * Math.pow(1 + taxaSelicMensal, 2); 
 
-    <div class="card">
-        <div class="res-grid">
-            <div class="res-box"><span>Equity Final Compra</span><strong id="resC">R$ 0,00</strong></div>
-            <div class="res-box blue"><span>Montante Final Selic</span><strong id="resA">R$ 0,00</strong></div>
-        </div>
-        <canvas id="chartEvo" height="90"></canvas>
-        <table>
-            <thead>
-                <tr>
-                    <th style="text-align:left">Ano</th>
-                    <th>Custo Dono (P+I+S+M)</th>
-                    <th>Assinatura</th>
-                    <th>Sobra Mensal</th>
-                    <th>Patrimônio Líquido</th>
-                </tr>
-            </thead>
-            <tbody id="tabDados"></tbody>
-        </table>
-    </div>
-</div>
-
-<script>
-    let chart;
-    
-    // Formatação em tempo real: 1000 -> 1.000,00
-    function fMoeda(i) {
-        let v = i.value.replace(/\D/g, "");
-        v = (v/100).toLocaleString('pt-BR', {minimumFractionDigits: 2});
-        i.value = v;
+      evolucao.push({
+        mes,
+        carro: Math.round(valorDepreciado),
+        investimento: Math.round(saldoInvestido)
+      });
     }
 
-    function p(v) { return parseFloat(v.toString().replace(/\./g, "").replace(",", ".")); }
-    function brl(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+    setDadosFinanceiros({
+      parcela: pmt,
+      custoOculto: custoOcultoMensal,
+      totalMensalFinanc: totalFinanc,
+      evolucao
+    });
+  }, [valorCarro, entrada, taxaJuros, prazo, mensalidadeAssinatura, ipvaPct, seguroPct, manutencaoPct, selic]);
 
-    function calcular() {
-        const vC = p(document.getElementById('vCarro').value), ent = p(document.getElementById('vEnt').value);
-        const jM = p(document.getElementById('vJuros').value)/100, pz = 48;
-        const assBase = p(document.getElementById('vAss').value);
+  return (
+    <div className="min-h-screen bg-[#0b0f1a] text-white p-4 font-sans">
+      <header className="max-w-6xl mx-auto mb-8">
+        <h1 className="text-3xl font-bold text-[#00ff88] drop-shadow-[0_0_10px_#00ff88]">
+          $ MATEMÁTICA DO CARRO: FINANCIAMENTO X ASSINATURA
+        </h1>
+        <p className="text-gray-400">Comparação financeira real considerando custo de oportunidade.</p>
+      </header>
+
+      <main className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
         
-        // Selic Anual convertida para mensal (Juros Compostos)
-        const sAnual = parseFloat(document.getElementById('vSelic').value)/100;
-        const rendM = Math.pow(1 + sAnual, 1/12) - 1;
-        
-        const depreA = p(document.getElementById('tDepre').value)/100;
-        const tIpva = p(document.getElementById('tIpva').value)/100, tSeg = p(document.getElementById('tSeg').value)/100, tMan = p(document.getElementById('tMan').value)/100;
+        {/* COLUNA 1: INPUTS */}
+        <section className="bg-[#161b2b] p-6 rounded-xl border border-gray-800">
+          <h2 className="text-[#00ff88] font-bold mb-4 border-l-4 border-[#00ff88] pl-2 uppercase">Parâmetros</h2>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs text-gray-400 uppercase">Valor do Carro (R$)</label>
+              <input type="number" value={valorCarro} onChange={(e) => setValorCarro(Number(e.target.value))} className="w-full bg-[#0b0f1a] border border-gray-700 p-2 rounded mt-1 text-[#00ff88]" />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-400 uppercase">Entrada (R$)</label>
+              <input type="number" value={entrada} onChange={(e) => setEntrada(Number(e.target.value))} className="w-full bg-[#0b0f1a] border border-gray-700 p-2 rounded mt-1" />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-xs text-gray-400 uppercase">Juros (% AM)</label>
+                <input type="number" value={taxaJuros} onChange={(e) => setTaxaJuros(Number(e.target.value))} className="w-full bg-[#0b0f1a] border border-red-900 p-2 rounded mt-1 text-red-400" />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-400 uppercase">Prazo (Meses)</label>
+                <input type="number" value={prazo} onChange={(e) => setPrazo(Number(e.target.value))} className="w-full bg-[#0b0f1a] border border-gray-700 p-2 rounded mt-1" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs text-gray-400 uppercase">Mensalidade Assinatura (R$)</label>
+              <input type="number" value={mensalidadeAssinatura} onChange={(e) => setMensalidadeAssinatura(Number(e.target.value))} className="w-full bg-[#0b0f1a] border border-[#00ff88] p-2 rounded mt-1" />
+            </div>
+          </div>
+        </section>
 
-        const financ = vC - ent;
-        const parc = financ > 0 ? (financ * (jM * Math.pow(1+jM, pz))) / (Math.pow(1+jM, pz)-1) : 0;
+        {/* COLUNA 2 E 3: RESULTADOS E GRÁFICOS */}
+        <div className="md:col-span-2 space-y-6">
+          
+          {/* Banner Alerta */}
+          <div className="bg-red-900/20 border border-red-600/50 p-4 rounded-xl flex items-center gap-4">
+            <span className="text-2xl">⚠️</span>
+            <div>
+              <p className="text-red-400 font-bold uppercase text-sm">Custos Ocultos da Compra: R$ {dadosFinanceiros.custoOculto.toLocaleString('pt-br', {minimumFractionDigits: 2})}/mês</p>
+              <p className="text-xs text-gray-300">IPVA, Seguro e Manutenção são responsabilidade do dono.</p>
+            </div>
+          </div>
 
-        let fipe = vC, invC = 0, invA = ent, saldoD = financ;
-        let labels = ["Início"], dC = [ent], dA = [ent];
-        const corpo = document.getElementById('tabDados'); corpo.innerHTML = '';
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Cenário A */}
+            <div className="bg-[#161b2b] p-6 rounded-xl border border-gray-800">
+              <p className="text-gray-400 text-sm">CENÁRIO A</p>
+              <h3 className="text-xl font-bold mb-4">FINANCIAMENTO</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm"><span>Parcela:</span><span className="text-[#00ff88]">R$ {dadosFinanceiros.parcela.toLocaleString('pt-br', {maximumFractionDigits: 2})}</span></div>
+                <div className="flex justify-between text-sm text-red-400"><span>Custos Ocultos:</span><span>R$ {dadosFinanceiros.custoOculto.toLocaleString('pt-br', {maximumFractionDigits: 2})}</span></div>
+                <div className="pt-2 border-t border-gray-700 flex justify-between font-bold text-lg"><span>Total Mensal:</span><span>R$ {dadosFinanceiros.totalMensalFinanc.toLocaleString('pt-br', {maximumFractionDigits: 2})}</span></div>
+              </div>
+            </div>
 
-        for (let m = 1; m <= pz; m++) {
-            fipe *= Math.pow(1 - depreA, 1/12);
-            let custoD = parc + (fipe * tIpva / 12) + (vC * (tSeg + tMan) / 12);
-            
-            // Lógica de Sobra Mensal: quem gasta menos investe a diferença
-            let ref = Math.max(assBase, custoD);
-            let sobra = ref - custoD;
+            {/* Cenário B */}
+            <div className="bg-[#161b2b] p-6 rounded-xl border-2 border-[#00ff88] relative">
+              <span className="absolute -top-3 right-4 bg-[#00ff88] text-black text-[10px] font-bold px-2 py-1 rounded">VENCEDOR</span>
+              <p className="text-gray-400 text-sm">CENÁRIO B</p>
+              <h3 className="text-xl font-bold mb-4 uppercase text-[#00ff88]">Assinatura + Selic</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm"><span>Custo Assinatura:</span><span className="text-red-400">R$ {mensalidadeAssinatura.toLocaleString('pt-br')}</span></div>
+                <div className="flex justify-between text-sm"><span>Aporte Mensal:</span><span className="text-[#00ff88]">R$ {(dadosFinanceiros.totalMensalFinanc - mensalidadeAssinatura).toLocaleString('pt-br', {maximumFractionDigits: 2})}</span></div>
+                <div className="pt-2 border-t border-gray-700 flex justify-between font-bold text-lg"><span>Saldo Final Estimado:</span><span className="text-[#00ff88]">R$ {dadosFinanceiros.evolucao[dadosFinanceiros.evolucao.length-1]?.investimento.toLocaleString('pt-br')}</span></div>
+              </div>
+            </div>
+          </div>
 
-            invC = (invC + sobra) * (1 + rendM);
-            invA = (invA + (ref - assBase)) * (1 + rendM);
-            
-            // Amortização do saldo devedor
-            let jurosMes = saldoD * jM;
-            saldoD -= (parc - jurosMes);
+          {/* Gráfico */}
+          <div className="bg-[#161b2b] p-6 rounded-xl border border-gray-800 h-80">
+             <h3 className="text-sm font-bold mb-4 uppercase text-gray-400">Evolução Patrimonial</h3>
+             <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={dadosFinanceiros.evolucao}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2d3748" />
+                  <XAxis dataKey="mes" stroke="#718096" />
+                  <YAxis stroke="#718096" />
+                  <Tooltip contentStyle={{backgroundColor: '#161b2b', borderColor: '#2d3748'}} />
+                  <Legend />
+                  <Line name="Valor do Carro (Dono)" type="monotone" dataKey="carro" stroke="#ef4444" strokeWidth={2} dot={false} />
+                  <Line name="Saldo Investido (Assinatura)" type="monotone" dataKey="investimento" stroke="#00ff88" strokeWidth={2} dot={false} />
+                </LineChart>
+             </ResponsiveContainer>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
 
-            if (m % 12 === 0) {
-                let patC = (fipe - Math.max(0, saldoD)) + invC;
-                labels.push("Ano " + m/12); dC.push(patC.toFixed(2)); dA.push(invA.toFixed(2));
-                corpo.innerHTML += `<tr><td style="text-align:left">${m/12}º Ano</td><td>${brl(custoD)}</td><td>${brl(assBase)}</td><td class="highlight-sobra">${brl(sobra)}</td><td>${brl(invA)}</td></tr>`;
-                if(m===48) { document.getElementById('resC').innerText = brl(patC); document.getElementById('resA').innerText = brl(invA); }
-            }
-        }
-        if (chart) chart.destroy();
-        chart = new Chart(document.getElementById('chartEvo'), {
-            type: 'line', data: { labels: labels, datasets: [
-                { label: 'Compra', data: dC, borderColor: '#10b981', tension: 0.3, pointRadius: 0, fill: true, backgroundColor: 'rgba(16, 185, 129, 0.1)' },
-                { label: 'Selic', data: dA, borderColor: '#3b82f6', tension: 0.3, pointRadius: 0, fill: true, backgroundColor: 'rgba(59, 130, 246, 0.1)' }
-            ]},
-            options: { plugins: { legend: { display: false } }, scales: { y: { ticks: { color: '#64748b' } }, x: { ticks: { color: '#64748b' } } } }
-        });
-    }
-    calcular();
-</script>
-</body>
-</html>
+export default App;
