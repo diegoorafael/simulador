@@ -3,125 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Autoselic PRO | @matematicadocarro</title>
+    <title>Autoselic PRO | Auditoria @matematicadocarro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #00ff88; --bg: #0a0e14; --card: #151b23; --text: #f0f6fc; --red: #ff4d4d; --orange: #ff9f43; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 10px; }
-        
         .app-container { max-width: 500px; margin: 0 auto; }
         
-        /* Dashboard de Mercado */
-        .market-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .market-card { background: var(--card); border: 1px solid #30363d; padding: 12px; border-radius: 12px; text-align: center; }
-        .m-label { font-size: 10px; color: #8b949e; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; display: block; }
-        .m-val { font-size: 16px; font-weight: 900; color: var(--primary); }
-
-        /* Cartões de Seção */
         .card { background: var(--card); border: 1px solid #30363d; border-radius: 16px; padding: 18px; margin-bottom: 15px; }
-        .card-title { font-size: 11px; color: var(--primary); font-weight: 900; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px; }
-        
+        .market-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .m-val { font-size: 16px; font-weight: 900; color: var(--primary); text-align: center; }
+
         .input-group { margin-bottom: 12px; }
-        .input-group label { display: block; font-size: 11px; color: #8b949e; margin-bottom: 5px; font-weight: 700; }
+        .input-group label { display: block; font-size: 11px; color: #8b949e; margin-bottom: 5px; font-weight: 700; text-transform: uppercase; }
         input, select { 
             width: 100%; background: #0d1117; border: 1px solid #30363d; border-radius: 10px; 
             padding: 12px; color: #fff; font-size: 16px; font-weight: 600; outline: none;
         }
-        input:focus { border-color: var(--primary); }
+        .highlight { border-color: var(--orange) !important; color: var(--orange) !important; }
 
-        /* Lista de Custos Ocultos */
-        .costs-list { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 5px 12px; }
+        .costs-list { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 10px 15px; }
         .cost-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #2d333b; font-size: 13px; }
         .cost-row:last-child { border: none; font-weight: 900; color: var(--orange); }
-        .val-red { color: var(--red); font-weight: 700; }
+        .explanation { font-size: 9px; color: #8b949e; margin-top: 3px; }
 
-        /* Gráfico e Resultados */
-        .chart-wrap { height: 260px; margin: 10px 0; position: relative; }
-        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .res-box { padding: 15px; border-radius: 12px; border: 1px solid #30363d; text-align: center; }
+        .chart-wrap { height: 260px; margin: 15px 0; }
+        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .res-box { padding: 15px; border-radius: 12px; border: 1px solid #30363d; text-align: center; background: rgba(255,255,255,0.02); }
         .res-box.win { border: 2px solid var(--primary); background: rgba(0, 255, 136, 0.05); }
-        .res-box small { font-size: 9px; color: #8b949e; display: block; text-transform: uppercase; margin-bottom: 5px; }
         .res-val { font-size: 16px; font-weight: 900; }
 
-        .btn-zap { 
-            background: #25d366; color: #fff; border: none; width: 100%; padding: 16px; 
-            border-radius: 12px; font-weight: 900; font-size: 14px; margin-top: 10px;
-        }
+        .btn-zap { background: #25d366; color: #fff; border: none; width: 100%; padding: 16px; border-radius: 12px; font-weight: 900; margin-top: 15px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
     <div class="market-grid">
-        <div class="market-card"><span class="m-label">SELIC ATUALIZADA</span><span id="selicVal" class="m-val">--%</span></div>
-        <div class="market-card"><span class="m-label">INFLAÇÃO IPCA</span><span id="ipcaVal" class="m-val" style="color:#40a9ff">--%</span></div>
+        <div class="card" style="margin-bottom:0"><span class="m-val">SELIC: <span id="selicVal">12.75</span>%</span></div>
+        <div class="card" style="margin-bottom:0"><span class="m-val" style="color:#40a9ff">IPCA: 4.5%</span></div>
     </div>
 
-    <div class="card">
-        <div class="card-title">Configuração do Veículo</div>
+    <div class="card" style="margin-top:15px">
         <div class="input-group">
-            <label>Modelo (Localiza Meoo)</label>
+            <label>Modelo (Ref. Localiza Meoo)</label>
             <select id="preset" onchange="aplicar()">
-                <option value="polo" data-fipe="125000" data-perc="2.2">VW Polo Highline (2.2%)</option>
-                <option value="tcross" data-fipe="165000" data-perc="2.15" selected>VW T-Cross Comfort (2.15%)</option>
-                <option value="compass" data-fipe="225000" data-perc="2.35">Jeep Compass Limited (2.35%)</option>
-                <option value="hilux" data-fipe="330000" data-perc="2.6">Toyota Hilux SRX (2.6%)</option>
+                <option value="tcross" data-fipe="165000" data-perc="2.15" selected>VW T-Cross Comfortline</option>
+                <option value="polo" data-fipe="125000" data-perc="2.2">VW Polo Highline</option>
+                <option value="compass" data-fipe="225000" data-perc="2.35">Jeep Compass Limited</option>
+                <option value="hilux" data-fipe="330000" data-perc="2.6">Toyota Hilux SRX</option>
             </select>
         </div>
-        <div class="input-group">
-            <label>Valor Tabela FIPE (R$)</label>
-            <input type="text" id="fipe" oninput="mask(this); calc()">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div class="input-group"><label>Tabela FIPE (R$)</label><input type="text" id="fipe" oninput="mask(this); calc()"></div>
+            <div class="input-group"><label>Parcela (R$)</label><input type="text" id="parcela" class="highlight" readonly></div>
         </div>
-        <div class="input-group">
-            <label>Juros Financiamento (% AM)</label>
-            <input type="number" id="juros" value="1.45" step="0.01" oninput="calc()">
-        </div>
-        <div class="input-group">
-            <label>Prazo do Contrato (Meses)</label>
-            <input type="number" id="meses" value="36" oninput="calc()">
-        </div>
+        <div class="input-group"><label>Assinatura Mensal (R$)</label><input type="text" id="aluguel" class="highlight" readonly style="border-color:var(--primary)!important; color:var(--primary)!important;"></div>
     </div>
 
     <div class="card">
-        <div class="card-title">Drenagem de Capital (Propriedade)</div>
+        <div style="font-size:11px; font-weight:900; color:var(--primary); margin-bottom:10px; text-transform:uppercase">Fluxo de Caixa Acumulado</div>
         <div class="costs-list">
-            <div class="cost-row"><span>IPVA + Seguro (Anual)</span><span id="g-taxas" class="val-red">R$ 0,00</span></div>
-            <div class="cost-row"><span>Manutenção Preventiva</span><span id="g-manut" class="val-red">R$ 0,00</span></div>
-            <div class="cost-row"><span>Total Perdido no Período</span><span id="g-total">R$ 0,00</span></div>
+            <div class="cost-row"><div>IPVA Decrescente <div class="explanation">Corrigido pela desvalorização</div></div><span id="g-taxas" style="color:var(--red); font-weight:700">R$ 0,00</span></div>
+            <div class="cost-row"><div>Custos Inflacionados <div class="explanation">Seguro e Manutenção + IPCA</div></div><span id="g-seguro" style="color:var(--red); font-weight:700">R$ 0,00</span></div>
+            <div class="cost-row"><span>Total Perdido na Compra</span><span id="g-total">R$ 0,00</span></div>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-title">Duelo de Patrimônio Líquido</div>
         <div class="chart-wrap"><canvas id="grafico"></canvas></div>
         <div class="res-grid">
-            <div id="resC" class="res-box">
-                <small>COMPRA (LATA)</small>
-                <span id="vC" class="res-val" style="color:var(--red)">R$ 0,00</span>
-            </div>
-            <div id="resA" class="res-box win">
-                <small>ASSINATURA (DINHEIRO)</small>
-                <span id="vA" class="res-val" style="color:var(--primary)">R$ 0,00</span>
-            </div>
+            <div id="resC" class="res-box"><small style="font-size:9px; color:#8b949e">COMPRA (LATA)</small><div id="vC" class="res-val" style="color:var(--red)">R$ 0,00</div></div>
+            <div id="resA" class="res-box win"><small style="font-size:9px; color:#8b949e">ASSINATURA (JUROS)</small><div id="vA" class="res-val" style="color:var(--primary)">R$ 0,00</div></div>
         </div>
     </div>
 
-    <button class="btn-zap" onclick="gerarWhatsApp()">📲 Relatório @matematicadocarro</button>
+    <button class="btn-zap" onclick="gerarWhatsApp()">📲 Enviar Relatório Auditoria</button>
 </div>
 
 <script>
 let chart;
-let mkt = { selic: 12.75, ipca: 4.50 };
+let selic = 12.75;
+const ipcaAnual = 0.045; 
+const depAnual = 0.12; // Depreciação de 12% ao ano
 
-async function loadData() {
+async function loadMarket() {
     try {
         const s = await fetch('https://api.bcb.gov.br/dados/serie/bcdata.sgs.11/dados/ultimos/1?formato=json').then(r => r.json());
-        mkt.selic = ((Math.pow((parseFloat(s[0].valor)/100) + 1, 252) - 1) * 100).toFixed(2);
-        document.getElementById('selicVal').innerText = mkt.selic + "%";
-        document.getElementById('ipcaVal').innerText = mkt.ipca + "%";
-    } catch(e) { document.getElementById('selicVal').innerText = "12.75%"; }
+        selic = ((Math.pow((parseFloat(s[0].valor)/100) + 1, 252) - 1) * 100).toFixed(2);
+        document.getElementById('selicVal').innerText = selic;
+    } catch(e) {}
     calc();
 }
 
@@ -139,36 +112,59 @@ function mask(i) {
     i.value = v;
 }
 
-function parse(v) { return parseFloat(v.toString().replace(/\./g,'').replace(',','.').trim()) || 0; }
+function parse(v) { return parseFloat(v.toString().replace(/\./g,'').replace(',','.').replace('R$','').trim()) || 0; }
 
 function calc() {
     const fipe = parse(document.getElementById('fipe').value);
-    const n = parseInt(document.getElementById('meses').value);
-    const jFinan = parseFloat(document.getElementById('juros').value) / 100;
-    const s = document.getElementById('preset');
-    const assin = fipe * (parseFloat(s.options[s.selectedIndex].dataset.perc)/100);
-
-    const ipvaSeguro = (fipe * 0.04) + (fipe * 0.035);
-    const manut = fipe * 0.02;
-    const gastoInvisivel = (ipvaSeguro * (n/12)) + manut;
-
-    document.getElementById('g-taxas').innerText = (ipvaSeguro * (n/12)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('g-manut').innerText = manut.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('g-total').innerText = gastoInvisivel.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-
-    const entrada = fipe * 0.3; // Simulação de 30% entrada
-    const parcela = (fipe - entrada) * (jFinan * Math.pow(1+jFinan, n)) / (Math.pow(1+jFinan, n) - 1);
+    const n = 36; // Padrão 3 anos
+    const jFinan = 0.0145; // 1.45% am
+    const entrada = fipe * 0.3;
+    const sel = document.getElementById('preset');
+    const assinBase = fipe * (parseFloat(sel.options[sel.selectedIndex].dataset.perc)/100);
     
-    let labs = [], dAss = [], dCom = [], cap = entrada;
-    const sm = Math.pow(1 + (mkt.selic/100), 1/12) - 1;
+    document.getElementById('aluguel').value = assinBase.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+
+    // 1. Cálculo da Parcela (Price)
+    const parcela = (fipe - entrada) * (jFinan * Math.pow(1+jFinan, n)) / (Math.pow(1+jFinan, n) - 1);
+    document.getElementById('parcela').value = parcela.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+
+    // 2. Acumuladores
+    let totalIpva = 0;
+    let totalManutSeguro = 0;
+    const segManutBaseAnual = fipe * 0.05; // 3.5% seguro + 1.5% manut básica
+
+    for (let m = 1; m <= n; m++) {
+        let ano = Math.floor((m-1)/12);
+        if (m % 12 === 1) { // IPVA pago no início de cada ano
+            let fipeDepreciada = fipe * Math.pow(1 - depAnual, ano);
+            totalIpva += (fipeDepreciada * 0.04);
+        }
+        // Seguro e Manutenção sobem com IPCA mensal
+        totalManutSeguro += (segManutBaseAnual / 12) * Math.pow(1 + (ipcaAnual/12), m);
+    }
+
+    document.getElementById('g-taxas').innerText = totalIpva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+    document.getElementById('g-seguro').innerText = totalManutSeguro.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+    document.getElementById('g-total').innerText = (totalIpva + totalManutSeguro).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+
+    // 3. Projeção Patrimonial
+    let labs = [], dAss = [], dCom = [], capAss = entrada;
+    const selicMensal = Math.pow(1 + (selic/100), 1/12) - 1;
 
     for (let i = 0; i <= n; i++) {
         labs.push(i+"m");
-        let dep = fipe * Math.pow(1 - 0.12/12, i);
-        let sd = (fipe - entrada) * (Math.pow(1+jFinan, n) - Math.pow(1+jFinan, i)) / (Math.pow(1+jFinan, n) - 1);
-        dCom.push(Math.max(0, dep - (i === n ? 0 : sd)));
-        if (i > 0) cap = cap * (1 + sm) + ((parcela + (ipvaSeguro / 12) + (manut / n)) - assin);
-        dAss.push(cap);
+        let vCarro = fipe * Math.pow(1 - (depAnual/12), i);
+        let saldoDevedor = (fipe - entrada) * (Math.pow(1+jFinan, n) - Math.pow(1+jFinan, i)) / (Math.pow(1+jFinan, n) - 1);
+        dCom.push(Math.max(0, vCarro - (i === n ? 0 : saldoDevedor)));
+
+        if (i > 0) {
+            let reajusteAssin = Math.floor((i-1)/12);
+            let valorAssinMes = assinBase * Math.pow(1 + ipcaAnual, reajusteAssin);
+            
+            let custoPosseMes = parcela + (totalManutSeguro / n) + (totalIpva / n);
+            capAss = capAss * (1 + selicMensal) + (custoPosseMes - valorAssinMes);
+        }
+        dAss.push(capAss);
     }
 
     document.getElementById('vC').innerText = dCom[n].toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
@@ -178,8 +174,8 @@ function calc() {
     chart = new Chart(document.getElementById('grafico').getContext('2d'), {
         type: 'line',
         data: { labels: labs, datasets: [
-            { label: 'Assinar (Liquidez)', data: dAss, borderColor: '#00ff88', borderWidth: 3, pointRadius: 0, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.05)' },
-            { label: 'Comprar (Lata)', data: dCom, borderColor: '#ff4d4d', borderDash: [4,4], pointRadius: 0 }
+            { label: 'Assinar', data: dAss, borderColor: '#00ff88', borderWidth: 3, pointRadius: 0, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.05)' },
+            { label: 'Comprar', data: dCom, borderColor: '#ff4d4d', borderDash: [4,4], pointRadius: 0 }
         ]},
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { ticks: { color: '#8b949e', font: { size: 9 } } } } }
     });
@@ -187,14 +183,14 @@ function calc() {
 
 function gerarWhatsApp() {
     const diff = parse(document.getElementById('vA').innerText) - parse(document.getElementById('vC').innerText);
-    const msg = `*📊 RELATÓRIO @MATEMATICADOCARRO*\n` +
-        `✅ *ASSINAR:* ${document.getElementById('vA').innerText}\n` +
-        `❌ *COMPRAR:* ${document.getElementById('vC').innerText}\n` +
-        `🏆 *LUCRO:* +${diff.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}\n\n` +
-        `_Estratégia Autoselic_`;
+    const msg = `*📊 AUDITORIA PATRIMONIAL @MATEMATICADOCARRO*\n` +
+        `------------------------------------\n` +
+        `📉 *Drenagem na Compra:* ${document.getElementById('g-total').innerText}\n` +
+        `🏆 *Vantagem Autoselic:* +${diff.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}\n\n` +
+        `_Cálculos Revisados (Price/IPCA/Selic)_`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
 }
-window.onload = () => { loadData(); aplicar(); };
+window.onload = () => { loadMarket(); aplicar(); };
 </script>
 </body>
 </html>
