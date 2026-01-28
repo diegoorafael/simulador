@@ -1,183 +1,57 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matemática do Carro - Simulador</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
+function simular() {
+    // Pegar valores dos inputs
+    const valorCarro = parseFloat(document.getElementById('valorCarro').value);
+    const entrada = parseFloat(document.getElementById('entrada').value);
+    const parcelaFinanc = parseFloat(document.getElementById('parcelaFinanc').value);
+    const parcelaAssin = parseFloat(document.getElementById('parcelaAssin').value);
+    const selicAnual = parseFloat(document.getElementById('selicAnual').value) / 100;
+    const meses = parseInt(document.getElementById('meses').value);
+
+    // 1. CÁLCULO FINANCIAMENTO
+    const totalPagoFinanc = entrada + (parcelaFinanc * meses);
+    // Depreciação estimada: 10% ao ano (média simples para o exemplo)
+    const taxaDepreciacaoAnual = 0.10;
+    const patrimonioCarro = valorCarro * Math.pow((1 - taxaDepreciacaoAnual), (meses / 12));
+
+    // 2. CÁLCULO ASSINATURA + INVESTIMENTO
+    const totalPagoAssin = parcelaAssin * meses;
     
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { 
-            background-color: #0f121a; 
-            color: #e2e8f0; 
-            font-family: 'Inter', sans-serif;
+    // Converter Selic Anual para Mensal (Fórmula Equivalência)
+    const selicMensal = Math.pow((1 + selicAnual), (1/12)) - 1;
+    
+    // Investimento da Entrada (Juros Compostos)
+    let montanteInvestido = entrada * Math.pow((1 + selicMensal), meses);
+    
+    // Diferença de parcelas (se a assinatura for mais barata que a parcela do financiamento)
+    // O usuário "economiza" a diferença e também investe
+    const economiaMensal = parcelaFinanc - parcelaAssin;
+    if (economiaMensal > 0) {
+        for (let i = 0; i < meses; i++) {
+            montanteInvestido += economiaMensal * Math.pow((1 + selicMensal), (meses - i));
         }
-        .glass { 
-            background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(12px); 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-        }
-        .neon-text { text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    </style>
-</head>
-<body>
-    <div id="root"></div>
+    }
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-        const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } = Recharts;
+    // Cálculo de Imposto de Renda sobre o LUCRO (Regressivo 15% para > 2 anos)
+    const lucroBruto = montanteInvestido - entrada - (economiaMensal > 0 ? economiaMensal * meses : 0);
+    const imposto = lucroBruto * 0.15;
+    const patrimonioFinalAssin = montanteInvestido - imposto;
 
-        const App = () => {
-            const [valorCarro, setValorCarro] = useState(100000);
-            const [entrada, setEntrada] = useState(40000);
-            const [taxaJuros, setTaxaJuros] = useState(1.5);
-            const [prazo, setPrazo] = useState(48);
-            const [assinatura, setAssinatura] = useState(2000);
-            const [selic, setSelic] = useState(0.85);
+    // EXIBIR RESULTADOS
+    document.getElementById('resultado').classList.remove('hidden');
+    document.getElementById('totalFinanc').innerText = totalPagoFinanc.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+    document.getElementById('patrimonioFinanc').innerText = patrimonioCarro.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+    
+    document.getElementById('totalAssin').innerText = totalPagoAssin.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+    document.getElementById('patrimonioAssin').innerText = patrimonioFinalAssin.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
 
-            const [dados, setDados] = useState({ pmt: 0, ocultos: 0, total: 0, evolucao: [] });
-
-            useEffect(() => {
-                const PV = valorCarro - entrada;
-                const i = taxaJuros / 100;
-                const n = prazo;
-                
-                // Parcela Tabela Price
-                const pmt = PV > 0 ? (PV * (i * Math.pow(1 + i, n))) / (Math.pow(1 + i, n) - 1) : 0;
-                
-                // Custos de propriedade (IPVA + Seguro + Manutenção) estipulados em 9% ao ano
-                const ocultos = (valorCarro * 0.09) / 12;
-                const totalFinanc = pmt + ocultos;
-
-                let evolucao = [];
-                let saldoInvestido = entrada;
-                
-                for (let mes = 0; mes <= prazo; mes += 2) {
-                    // Depreciação média de 1% ao mês
-                    let valorCarroDepreciado = valorCarro * Math.pow(0.99, mes);
-                    
-                    // Diferença investida (Custo do financiamento - Custo da assinatura)
-                    const aporte = totalFinanc - assinatura;
-                    saldoInvestido = (saldoInvestido + aporte) * Math.pow(1 + selic/100, 2);
-                    
-                    evolucao.push({ 
-                        mes: mes, 
-                        "Valor do Carro": Math.round(valorCarroDepreciado), 
-                        "Saldo Investido": Math.round(saldoInvestido) 
-                    });
-                }
-                setDados({ pmt, ocultos, total: totalFinanc, evolucao });
-            }, [valorCarro, entrada, taxaJuros, prazo, assinatura, selic]);
-
-            const formatMoeda = (v) => v.toLocaleString('pt-br', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
-
-            return (
-                <div className="p-4 md:p-12 max-w-7xl mx-auto min-h-screen">
-                    <header className="mb-10 text-center md:text-left border-b border-white/10 pb-6">
-                        <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase neon-text">
-                            $ Matemática do <span className="text-emerald-400">Carro</span>
-                        </h1>
-                        <p className="text-slate-500 font-bold tracking-widest mt-2 uppercase text-xs">Simulador: Financiamento vs Assinatura</p>
-                    </header>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                        {/* SIDEBAR DE INPUTS */}
-                        <div className="lg:col-span-4 glass p-8 rounded-[2rem] h-fit sticky top-8">
-                            <h2 className="text-emerald-400 font-black mb-6 flex items-center gap-2 tracking-tighter uppercase">Parâmetros</h2>
-                            <div className="space-y-5 text-xs font-bold tracking-tight">
-                                <div>
-                                    <label className="text-slate-500 block mb-2 uppercase">Valor Total do Veículo</label>
-                                    <input type="number" value={valorCarro} onChange={e => setValorCarro(Number(e.target.value))} className="w-full bg-slate-900 p-4 rounded-2xl border border-white/5 text-emerald-400 font-mono text-lg focus:outline-none focus:border-emerald-500/50 transition-all" />
-                                </div>
-                                <div>
-                                    <label className="text-slate-500 block mb-2 uppercase">Entrada</label>
-                                    <input type="number" value={entrada} onChange={e => setEntrada(Number(e.target.value))} className="w-full bg-slate-900 p-4 rounded-2xl border border-white/5 text-white font-mono text-lg focus:outline-none focus:border-emerald-500/50 transition-all" />
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="text-slate-500 block mb-2 uppercase">Juros (% am)</label>
-                                        <input type="number" value={taxaJuros} onChange={e => setTaxaJuros(Number(e.target.value))} className="w-full bg-slate-900 p-4 rounded-2xl border border-white/5 text-red-400 font-mono text-lg focus:outline-none focus:border-red-500/50 transition-all" />
-                                    </div>
-                                    <div>
-                                        <label className="text-slate-500 block mb-2 uppercase">Prazo (meses)</label>
-                                        <input type="number" value={prazo} onChange={e => setPrazo(Number(e.target.value))} className="w-full bg-slate-900 p-4 rounded-2xl border border-white/5 text-white font-mono text-lg focus:outline-none focus:border-emerald-500/50 transition-all" />
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className="text-slate-500 block mb-2 uppercase tracking-tighter">Mensalidade Assinatura</label>
-                                    <input type="number" value={assinatura} onChange={e => setAssinatura(Number(e.target.value))} className="w-full bg-slate-900 p-4 rounded-2xl border border-emerald-500/30 text-emerald-400 font-mono text-lg focus:outline-none focus:border-emerald-500 transition-all shadow-[0_0_15px_rgba(16,185,129,0.1)]" />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* DASHBOARD DE RESULTADOS */}
-                        <div className="lg:col-span-8 space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {/* CARD FINANCIAMENTO */}
-                                <div className="glass p-8 rounded-[2rem] border-t-4 border-red-500/50">
-                                    <h3 className="text-[10px] font-black text-red-500 mb-2 uppercase tracking-[0.2em]">Cenário: Financiamento</h3>
-                                    <div className="text-3xl font-black text-white">{formatMoeda(dados.total)} <span className="text-xs font-normal text-slate-500 italic">/mês</span></div>
-                                    <div className="mt-4 space-y-1 text-[11px] text-slate-400 uppercase font-bold tracking-tight">
-                                        <p className="flex justify-between">Parcela: <span>{formatMoeda(dados.pmt)}</span></p>
-                                        <p className="flex justify-between">Taxas + Seguro: <span>{formatMoeda(dados.ocultos)}</span></p>
-                                    </div>
-                                </div>
-
-                                {/* CARD ASSINATURA */}
-                                <div className="glass p-8 rounded-[2rem] border-t-4 border-emerald-500 shadow-[0_20px_40px_rgba(0,0,0,0.3)] relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 bg-emerald-500 text-slate-900 text-[9px] font-black px-4 py-1 rounded-bl-xl uppercase">Melhor Escolha</div>
-                                    <h3 className="text-[10px] font-black text-emerald-500 mb-2 uppercase tracking-[0.2em]">Cenário: Assinatura</h3>
-                                    <div className="text-3xl font-black text-emerald-400">{formatMoeda(assinatura)} <span className="text-xs font-normal text-slate-500 italic">/mês</span></div>
-                                    <div className="mt-4 space-y-1 text-[11px] text-emerald-500/70 uppercase font-bold tracking-tight">
-                                        <p className="flex justify-between font-black">Aporte Mensal: <span>{formatMoeda(dados.total - assinatura)}</span></p>
-                                        <p className="text-[9px] lowercase italic text-slate-500">*Diferença que você investe em Selic</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* ÁREA DO GRÁFICO */}
-                            <div className="glass p-4 md:p-8 rounded-[2.5rem] h-[450px] border border-white/5">
-                                <div className="flex justify-between items-center mb-8">
-                                    <h3 className="text-xs font-black text-slate-300 uppercase tracking-widest flex items-center gap-2">
-                                        <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                                        Evolução do Patrimônio
-                                    </h3>
-                                </div>
-                                <ResponsiveContainer width="100%" height="85%">
-                                    <AreaChart data={dados.evolucao} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                        <defs>
-                                            <linearGradient id="colorGreen" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
-                                                <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                                            </linearGradient>
-                                        </defs>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
-                                        <XAxis dataKey="mes" stroke="#475569" fontSize={9} axisLine={false} tickLine={false} tickFormatter={(v) => `Mês ${v}`} />
-                                        <YAxis stroke="#475569" fontSize={9} axisLine={false} tickLine={false} tickFormatter={v => `R$${v/1000}k`} />
-                                        <Tooltip 
-                                            contentStyle={{backgroundColor: '#161b22', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', fontSize: '12px'}}
-                                            itemStyle={{fontWeight: 'bold'}}
-                                        />
-                                        <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase' }} />
-                                        <Area type="monotone" dataKey="Valor do Carro" stroke="#ef4444" fill="transparent" strokeWidth={3} dot={false} />
-                                        <Area type="monotone" dataKey="Saldo Investido" stroke="#10b981" fillOpacity={1} fill="url(#colorGreen)" strokeWidth={3} dot={false} />
-                                    </AreaChart>
-                                </ResponsiveContainer>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
-</body>
-</html>
+    const veredito = document.getElementById('veredito');
+    if (patrimonioFinalAssin > patrimonioCarro) {
+        veredito.innerHTML = `Vantagem para ASSINATURA: <br> Você termina com R$ ${(patrimonioFinalAssin - patrimonioCarro).toLocaleString('pt-BR')} a mais no bolso.`;
+        veredito.style.background = "#d4edda";
+        veredito.style.color = "#155724";
+    } else {
+        veredito.innerHTML = `Vantagem para FINANCIAMENTO: <br> O carro próprio supera o investimento em R$ ${(patrimonioCarro - patrimonioFinalAssin).toLocaleString('pt-BR')}.`;
+        veredito.style.background = "#f8d7da";
+        veredito.style.color = "#721c24";
+    }
+}
