@@ -2,183 +2,190 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Matemática do Carro | Diego</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparador de Vantagem Patrimonial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #00ff88; --bg: #000000; --card: #1c1c1e; --text: #ffffff; --grey: #a1a1aa; --red: #ff3b30; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 15px; }
-        .app-container { max-width: 450px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
-        .header { width: 100%; text-align: left; margin-bottom: 25px; }
-        .header h1 { font-size: 28px; font-weight: 900; margin: 0; letter-spacing: -1.5px; }
-        .header span { color: var(--primary); font-size: 14px; }
-        .card { width: 100%; background: var(--card); border-radius: 20px; padding: 22px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); }
-        .card-label { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--grey); margin-bottom: 15px; display: block; text-align: center; }
-        .input-group { margin-bottom: 20px; width: 100%; }
-        .input-group label { display: block; font-size: 11px; color: #8b949e; margin-bottom: 6px; font-weight: 600; text-transform: uppercase; }
-        select, input { width: 100%; background: transparent; border: none; border-bottom: 2px solid rgba(255,255,255,0.2); padding: 10px 0; color: var(--text); font-size: 18px; font-weight: 600; transition: 0.3s; }
-        select:focus, input:focus { border-color: var(--primary); }
-        .chart-wrap { width: 100%; height: 230px; position: relative; margin-bottom: 15px; }
-        .res-grid { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center; }
-        .res-box { padding: 15px; background: rgba(255,255,255,0.05); border-radius: 16px; }
-        .data-item { margin-bottom: 22px; width: 100%; }
-        .data-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .data-title { font-size: 14px; font-weight: 700; color: var(--primary); }
-        .data-value { font-size: 14px; font-weight: 900; }
-        .data-desc { font-size: 12px; color: var(--grey); line-height: 1.5; text-align: left; }
-        .btn-main { background: var(--primary); color: #000; border: none; width: 100%; padding: 20px; border-radius: 18px; font-weight: 900; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        body { background-color: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .card-stats { transition: transform 0.2s; }
+        .card-stats:hover { transform: translateY(-5px); }
     </style>
 </head>
-<body>
-<div class="app-container">
-    <div class="header">
-        <h1>Matemática do Carro<span>.</span></h1>
-        <span>Consultoria por Diego</span>
+<body class="p-2 md:p-6">
+    <div class="max-w-5xl mx-auto">
+        <div class="bg-white rounded-3xl p-6 mb-6 shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-2xl font-black text-gray-800 uppercase tracking-tighter">Matemática do Carro</h1>
+                <p class="text-gray-500 font-medium">Qual é a decisão financeira mais inteligente?</p>
+            </div>
+            <div class="bg-blue-50 px-4 py-2 rounded-2xl border border-blue-100">
+                <span class="text-blue-700 font-bold text-sm">Projeção: 48 Meses</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div class="lg:col-span-4 space-y-4">
+                <div class="bg-white p-6 rounded-3xl shadow-sm space-y-4">
+                    <h3 class="font-bold text-gray-700 mb-4 flex items-center gap-2">⚙️ Ajustes de Mercado</h3>
+                    
+                    <div>
+                        <label class="text-xs font-bold text-gray-400 uppercase">Valor do Carro (Fipe)</label>
+                        <input type="number" id="valorCarro" value="100000" class="w-full bg-gray-50 border-none p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-bold text-lg" oninput="calcular()">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs font-bold text-gray-400 uppercase">Selic (% a.a.)</label>
+                            <input type="number" id="taxaSelic" value="13.75" step="0.25" class="w-full bg-gray-50 border-none p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-bold" oninput="calcular()">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-400 uppercase">IPCA (% a.a.)</label>
+                            <input type="number" id="taxaIpca" value="4.5" step="0.1" class="w-full bg-gray-50 border-none p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-bold" oninput="calcular()">
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-50">
+                        <label class="text-xs font-bold text-gray-400 uppercase">Juros Financiamento (% a.m.)</label>
+                        <input type="number" id="jurosFinan" value="1.3" step="0.1" class="w-full bg-gray-50 border-none p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-bold" oninput="calcular()">
+                    </div>
+
+                    <div class="pt-2">
+                        <label class="text-xs font-bold text-gray-400 uppercase">Assinatura (% do Valor)</label>
+                        <input type="number" id="percAssinatura" value="2.2" step="0.1" class="w-full bg-gray-50 border-none p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-bold" oninput="calcular()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-8 space-y-6">
+                <div id="vencedorCard" class="p-8 rounded-[2rem] text-white shadow-2xl transition-all duration-500 flex flex-col items-center justify-center text-center">
+                    <span class="text-xs font-bold uppercase tracking-[0.2em] mb-2 opacity-80">Conclusão Patrimonial</span>
+                    <h2 id="vencedorNome" class="text-3xl font-black">Calculando...</h2>
+                    <p id="vencedorDesc" class="mt-2 text-sm opacity-90 font-medium"></p>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl shadow-sm h-[350px]">
+                    <canvas id="graficoVantagem"></canvas>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-6 rounded-3xl border-b-4 border-red-500 card-stats">
+                        <p class="text-xs font-bold text-gray-400 uppercase">Patrimônio (Financiado)</p>
+                        <h4 id="resFinan" class="text-2xl font-black text-gray-800 mt-1">R$ 0,00</h4>
+                        <p class="text-[10px] text-gray-400 mt-2 uppercase italic">Carro usado + Investimento das sobras</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-3xl border-b-4 border-blue-500 card-stats">
+                        <p class="text-xs font-bold text-gray-400 uppercase">Patrimônio (Assinatura)</p>
+                        <h4 id="resAssin" class="text-2xl font-black text-gray-800 mt-1">R$ 0,00</h4>
+                        <p class="text-[10px] text-gray-400 mt-2 uppercase italic">Valor do carro rendendo + Aportes mensais</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="card">
-        <span class="card-label">Configuração do Duelo</span>
-        <div class="input-group">
-            <label>Modelo de Referência</label>
-            <select id="preset" onchange="aplicar()">
-                <option value="tcross" data-fipe="165000" data-perc="2.15" selected>VW T-Cross Comfort</option>
-                <option value="polo" data-fipe="125000" data-perc="2.2">VW Polo Highline</option>
-                <option value="compass" data-fipe="225000" data-perc="2.35">Jeep Compass Limited</option>
-                <option value="hilux" data-fipe="330000" data-perc="2.6">Toyota Hilux SRX</option>
-            </select>
-        </div>
-        <div class="input-group"><label>Valor Tabela FIPE (R$)</label><input type="text" id="fipe" oninput="mask(this); calc()"></div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-            <div class="input-group"><label>Finan. (% am)</label><input type="number" id="juros" value="1.45" step="0.01" oninput="calc()"></div>
-            <div class="input-group"><label>Tempo (Meses)</label><input type="number" id="meses" value="36" oninput="calc()"></div>
-        </div>
-    </div>
+    <script>
+        let chart;
 
-    <div class="card" style="display: flex; flex-direction: column; align-items: center;">
-        <span class="card-label">Patrimônio Líquido Acumulado</span>
-        <div class="chart-wrap"><canvas id="grafico"></canvas></div>
-        <div class="res-grid">
-            <div class="res-box"><small style="color:var(--red); font-weight: 800; font-size: 10px;">EM LATA</small><div id="vC" style="font-weight:900; font-size: 16px; margin-top: 5px;">R$ 0</div></div>
-            <div class="res-box" style="border: 1px solid var(--primary);"><small style="color:var(--primary); font-weight: 800; font-size: 10px;">NO BANCO</small><div id="vA" style="font-weight:900; font-size: 16px; margin-top: 5px;">R$ 0</div></div>
-        </div>
-    </div>
+        function calcular() {
+            const valorCarro = parseFloat(document.getElementById('valorCarro').value) || 0;
+            const selicAnual = parseFloat(document.getElementById('taxaSelic').value) / 100;
+            const ipcaAnual = parseFloat(document.getElementById('taxaIpca').value) / 100;
+            const jurosFinanMes = parseFloat(document.getElementById('jurosFinan').value) / 100;
+            const percAssinatura = parseFloat(document.getElementById('percAssinatura').value) / 100;
+            
+            const meses = 48;
+            const selicMensal = Math.pow(1 + selicAnual, 1/12) - 1;
+            const ipcaMensal = Math.pow(1 + ipcaAnual, 1/12) - 1;
 
-    <div class="card" style="border-color: var(--primary)">
-        <span class="card-label">Análise de Capital e Custos</span>
-        
-        <div class="data-item">
-            <div class="data-header"><span class="data-title">Rentabilidade Selic</span><span id="res-selic-total" class="data-value" style="color: var(--primary)">R$ 0,00</span></div>
-            <p class="data-desc">Este é o **ganho real** de juros sobre o seu dinheiro. É o motor do seu patrimônio que transforma a economia mensal em riqueza acumulada através dos juros compostos.</p>
-        </div>
+            // Variáveis de Patrimônio
+            let capitalInvestidoAssin = valorCarro; // Dinheiro inicial rendendo na assinatura
+            let capitalSobraFinan = 0; // Caso o financiamento seja mais barato (investe a sobra)
+            let fipeAtual = valorCarro;
+            
+            let mensalidadeAssin = valorCarro * percAssinatura;
+            const parcelaFinan = valorCarro * (jurosFinanMes * Math.pow(1 + jurosFinanMes, meses)) / (Math.pow(1 + jurosFinanMes, meses) - 1);
 
-        <div class="data-item">
-            <div class="data-header"><span class="data-title">Aporte Inicial + Sobra</span><span id="res-capital-base" class="data-value">R$ 0,00</span></div>
-            <p class="data-desc">Somatória do valor de entrada (Aporte Inicial) mais as economias mensais (Sobra) que deixaram de ser pagas em juros bancários e taxas.</p>
-        </div>
+            let dadosFinan = [];
+            let dadosAssin = [];
 
-        <div class="data-item">
-            <div class="data-header"><span class="data-title" style="color: var(--red)">IPVA Dinâmico</span><span id="res-ipva" class="data-value">R$ 0,00</span></div>
-            <p class="data-desc">Imposto total pago ao governo. Calculado ano a ano sobre o valor depreciado da FIPE, simulando a redução real da guia.</p>
-        </div>
+            for (let i = 1; i <= meses; i++) {
+                // Financiamento: Custos de IPVA (cai com a Fipe) + Manut/Seguro (sobe com IPCA)
+                fipeAtual *= 0.992; // 0.8% desvalorização mensal média
+                let ipvaMes = (fipeAtual * 0.04) / 12;
+                let manutSeguro = (valorCarro * 0.005) * Math.pow(1 + ipcaMensal, i);
+                let totalMensalFinan = parcelaFinan + ipvaMes + manutSeguro;
 
-        <div class="data-item">
-            <div class="data-header"><span class="data-title" style="color: var(--red)">Seguro + Manutenção</span><span id="res-seguro" class="data-value">R$ 0,00</span></div>
-            <p class="data-desc">Gasto total com proteção e oficina no período, corrigido pela **Inflação (IPCA)** mensal sobre peças e serviços.</p>
-        </div>
-    </div>
+                // Assinatura: Reajuste anual da mensalidade
+                if (i % 12 === 0) mensalidadeAssin *= (1 + ipcaAnual);
+                let totalMensalAssin = mensalidadeAssin;
 
-    <button class="btn-main" onclick="gerarWhatsApp()">📲 Relatório @matematicadocarro</button>
-</div>
+                // Lógica da Sobra (Cash Flow)
+                let sobra = totalMensalFinan - totalMensalAssin;
 
-<script>
-let chart;
-const selicAnual = 0.1275;
-const ipcaAnual = 0.045;
+                // Atualiza Investimentos
+                capitalInvestidoAssin *= (1 + selicMensal); // Capital inicial rendendo
+                
+                if (sobra > 0) {
+                    capitalInvestidoAssin += sobra; // Sobra da assinatura vai pro investimento
+                } else {
+                    capitalSobraFinan += Math.abs(sobra);
+                    capitalSobraFinan *= (1 + selicMensal);
+                }
 
-function aplicar() {
-    const s = document.getElementById('preset');
-    const o = s.options[s.selectedIndex];
-    document.getElementById('fipe').value = parseFloat(o.dataset.fipe).toLocaleString('pt-BR', {minimumFractionDigits:2});
-    calc();
-}
+                dadosFinan.push(fipeAtual + capitalSobraFinan);
+                dadosAssin.push(capitalInvestidoAssin);
+            }
 
-function mask(i) {
-    let v = i.value.replace(/\D/g,'');
-    v = (v/100).toFixed(2) + '';
-    v = v.replace(".",",").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-    i.value = v;
-}
-
-function parse(v) { return parseFloat(v.toString().replace(/\./g,'').replace(',','.').replace('R$','').trim()) || 0; }
-
-function calc() {
-    const fipe = parse(document.getElementById('fipe').value);
-    const n = parseInt(document.getElementById('meses').value) || 36;
-    const jFinan = parseFloat(document.getElementById('juros').value) / 100;
-    const entrada = fipe * 0.3;
-    const s = document.getElementById('preset');
-    const assinBase = fipe * (parseFloat(s.options[s.selectedIndex].dataset.perc)/100);
-
-    let acumIpva = 0;
-    let acumSeguroManut = 0;
-    const custoBaseAnual = fipe * 0.05;
-
-    for (let m = 1; m <= n; m++) {
-        let ano = Math.floor((m-1)/12);
-        if (m % 12 === 1) acumIpva += (fipe * Math.pow(0.88, ano)) * 0.04;
-        acumSeguroManut += (custoBaseAnual / 12) * Math.pow(1 + (ipcaAnual/12), m);
-    }
-
-    const parc = (fipe - entrada) * (jFinan * Math.pow(1+jFinan, n)) / (Math.pow(1+jFinan, n) - 1);
-    const sobraM = (parc + (acumIpva/n) + (acumSeguroManut/n)) - assinBase;
-
-    const sm = Math.pow(1 + selicAnual, 1/12) - 1;
-    let capAss = entrada, labs = [], dAss = [], dCom = [];
-    let capitalBaseAcumulado = entrada;
-    
-    for(let i=0; i<=n; i++) {
-        labs.push(i+"m");
-        let vC = fipe * Math.pow(0.88, i/12);
-        let sd = (fipe - entrada) * (Math.pow(1+jFinan, n) - Math.pow(1+jFinan, i)) / (Math.pow(1+jFinan, n) - 1);
-        dCom.push(Math.max(0, vC - (i === n ? 0 : sd)));
-        if(i > 0) {
-            capAss = capAss * (1 + sm) + sobraM;
-            capitalBaseAcumulado += sobraM;
+            atualizarDisplay(dadosFinan, dadosAssin);
         }
-        dAss.push(capAss);
-    }
 
-    const rendimentoPuroSelic = capAss - capitalBaseAcumulado;
+        function atualizarDisplay(df, da) {
+            const finalFinan = df[df.length - 1];
+            const finalAssin = da[da.length - 1];
+            
+            document.getElementById('resFinan').innerText = finalFinan.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+            document.getElementById('resAssin').innerText = finalAssin.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
 
-    document.getElementById('res-selic-total').innerText = rendimentoPuroSelic.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('res-capital-base').innerText = capitalBaseAcumulado.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('res-ipva').innerText = acumIpva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('res-seguro').innerText = acumSeguroManut.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('vC').innerText = dCom[n].toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('vA').innerText = dAss[n].toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+            const vCard = document.getElementById('vencedorCard');
+            const vNome = document.getElementById('vencedorNome');
+            const vDesc = document.getElementById('vencedorDesc');
+            const vantagem = Math.abs(finalAssin - finalFinan).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
 
-    if (chart) chart.destroy();
-    chart = new Chart(document.getElementById('grafico').getContext('2d'), {
-        type: 'line',
-        data: { labels: labs, datasets: [
-            { label: 'Banco', data: dAss, borderColor: '#00ff88', borderWidth: 4, pointRadius: 0, tension: 0.2 },
-            { label: 'Lata', data: dCom, borderColor: '#ff3b30', borderWidth: 2, borderDash: [5,5], pointRadius: 0 }
-        ]},
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
-    });
-}
+            if (finalAssin > finalFinan) {
+                vCard.className = "p-8 rounded-[2rem] text-white shadow-2xl bg-gradient-to-br from-blue-600 to-indigo-800 flex flex-col items-center justify-center text-center scale-100";
+                vNome.innerText = "ASSINATURA É MELHOR";
+                vDesc.innerText = `Você termina com ${vantagem} a MAIS de patrimônio líquido em comparação ao financiamento.`;
+            } else {
+                vCard.className = "p-8 rounded-[2rem] text-white shadow-2xl bg-gradient-to-br from-slate-700 to-slate-900 flex flex-col items-center justify-center text-center";
+                vNome.innerText = "FINANCIAMENTO É MELHOR";
+                vDesc.innerText = `Neste cenário, possuir o carro e investir a sobra gera ${vantagem} a mais de patrimônio.`;
+            }
 
-function gerarWhatsApp() {
-    const msg = `*📊 RELATÓRIO @MATEMATICADOCARRO*\n` +
-        `Prazo: ${document.getElementById('meses').value} meses\n` +
-        `Lucro Puro Selic: ${document.getElementById('res-selic-total').innerText}\n` +
-        `Final no Banco: ${document.getElementById('vA').innerText}\n` +
-        `_Simulação Estratégica by Diego_`;
-    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
-}
-window.onload = () => { aplicar(); };
-</script>
+            plotarGrafico(df, da);
+        }
+
+        function plotarGrafico(df, da) {
+            const ctx = document.getElementById('graficoVantagem').getContext('2d');
+            if (chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: 48}, (_, i) => i + 1),
+                    datasets: [
+                        { label: 'Patrimônio Assinatura', data: da, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.3, borderWidth: 4 },
+                        { label: 'Patrimônio Financiado', data: df, borderColor: '#ef4444', borderDash: [5, 5], tension: 0.3, borderWidth: 2 }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: { y: { display: false }, x: { grid: { display: false } } },
+                    plugins: { legend: { labels: { font: { weight: 'bold' } } } }
+                }
+            });
+        }
+
+        window.onload = calcular;
+    </script>
 </body>
 </html>
