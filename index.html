@@ -2,111 +2,95 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Simulador de Mobilização - Autoselic</title>
+    <title>Matemática do Carro - Financiamento vs Assinatura</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root { --neon-green: #00ff88; --neon-red: #ff4444; --bg-dark: #0d1117; --card-dark: #161b22; }
+        :root { --neon-green: #00ff88; --neon-red: #ff4444; --bg-dark: #080a0f; }
         body { background-color: var(--bg-dark); color: #e6edf3; font-family: 'Inter', sans-serif; }
         .neon-text { font-family: 'Orbitron', sans-serif; color: var(--neon-green); text-shadow: 0 0 10px #00ff8844; }
-        .cyber-card { background: var(--card-dark); border: 1px solid #30363d; border-radius: 12px; transition: all 0.3s ease; }
-        .input-cyber { background: #0d1117; border: 1px solid #30363d; color: var(--neon-green); padding: 10px; border-radius: 6px; width: 100%; outline: none; }
-        .input-cyber:focus { border-color: var(--neon-green); box-shadow: 0 0 5px var(--neon-green); }
-        .label-xs { font-size: 0.65rem; font-weight: bold; color: #8b949e; text-transform: uppercase; margin-bottom: 4px; display: block; }
+        .cyber-card { background: #11141b; border: 1px solid #1f2937; border-radius: 12px; }
+        .input-cyber { background: #080a0f; border: 1px solid #374151; color: var(--neon-green); padding: 8px; border-radius: 6px; width: 100%; outline: none; }
+        .input-cyber:focus { border-color: var(--neon-green); }
+        .label-xs { font-size: 0.65rem; font-weight: bold; color: #6b7280; text-transform: uppercase; margin-bottom: 2px; display: block; }
     </style>
 </head>
-<body class="p-4 md:p-10">
+<body class="p-4 md:p-8">
 
-    <div class="max-w-6xl mx-auto">
-        <header class="mb-10 text-center md:text-left">
-            <h1 class="neon-text text-4xl font-bold tracking-tighter">SIMULADOR DE MOBILIZAÇÃO</h1>
-            <p class="text-gray-500 font-light mt-1">Método Autoselic: Transformando passivos em patrimônio.</p>
+    <div class="max-w-7xl mx-auto">
+        <header class="mb-8 text-center">
+            <h1 class="neon-text text-3xl font-bold tracking-tighter uppercase">MATEMÁTICA DO CARRO</h1>
+            <p class="text-gray-500 text-sm">Financiamento vs Assinatura</p>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            
-            <div class="lg:col-span-3 space-y-6">
-                <section class="cyber-card p-5 border-l-4 border-l-[#00ff88]">
-                    <h2 class="text-sm font-bold mb-4 flex items-center gap-2"><span class="text-green-500">|</span> PARÂMETROS</h2>
-                    <div class="space-y-4">
-                        <div><label class="label-xs">Valor do Carro (R$)</label><input type="number" id="vCarro" class="input-cyber" value="100000"></div>
-                        <div><label class="label-xs">Entrada (R$)</label><input type="number" id="vEntrada" class="input-cyber" value="40000"></div>
-                        <div><label class="label-xs">Taxa Juros (% AM)</label><input type="number" id="tJuros" class="input-cyber !border-red-500 !text-red-500" value="1.5" step="0.1"></div>
-                        <div><label class="label-xs">Prazo (Meses)</label><input type="number" id="vPrazo" class="input-cyber" value="48"></div>
-                        <div><label class="label-xs">Mensalidade Assinatura (R$)</label><input type="number" id="vAssinatura" class="input-cyber" value="2000"></div>
-                    </div>
-                </section>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+            <div class="cyber-card p-4">
+                <label class="label-xs">Valor do Carro</label>
+                <input type="number" id="vCarro" class="input-cyber" value="100000">
+            </div>
+            <div class="cyber-card p-4">
+                <label class="label-xs">Entrada</label>
+                <input type="number" id="vEntrada" class="input-cyber" value="40000">
+            </div>
+            <div class="cyber-card p-4 border-b-2 border-cyan-500">
+                <label class="label-xs">Taxa Selic (% AM)</label>
+                <input type="number" id="tSelic" class="input-cyber !text-cyan-400" value="0.9" step="0.01">
+            </div>
+            <div class="cyber-card p-4 border-b-2 border-orange-500">
+                <label class="label-xs">Inflação (% AA)</label>
+                <input type="number" id="tInflacao" class="input-cyber !text-orange-400" value="4.5" step="0.1">
+            </div>
+            <div class="cyber-card p-4 border-b-2 border-red-500">
+                <label class="label-xs">Custos Posse (% AA)</label>
+                <input type="number" id="pCustosAnuais" class="input-cyber !text-red-400" value="8.8" step="0.1">
+            </div>
+            <div class="cyber-card p-4">
+                <label class="label-xs">Prazo (Meses)</label>
+                <input type="number" id="vPrazo" class="input-cyber" value="48">
+            </div>
+        </div>
 
-                <section class="cyber-card p-5 border-l-4 border-l-red-500">
-                    <h2 class="text-sm font-bold mb-4 flex items-center gap-2"><span class="text-red-500">|</span> CUSTOS DE PROPRIEDADE (% AA)</h2>
-                    <div class="space-y-4">
-                        <div><label class="label-xs">IPVA (%)</label><input type="number" id="pIpva" class="input-cyber" value="4" step="0.1"></div>
-                        <div><label class="label-xs">Seguro (%)</label><input type="number" id="pSeguro" class="input-cyber" value="3.5" step="0.1"></div>
-                        <div><label class="label-xs">Manutenção (%)</label><input type="number" id="pManu" class="input-cyber" value="1.3" step="0.1"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <div class="space-y-6">
+                <div class="cyber-card p-6 border-t-4 border-red-500">
+                    <h2 class="text-red-500 font-bold mb-4 uppercase">Lado Financiamento</h2>
+                    <div class="mb-6">
+                        <label class="label-xs">Taxa Juros Banco (% AM)</label>
+                        <input type="number" id="tJuros" class="input-cyber" value="1.5">
                     </div>
-                </section>
+                    <div class="space-y-3 bg-black/30 p-4 rounded-lg">
+                        <div class="flex justify-between text-sm"><span class="text-gray-400">Parcela Mensal:</span> <span id="outParcela" class="font-bold text-white">R$ 0,00</span></div>
+                        <div class="flex justify-between text-sm"><span class="text-gray-400">Custos de Posse:</span> <span id="outExtrasA" class="text-red-400">R$ 0,00</span></div>
+                        <div class="flex justify-between border-t border-gray-800 pt-2 font-bold"><span class="text-white">DESEMBOLSO TOTAL:</span> <span id="outTotalA" class="text-xl text-white">R$ 0,00</span></div>
+                    </div>
+                </div>
             </div>
 
-            <div class="lg:col-span-9 space-y-6">
-                
-                <div class="bg-red-500/10 border border-red-500/50 p-4 rounded-xl flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="bg-red-500 text-black font-bold rounded-full w-8 h-8 flex items-center justify-center text-xl">!</div>
-                        <div>
-                            <p class="text-[10px] text-red-500 font-bold uppercase tracking-widest">Custos Ocultos da Compra</p>
-                            <p id="outCustoOculto" class="text-2xl font-bold text-red-500">R$ 0,00 /mês</p>
-                        </div>
+            <div class="space-y-6">
+                <div class="cyber-card p-6 border-t-4 border-green-500 bg-green-500/5">
+                    <h2 class="text-green-500 font-bold mb-4 uppercase">Lado Assinatura</h2>
+                    <div class="mb-6">
+                        <label class="label-xs">Mensalidade Assinatura</label>
+                        <input type="number" id="vAssinatura" class="input-cyber" value="2000">
                     </div>
-                    <p class="hidden md:block text-[10px] text-red-800 text-right uppercase">IPVA + Seguro + Manutenção<br>Não inclusos na compra</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="cyber-card p-6">
-                        <p class="label-xs">Cenário A</p>
-                        <h3 class="text-xl font-bold mb-4 uppercase">Financiamento</h3>
-                        <div class="space-y-4">
-                            <div class="flex justify-between border-b border-gray-800 pb-2">
-                                <span class="text-gray-500 text-sm">Parcela Mensal</span>
-                                <span id="outParcela" class="text-green-400 font-bold">R$ 0,00</span>
-                            </div>
-                            <div class="flex justify-between border-b border-gray-800 pb-2">
-                                <span class="text-gray-500 text-sm">Custo Extras</span>
-                                <span id="outExtrasA" class="text-red-500 font-bold">R$ 0,00</span>
-                            </div>
-                            <div class="flex justify-between pt-2">
-                                <span class="font-bold text-sm uppercase">Custo Total</span>
-                                <span id="outTotalA" class="text-cyan-400 font-bold text-xl">R$ 0,00</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border-2 border-green-500 bg-green-500/5 p-6 rounded-xl relative">
-                        <span class="absolute -top-3 right-4 bg-green-500 text-black text-[10px] font-black px-3 py-1 rounded-full">VENCEDOR</span>
-                        <p class="label-xs">Cenário B</p>
-                        <h3 class="text-xl font-bold mb-4 uppercase">Autoselic</h3>
-                        <div class="space-y-4">
-                            <div class="flex justify-between border-b border-gray-800 pb-2">
-                                <span class="text-gray-500 text-sm">Custo Real do Dono</span>
-                                <span id="outCustoDono" class="text-cyan-400 font-bold">R$ 0,00</span>
-                            </div>
-                            <div class="flex justify-between border-b border-gray-800 pb-2">
-                                <span class="text-gray-500 text-sm">Assinatura</span>
-                                <span id="outAssinatura" class="text-red-500 font-bold">R$ 0,00</span>
-                            </div>
-                            <div class="flex justify-between pt-2">
-                                <span class="font-bold text-sm uppercase">Aporte Mensal</span>
-                                <span id="outAporte" class="text-green-400 font-bold text-xl">R$ 0,00</span>
-                            </div>
-                        </div>
+                    <div class="space-y-3 bg-black/30 p-4 rounded-lg">
+                        <div class="flex justify-between text-sm"><span class="text-gray-400">Custo de Oportunidade:</span> <span id="outCustoDono" class="font-bold text-white">R$ 0,00</span></div>
+                        <div class="flex justify-between text-sm"><span class="text-gray-400">Valor Assinatura:</span> <span id="outAssinatura" class="text-red-400">R$ 0,00</span></div>
+                        <div class="flex justify-between border-t border-gray-800 pt-2 font-bold text-green-400"><span>APORTE INVESTIMENTO:</span> <span id="outAporte" class="text-xl">R$ 0,00</span></div>
                     </div>
                 </div>
+            </div>
 
-                <div class="cyber-card p-6">
-                    <h3 class="label-xs mb-4">Evolução Patrimonial (48 Meses)</h3>
-                    <div class="h-64">
-                        <canvas id="meuGrafico"></canvas>
-                    </div>
+            <div class="lg:col-span-2 cyber-card p-6">
+                <h3 class="label-xs mb-4 text-center">Evolução de Patrimônio Líquido (Amortização vs Investimento)</h3>
+                <div class="h-80">
+                    <canvas id="meuGrafico"></canvas>
+                </div>
+                <div class="mt-4 flex flex-wrap gap-6 text-[10px] uppercase font-bold justify-center">
+                    <span class="flex items-center gap-2"><div class="w-3 h-3 bg-red-500 rounded-full"></div> Patrimônio Carro (Pago - Devido)</span>
+                    <span class="flex items-center gap-2"><div class="w-3 h-3 bg-green-500 rounded-full"></div> Patrimônio Selic (Capital Acumulado)</span>
                 </div>
             </div>
         </div>
@@ -118,48 +102,52 @@
         function calcular() {
             const vCarro = parseFloat(document.getElementById('vCarro').value) || 0;
             const vEntrada = parseFloat(document.getElementById('vEntrada').value) || 0;
-            const tJuros = parseFloat(document.getElementById('tJuros').value) / 100 || 0;
+            const tJuros = (parseFloat(document.getElementById('tJuros').value) / 100) || 0;
             const vPrazo = parseInt(document.getElementById('vPrazo').value) || 1;
             const vAssinatura = parseFloat(document.getElementById('vAssinatura').value) || 0;
-            
-            const pIpva = parseFloat(document.getElementById('pIpva').value) / 100;
-            const pSeguro = parseFloat(document.getElementById('pSeguro').value) / 100;
-            const pManu = parseFloat(document.getElementById('pManu').value) / 100;
+            const tSelic = (parseFloat(document.getElementById('tSelic').value) / 100) || 0;
+            const pCustosPosse = (parseFloat(document.getElementById('pCustosAnuais').value) / 100) || 0;
+            const tInflacaoMes = (parseFloat(document.getElementById('tInflacao').value) / 1200) || 0;
 
-            // 1. Cálculos de Propriedade
-            const custoOcultoMensal = (vCarro * (pIpva + pSeguro + pManu)) / 12;
-            
-            // 2. Parcela Financiamento (PMT)
+            const custoOcultoMensal = (vCarro * pCustosPosse) / 12;
             const vFinanciado = vCarro - vEntrada;
             const pmt = vFinanciado > 0 ? (vFinanciado * tJuros) / (1 - Math.pow(1 + tJuros, -vPrazo)) : 0;
-            
             const totalCustoA = pmt + custoOcultoMensal;
             const aporteB = totalCustoA - vAssinatura;
 
-            // UI Update
-            document.getElementById('outCustoOculto').innerText = `R$ ${custoOcultoMensal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            document.getElementById('outParcela').innerText = `R$ ${pmt.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            document.getElementById('outExtrasA').innerText = `R$ ${custoOcultoMensal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            document.getElementById('outTotalA').innerText = `R$ ${totalCustoA.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            document.getElementById('outCustoDono').innerText = `R$ ${totalCustoA.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            document.getElementById('outAssinatura').innerText = `R$ ${vAssinatura.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-            document.getElementById('outAporte').innerText = `R$ ${aporteB.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            const fmt = (v) => v.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+            document.getElementById('outParcela').innerText = fmt(pmt);
+            document.getElementById('outExtrasA').innerText = fmt(custoOcultoMensal);
+            document.getElementById('outTotalA').innerText = fmt(totalCustoA);
+            document.getElementById('outCustoDono').innerText = fmt(totalCustoA);
+            document.getElementById('outAssinatura').innerText = fmt(vAssinatura);
+            document.getElementById('outAporte').innerText = fmt(aporteB);
 
-            desenharGrafico(vCarro, vEntrada, aporteB, vPrazo);
+            desenharGrafico(vCarro, vEntrada, aporteB, vPrazo, tSelic, pmt, tJuros, vFinanciado, tInflacaoMes);
         }
 
-        function desenharGrafico(vCarro, vEntrada, aporte, meses) {
+        function desenharGrafico(vCarro, vEntrada, aporte, meses, selic, pmt, jurosFinanc, vFinanc, inflacao) {
             const ctx = document.getElementById('meuGrafico').getContext('2d');
             const labels = Array.from({length: meses + 1}, (_, i) => i);
             
-            // Dados Depreciação (1.2% ao mês aprox)
-            const dadosCarro = labels.map(m => vCarro * Math.pow(0.988, m));
+            // FINANCIAMENTO: Patrimônio Líquido (Valor do carro depreciado - Saldo Devedor)
+            let saldoDevedor = vFinanc;
+            const dadosPatrimonioFinanc = labels.map(m => {
+                const depRecessiva = 0.01; // Depreciação média 1% am
+                const valorCarroHoje = vCarro * Math.pow(1 - depRecessiva + inflacao, m);
+                if (m > 0) {
+                    const jurosMes = saldoDevedor * jurosFinanc;
+                    const amortizacao = pmt - jurosMes;
+                    saldoDevedor -= amortizacao;
+                }
+                return Math.max(0, valorCarroHoje - Math.max(0, saldoDevedor));
+            });
             
-            // Dados Investimento (Selic aprox 0.9% AM)
-            let saldo = vEntrada;
-            const dadosInvest = labels.map(m => {
-                if(m > 0) saldo = (saldo + aporte) * 1.009;
-                return saldo;
+            // ASSINATURA: Acúmulo Selic
+            let saldoInvest = vEntrada;
+            const dadosPatrimonioAssin = labels.map(m => {
+                if(m > 0) saldoInvest = (saldoInvest + aporte) * (1 + selic);
+                return saldoInvest;
             });
 
             if (chart) chart.destroy();
@@ -167,29 +155,18 @@
                 type: 'line',
                 data: {
                     labels: labels,
-                    datasets: [{
-                        label: 'Valor Carro (Depreciado)',
-                        data: dadosCarro,
-                        borderColor: '#ff4444',
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        fill: false
-                    }, {
-                        label: 'Saldo Investido (Autoselic)',
-                        data: dadosInvest,
-                        borderColor: '#00ff88',
-                        borderWidth: 2,
-                        pointRadius: 0,
-                        fill: false
-                    }]
+                    datasets: [
+                        { label: 'Financiamento', data: dadosPatrimonioFinanc, borderColor: '#ef4444', borderWidth: 3, pointRadius: 0, fill: false },
+                        { label: 'Assinatura', data: dadosPatrimonioAssin, borderColor: '#22c55e', borderWidth: 3, pointRadius: 0, fill: false }
+                    ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        y: { grid: { color: '#333' }, ticks: { color: '#666' } },
-                        x: { grid: { display: false }, ticks: { color: '#666' } }
+                        y: { grid: { color: '#1f2937' }, ticks: { color: '#9ca3af', font: { size: 10 } } },
+                        x: { grid: { display: false }, ticks: { color: '#9ca3af', font: { size: 10 } } }
                     }
                 }
             });
