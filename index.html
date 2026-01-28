@@ -13,101 +13,103 @@
         .input-clean { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 12px; border-radius: 10px; width: 100%; outline: none; transition: 0.2s; font-size: 1rem; }
         .input-clean:focus { border-color: #00ff88; background: rgba(255, 255, 255, 0.07); box-shadow: 0 0 10px rgba(0, 255, 136, 0.2); }
         .label-clean { font-size: 0.7rem; font-weight: 600; color: #8b949e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block; }
-        canvas { max-width: 100% !important; }
+        .winner-border { border-color: #00ff88 !important; box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); }
     </style>
 </head>
 <body class="p-4 md:p-10">
 
     <div class="max-w-6xl mx-auto">
-        <header class="mb-8 md:mb-12 text-center">
-            <h1 class="text-2xl md:text-3xl font-bold tracking-tight mb-2 uppercase">MATEMÁTICA DO CARRO</h1>
-            <div class="h-1 w-16 md:w-20 bg-green-500 mx-auto rounded-full"></div>
+        <header class="mb-12 text-center">
+            <h1 class="text-3xl font-bold tracking-tight mb-2 uppercase">MATEMÁTICA DO CARRO</h1>
+            <div class="h-1 w-20 bg-green-500 mx-auto rounded-full"></div>
         </header>
 
-        <div class="glass-card p-6 md:p-8 mb-8 md:mb-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6">
+        <div class="glass-card p-6 md:p-8 mb-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6">
             <div>
                 <label class="label-clean">Valor do Carro</label>
-                <input type="text" id="vCarroDisp" class="input-clean" value="R$ 100.000,00" oninput="mask(this, 'vCarro')">
+                <input type="text" class="input-clean" value="R$ 100.000,00" oninput="mask(this, 'vCarro')">
                 <input type="hidden" id="vCarro" value="100000">
             </div>
             <div>
                 <label class="label-clean">Entrada</label>
-                <input type="text" id="vEntradaDisp" class="input-clean" value="R$ 40.000,00" oninput="mask(this, 'vEntrada')">
+                <input type="text" class="input-clean" value="R$ 40.000,00" oninput="mask(this, 'vEntrada')">
                 <input type="hidden" id="vEntrada" value="40000">
             </div>
             <div>
                 <label class="label-clean">Prazo (Meses)</label>
-                <input type="number" id="vPrazo" class="input-clean" value="48">
+                <input type="number" id="vPrazo" class="input-clean recalc" value="48">
             </div>
             <div>
                 <label class="label-clean">Custos Posse (% AA)</label>
-                <input type="number" id="pCustosAnuais" class="input-clean" value="8.8" step="0.1">
+                <input type="number" id="pCustosAnuais" class="input-clean recalc" value="8.8" step="0.1">
             </div>
             <div>
                 <label class="label-clean">Inflação (% AA)</label>
-                <input type="number" id="tInflacao" class="input-clean" value="4.50" step="0.01">
+                <input type="number" id="tInflacao" class="input-clean recalc" value="4.50" step="0.01">
             </div>
             <div>
                 <label class="label-clean">Selic Atual (% AA)</label>
-                <input type="number" id="tSelicAnual" class="input-clean !text-cyan-400 font-bold" value="15.00" step="0.01">
+                <input type="number" id="tSelicAnual" class="input-clean !text-cyan-400 font-bold recalc" value="15.00" step="0.01">
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-            <div class="glass-card p-6 md:p-8 border-t-2 border-red-500/50">
-                <h2 class="text-red-500 font-bold mb-6 italic text-lg">FINANCIAMENTO BANCÁRIO</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="glass-card p-8 border-t-2 border-red-500/50">
+                <h2 class="text-red-500 font-bold mb-6 italic uppercase">Financiamento</h2>
                 <div class="mb-8">
                     <label class="label-clean">Taxa de Juros (% AM)</label>
-                    <input type="number" id="tJuros" class="input-clean" value="1.50" step="0.01">
+                    <input type="number" id="tJuros" class="input-clean recalc" value="1.50" step="0.01">
                 </div>
                 <div class="space-y-4">
                     <div class="flex justify-between items-center"><span class="text-gray-400 text-sm">Parcela Mensal</span> <span id="outParcela" class="font-bold">R$ 0,00</span></div>
-                    <div class="flex justify-between items-center"><span class="text-gray-400 text-sm">Custos Posse</span> <span id="outExtrasA" class="text-red-400 font-bold">R$ 0,00</span></div>
-                    <div class="pt-4 border-t border-white/5 flex justify-between items-center">
-                        <span class="text-xs font-bold uppercase">Saída de Caixa Mensal</span>
-                        <span id="outTotalA" class="text-xl md:text-2xl font-bold">R$ 0,00</span>
+                    <div class="flex justify-between items-center"><span class="text-gray-400 text-sm">Custos de Posse</span> <span id="outExtrasA" class="text-red-400 font-bold">R$ 0,00</span></div>
+                    <div class="pt-4 border-t border-white/5 flex justify-between items-center text-white">
+                        <span class="text-sm font-bold uppercase tracking-wider">Saída de Caixa Mensal</span>
+                        <span id="outTotalA" class="text-2xl font-bold">R$ 0,00</span>
                     </div>
                 </div>
             </div>
 
-            <div class="glass-card p-6 md:p-8 border-t-2 border-green-500">
-                <h2 class="text-green-500 font-bold mb-6 flex justify-between items-center text-lg">
-                    ASSINATURA PREMIUM <span class="hidden sm:inline text-[9px] bg-green-500/20 px-2 py-1 rounded">VENCEDOR</span>
+            <div class="glass-card p-8 border-t-2 border-green-500">
+                <h2 class="text-green-500 font-bold mb-6 flex justify-between items-center uppercase">
+                    Assinatura <span class="text-[9px] bg-green-500/20 px-2 py-1 rounded">VENCEDOR</span>
                 </h2>
                 <div class="mb-8">
-                    <label class="label-clean">Mensalidade Assinatura</label>
-                    <input type="number" id="vAssinatura" class="input-clean" value="2000">
+                    <label class="label-clean">Mensalidade da Assinatura</label>
+                    <input type="text" class="input-clean" value="R$ 2.000,00" oninput="mask(this, 'vAssinatura')">
+                    <input type="hidden" id="vAssinatura" value="2000">
                 </div>
                 <div class="space-y-4">
                     <div class="flex justify-between items-center"><span class="text-gray-400 text-sm">Custo Equivalente</span> <span id="outCustoDono" class="font-bold">R$ 0,00</span></div>
-                    <div class="flex justify-between items-center"><span class="text-gray-400 text-sm">Mensalidade Fixa</span> <span id="outAssinLabel" class="text-white font-bold">R$ 2.000,00</span></div>
+                    <div class="flex justify-between items-center"><span class="text-gray-400 text-sm">Mensalidade Fixa</span> <span id="outAssinLabel" class="text-white font-bold">R$ 0,00</span></div>
                     <div class="pt-4 border-t border-white/5 flex justify-between items-center text-green-400">
-                        <span class="text-xs font-bold uppercase">Aporte p/ Investir</span>
-                        <span id="outAporte" class="text-xl md:text-2xl font-bold">R$ 0,00</span>
+                        <span class="text-sm font-bold uppercase tracking-wider">Aporte p/ Investimento</span>
+                        <span id="outAporte" class="text-2xl font-bold">R$ 0,00</span>
                     </div>
                 </div>
             </div>
 
-            <div class="lg:col-span-2 glass-card p-6 md:p-8">
-                <h3 class="label-clean mb-6 text-center md:text-left">Evolução do Patrimônio Líquido</h3>
-                <div class="h-64 md:h-80 mb-8">
+            <div class="lg:col-span-2 glass-card p-8">
+                <h3 class="label-clean mb-6 text-center md:text-left">Evolução de Patrimônio Líquido (Amortização vs Investimento)</h3>
+                <div class="h-80 mb-8">
                     <canvas id="meuGrafico"></canvas>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-white/10 pt-8">
                     <div id="cardFinanc" class="p-6 rounded-2xl bg-white/5 border border-white/10 transition-all duration-300">
                         <p class="label-clean">Patrimônio Carro (Financ.)</p>
-                        <p id="resFinalFinanc" class="text-xl md:text-2xl font-bold">R$ 0,00</p>
+                        <p id="resFinalFinanc" class="text-2xl font-bold">R$ 0,00</p>
+                        <p class="text-[10px] text-gray-500 mt-2 uppercase tracking-tight">Valor Residual - Saldo Devedor</p>
                     </div>
                     <div id="cardAssin" class="p-6 rounded-2xl bg-green-500/10 border border-green-500/30 transition-all duration-300">
                         <div class="flex justify-between items-start">
                             <div>
-                                <p class="label-clean text-green-400">Patrimônio Investido (Assin.)</p>
-                                <p id="resFinalAssin" class="text-xl md:text-2xl font-bold text-green-400">R$ 0,00</p>
+                                <p class="label-clean text-green-400">Patrimônio Selic (Assin.)</p>
+                                <p id="resFinalAssin" class="text-2xl font-bold text-green-400">R$ 0,00</p>
                             </div>
                             <span class="bg-green-500 text-black text-[9px] font-black px-2 py-1 rounded-md uppercase">🏆 Campeão</span>
                         </div>
-                        <p class="text-[10px] text-green-600 mt-2 uppercase font-bold">Diferença Real: <span id="vLucroFinal">R$ 0,00</span></p>
+                        <p class="text-[10px] text-green-600 mt-2 font-bold uppercase tracking-wider">Diferença Final: <span id="vLucroFinal" class="text-lg">R$ 0,00</span></p>
                     </div>
                 </div>
             </div>
@@ -118,6 +120,7 @@
         let chart;
         const fmt = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
+        // Máscara Real BRL e Recálculo
         function mask(i, id) {
             let v = i.value.replace(/\D/g, "");
             v = (v / 100).toFixed(2) + "";
@@ -157,10 +160,7 @@
         }
 
         function render(vCarro, vEntrada, aporte, meses, selic, pmt, jurosF, vF, inf) {
-            let sD = vF;
-            let pF = [], pA = [];
-            let sI = vEntrada;
-
+            let sD = vF, pF = [], pA = [], sI = vEntrada;
             for(let m=0; m<=meses; m++) {
                 let vCH = vCarro * Math.pow(0.99 + inf, m);
                 if (m > 0) {
@@ -179,7 +179,9 @@
 
             const cF = document.getElementById('cardFinanc'), cA = document.getElementById('cardAssin');
             if(fA > fF) {
-                cA.classList.add('border-green-500', 'scale-105'); cF.classList.add('opacity-40');
+                cA.classList.add('winner-border', 'scale-105'); cF.classList.add('opacity-40');
+            } else {
+                cA.classList.remove('winner-border', 'scale-105'); cF.classList.remove('opacity-40');
             }
 
             if (chart) chart.destroy();
@@ -193,10 +195,12 @@
                     ]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
-                    scales: { y: { ticks: { color: '#666', callback: (v) => 'R$ ' + v.toLocaleString('pt-BR') } } }
+                    scales: { y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#666', callback: (v) => 'R$ ' + v.toLocaleString('pt-BR') } } }
                 }
             });
         }
+
+        document.querySelectorAll('.recalc').forEach(i => i.addEventListener('input', calcular));
         calcular();
     </script>
 </body>
