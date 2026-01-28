@@ -10,42 +10,28 @@
         :root { --primary: #00ff88; --bg: #000000; --card: #1c1c1e; --text: #ffffff; --grey: #a1a1aa; --red: #ff3b30; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 15px; }
-        
         .app-container { max-width: 450px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
-        
         .header { width: 100%; text-align: left; margin-bottom: 25px; }
         .header h1 { font-size: 28px; font-weight: 900; margin: 0; letter-spacing: -1.5px; }
         .header span { color: var(--primary); font-size: 14px; }
-
         .card { width: 100%; background: var(--card); border-radius: 20px; padding: 22px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); }
         .card-label { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--grey); margin-bottom: 15px; display: block; text-align: center; }
-
-        /* Inputs Estilo Clean */
         .input-group { margin-bottom: 20px; width: 100%; }
-        .input-group label { display: block; font-size: 12px; margin-bottom: 8px; font-weight: 500; color: var(--grey); }
-        select, input { 
-            width: 100%; background: transparent; border: none; border-bottom: 2px solid rgba(255,255,255,0.2);
-            padding: 10px 0; color: var(--text); font-size: 18px; font-weight: 600; transition: 0.3s;
-        }
+        .input-group label { display: block; font-size: 11px; color: #8b949e; margin-bottom: 6px; font-weight: 600; text-transform: uppercase; }
+        select, input { width: 100%; background: transparent; border: none; border-bottom: 2px solid rgba(255,255,255,0.2); padding: 10px 0; color: var(--text); font-size: 18px; font-weight: 600; transition: 0.3s; }
         select:focus, input:focus { border-color: var(--primary); }
-
-        /* Gráfico e Resultados Centralizados */
         .chart-wrap { width: 100%; height: 230px; position: relative; margin-bottom: 15px; }
         .res-grid { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center; }
         .res-box { padding: 15px; background: rgba(255,255,255,0.05); border-radius: 16px; }
-        
-        /* Análise de Capital e Custo */
         .data-item { margin-bottom: 22px; width: 100%; }
         .data-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
         .data-title { font-size: 14px; font-weight: 700; color: var(--primary); }
         .data-value { font-size: 14px; font-weight: 900; }
         .data-desc { font-size: 12px; color: var(--grey); line-height: 1.5; text-align: left; }
-
         .btn-main { background: var(--primary); color: #000; border: none; width: 100%; padding: 20px; border-radius: 18px; font-weight: 900; font-size: 16px; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 <body>
-
 <div class="app-container">
     <div class="header">
         <h1>Matemática do Carro<span>.</span></h1>
@@ -53,7 +39,7 @@
     </div>
 
     <div class="card">
-        <span class="card-label">Configuração</span>
+        <span class="card-label">Configuração do Duelo</span>
         <div class="input-group">
             <label>Modelo de Referência</label>
             <select id="preset" onchange="aplicar()">
@@ -63,66 +49,47 @@
                 <option value="hilux" data-fipe="330000" data-perc="2.6">Toyota Hilux SRX</option>
             </select>
         </div>
-        <div class="input-group">
-            <label>Valor Tabela FIPE (R$)</label>
-            <input type="text" id="fipe" oninput="mask(this); calc()">
+        <div class="input-group"><label>Valor Tabela FIPE (R$)</label><input type="text" id="fipe" oninput="mask(this); calc()"></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+            <div class="input-group"><label>Finan. (% am)</label><input type="number" id="juros" value="1.45" step="0.01" oninput="calc()"></div>
+            <div class="input-group"><label>Tempo (Meses)</label><input type="number" id="meses" value="36" oninput="calc()"></div>
         </div>
     </div>
 
     <div class="card" style="display: flex; flex-direction: column; align-items: center;">
-        <span class="card-label">Evolução do Patrimônio Líquido</span>
-        <div class="chart-wrap">
-            <canvas id="grafico"></canvas>
-        </div>
+        <span class="card-label">Patrimônio Líquido Acumulado</span>
+        <div class="chart-wrap"><canvas id="grafico"></canvas></div>
         <div class="res-grid">
-            <div class="res-box">
-                <small style="color:var(--red); font-weight: 800; font-size: 10px;">EM LATA (36m)</small>
-                <div id="vC" style="font-weight:900; font-size: 16px; margin-top: 5px;">R$ 0</div>
-            </div>
-            <div class="res-box" style="border: 1px solid var(--primary);">
-                <small style="color:var(--primary); font-weight: 800; font-size: 10px;">NO BANCO (36m)</small>
-                <div id="vA" style="font-weight:900; font-size: 16px; margin-top: 5px;">R$ 0</div>
-            </div>
+            <div class="res-box"><small style="color:var(--red); font-weight: 800; font-size: 10px;">EM LATA</small><div id="vC" style="font-weight:900; font-size: 16px; margin-top: 5px;">R$ 0</div></div>
+            <div class="res-box" style="border: 1px solid var(--primary);"><small style="color:var(--primary); font-weight: 800; font-size: 10px;">NO BANCO</small><div id="vA" style="font-weight:900; font-size: 16px; margin-top: 5px;">R$ 0</div></div>
         </div>
     </div>
 
     <div class="card" style="border-color: var(--primary)">
         <span class="card-label">Análise de Capital e Custos</span>
-
+        
         <div class="data-item">
-            <div class="data-header">
-                <span class="data-title">Aporte Inicial (Tesouro Selic)</span>
-                <span id="res-entrada" class="data-value">R$ 0,00</span>
-            </div>
-            <p class="data-desc">Capital que seria "enterrado" na entrada. No seu método, ele fica no Tesouro Selic rendendo juros compostos e mantendo sua liquidez total.</p>
+            <div class="data-header"><span class="data-title">Rentabilidade Selic</span><span id="res-selic-total" class="data-value" style="color: var(--primary)">R$ 0,00</span></div>
+            <p class="data-desc">Este é o **ganho real** de juros sobre o seu dinheiro. É o motor do seu patrimônio que transforma a economia mensal em riqueza acumulada através dos juros compostos.</p>
         </div>
 
         <div class="data-item">
-            <div class="data-header">
-                <span class="data-title">Aportes Mensais (Sobra)</span>
-                <span id="res-sobra" class="data-value">R$ 0,00</span>
-            </div>
-            <p class="data-desc">Diferença real entre o custo de posse e a assinatura. Esse valor é reinvestido mensalmente, acelerando o crescimento do seu patrimônio no banco.</p>
+            <div class="data-header"><span class="data-title">Aporte Inicial + Sobra</span><span id="res-capital-base" class="data-value">R$ 0,00</span></div>
+            <p class="data-desc">Somatória do valor de entrada (Aporte Inicial) mais as economias mensais (Sobra) que deixaram de ser pagas em juros bancários e taxas.</p>
         </div>
 
         <div class="data-item">
-            <div class="data-header">
-                <span class="data-title" style="color: var(--red)">IPVA Dinâmico</span>
-                <span id="res-ipva" class="data-value">R$ 0,00</span>
-            </div>
-            <p class="data-desc">Gasto total acumulado com o imposto. Calculamos a queda da guia ano a ano acompanhando a desvalorização real da tabela FIPE.</p>
+            <div class="data-header"><span class="data-title" style="color: var(--red)">IPVA Dinâmico</span><span id="res-ipva" class="data-value">R$ 0,00</span></div>
+            <p class="data-desc">Imposto total pago ao governo. Calculado ano a ano sobre o valor depreciado da FIPE, simulando a redução real da guia.</p>
         </div>
 
         <div class="data-item">
-            <div class="data-header">
-                <span class="data-title" style="color: var(--red)">Seguro + Manutenção</span>
-                <span id="res-seguro" class="data-value">R$ 0,00</span>
-            </div>
-            <p class="data-desc">Custo total com proteção e oficina. Inclui revisões e seguro corrigidos pela **Inflação (IPCA)**, refletindo o aumento real de preços no mercado.</p>
+            <div class="data-header"><span class="data-title" style="color: var(--red)">Seguro + Manutenção</span><span id="res-seguro" class="data-value">R$ 0,00</span></div>
+            <p class="data-desc">Gasto total com proteção e oficina no período, corrigido pela **Inflação (IPCA)** mensal sobre peças e serviços.</p>
         </div>
     </div>
 
-    <button class="btn-main" onclick="gerarWhatsApp()">📲 Enviar Análise @matematicadocarro</button>
+    <button class="btn-main" onclick="gerarWhatsApp()">📲 Relatório @matematicadocarro</button>
 </div>
 
 <script>
@@ -148,15 +115,15 @@ function parse(v) { return parseFloat(v.toString().replace(/\./g,'').replace(','
 
 function calc() {
     const fipe = parse(document.getElementById('fipe').value);
-    const n = 36;
+    const n = parseInt(document.getElementById('meses').value) || 36;
+    const jFinan = parseFloat(document.getElementById('juros').value) / 100;
     const entrada = fipe * 0.3;
     const s = document.getElementById('preset');
     const assinBase = fipe * (parseFloat(s.options[s.selectedIndex].dataset.perc)/100);
 
-    // Cálculos de Custos Detalhados
     let acumIpva = 0;
     let acumSeguroManut = 0;
-    const custoBaseAnual = fipe * 0.05; // 3.5% seguro + 1.5% manut
+    const custoBaseAnual = fipe * 0.05;
 
     for (let m = 1; m <= n; m++) {
         let ano = Math.floor((m-1)/12);
@@ -164,28 +131,31 @@ function calc() {
         acumSeguroManut += (custoBaseAnual / 12) * Math.pow(1 + (ipcaAnual/12), m);
     }
 
-    const j = 0.0145;
-    const parc = (fipe - entrada) * (j * Math.pow(1+j, n)) / (Math.pow(1+j, n) - 1);
+    const parc = (fipe - entrada) * (jFinan * Math.pow(1+jFinan, n)) / (Math.pow(1+jFinan, n) - 1);
     const sobraM = (parc + (acumIpva/n) + (acumSeguroManut/n)) - assinBase;
-
-    // Atualização dos textos da Análise
-    document.getElementById('res-entrada').innerText = entrada.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('res-sobra').innerText = sobraM.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}) + "/mês";
-    document.getElementById('res-ipva').innerText = acumIpva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('res-seguro').innerText = acumSeguroManut.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
     const sm = Math.pow(1 + selicAnual, 1/12) - 1;
     let capAss = entrada, labs = [], dAss = [], dCom = [];
+    let capitalBaseAcumulado = entrada;
     
     for(let i=0; i<=n; i++) {
         labs.push(i+"m");
         let vC = fipe * Math.pow(0.88, i/12);
-        let sd = (fipe - entrada) * (Math.pow(1+j, n) - Math.pow(1+j, i)) / (Math.pow(1+j, n) - 1);
+        let sd = (fipe - entrada) * (Math.pow(1+jFinan, n) - Math.pow(1+jFinan, i)) / (Math.pow(1+jFinan, n) - 1);
         dCom.push(Math.max(0, vC - (i === n ? 0 : sd)));
-        if(i > 0) capAss = capAss * (1 + sm) + sobraM;
+        if(i > 0) {
+            capAss = capAss * (1 + sm) + sobraM;
+            capitalBaseAcumulado += sobraM;
+        }
         dAss.push(capAss);
     }
 
+    const rendimentoPuroSelic = capAss - capitalBaseAcumulado;
+
+    document.getElementById('res-selic-total').innerText = rendimentoPuroSelic.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+    document.getElementById('res-capital-base').innerText = capitalBaseAcumulado.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+    document.getElementById('res-ipva').innerText = acumIpva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+    document.getElementById('res-seguro').innerText = acumSeguroManut.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
     document.getElementById('vC').innerText = dCom[n].toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
     document.getElementById('vA').innerText = dAss[n].toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
@@ -202,9 +172,9 @@ function calc() {
 
 function gerarWhatsApp() {
     const msg = `*📊 RELATÓRIO @MATEMATICADOCARRO*\n` +
-        `Capital Final no Banco: ${document.getElementById('vA').innerText}\n` +
-        `Sobra Reinvestida: ${document.getElementById('res-sobra').innerText}\n` +
-        `Gasto IPVA: ${document.getElementById('res-ipva').innerText}\n\n` +
+        `Prazo: ${document.getElementById('meses').value} meses\n` +
+        `Lucro Puro Selic: ${document.getElementById('res-selic-total').innerText}\n` +
+        `Final no Banco: ${document.getElementById('vA').innerText}\n` +
         `_Simulação Estratégica by Diego_`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
 }
