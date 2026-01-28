@@ -3,267 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matemática do Carro | Simulador Pro</title>
+    <title>Matemática do Carro | Equilíbrio de Fluxo</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
-            --primary: #10b981; /* Verde Selic */
-            --primary-dark: #059669;
-            --bg: #f3f4f6;
-            --card: #ffffff;
-            --text: #1f2937;
-            --border: #e5e7eb;
-            --accent: #3b82f6; /* Azul Investimento */
-        }
-
-        [data-theme="dark"] {
-            --bg: #0f172a;
-            --card: #1e293b;
-            --text: #f8fafc;
-            --border: #334155;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', -apple-system, sans-serif;
-            margin: 0;
-            padding: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 25px;
-        }
-
-        .card {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-            border: 1px solid var(--border);
-        }
-
-        .input-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--text);
-            opacity: 0.9;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            color: var(--text);
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-
-        .btn-calc {
-            width: 100%;
-            padding: 14px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.2s;
-        }
-
-        .btn-calc:hover { background: var(--primary-dark); transform: translateY(-2px); }
-
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 10px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            background: var(--card);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .grid-stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .stat-item {
-            padding: 15px;
-            border-radius: 12px;
-            background: var(--bg);
-            text-align: center;
-        }
-
-        .stat-val { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
-        .stat-label { font-size: 0.75rem; opacity: 0.7; }
-
-        canvas { margin-top: 20px; }
-
-        @media (max-width: 850px) {
-            .container { grid-template-columns: 1fr; }
-        }
+        :root { --primary: #10b981; --secondary: #3b82f6; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --border: #334155; }
+        body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
+        .card { background: var(--card); border-radius: 12px; padding: 20px; border: 1px solid var(--border); }
+        .input-group { margin-bottom: 12px; }
+        label { display: block; font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: #94a3b8; }
+        input { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--border); background: #0f172a; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .info-box { background: #334155; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85rem; line-height: 1.4; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 15px; }
+        th, td { padding: 10px; text-align: right; border-bottom: 1px solid var(--border); }
+        th { text-align: left; color: #94a3b8; }
+        .val-compra { color: var(--primary); font-weight: bold; }
+        .val-assina { color: var(--secondary); font-weight: bold; }
     </style>
 </head>
-<body data-theme="dark">
-
-<button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-
-<div class="header">
-    <h1>📊 Matemática do Carro</h1>
-    <p>Compare Financiamento vs. Assinatura com a Estratégia Autoselic</p>
-</div>
+<body>
 
 <div class="container">
     <div class="card">
-        <h3>Parâmetros</h3>
-        <div class="input-group">
-            <label>Valor do Veículo (R$)</label>
-            <input type="number" id="valorFipe" value="120000">
+        <h3>🚀 Parâmetros</h3>
+        <div class="info-box">
+            Ambos começam com o mesmo capital (Entrada) e o mesmo custo mensal total. Quem gasta menos com o carro, investe a diferença.
         </div>
-        <div class="input-group">
-            <label>Mensalidade Assinatura (R$)</label>
-            <input type="number" id="assinatura" value="3800">
-        </div>
-        <div class="input-group">
-            <label>Rendimento Estratégia (% a.m.)</label>
-            <input type="number" id="rendimento" value="1.8" step="0.1">
-        </div>
-        <div class="input-group">
-            <label>Desvalorização FIPE Anual (%)</label>
-            <input type="number" id="depreciacao" value="8">
-        </div>
-        <div class="input-group">
-            <label>Seguro Anual (R$)</label>
-            <input type="number" id="seguro" value="4000">
-        </div>
-        <button class="btn-calc" onclick="calcular()">Simular Agora</button>
+        <div class="input-group"><label>Valor do Carro (R$)</label><input type="number" id="valorCarro" value="100000"></div>
+        <div class="input-group"><label>Entrada / Capital Inicial (R$)</label><input type="number" id="entrada" value="30000"></div>
+        <div class="input-group"><label>Juros Financiamento (% a.m.)</label><input type="number" id="jurosFinanc" value="1.5"></div>
+        <div class="input-group"><label>Prazo Financiamento (Meses)</label><input type="number" id="mesesFinanc" value="48"></div>
+        <hr>
+        <div class="input-group"><label>Assinatura Mensal (R$)</label><input type="number" id="precoAssinatura" value="3500"></div>
+        <div class="input-group"><label>Rendimento Estratégia (% a.m.)</label><input type="number" id="taxaRend" value="1.8"></div>
+        <button onclick="calcular()">Simular Comparação Justa</button>
     </div>
 
     <div class="card">
-        <h3>Patrimônio Final (60 meses)</h3>
-        <div class="grid-stats">
-            <div class="stat-item">
-                <div class="stat-label">Cenário Comprador</div>
-                <div class="stat-val" id="resCompra">R$ 0,00</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-label">Cenário Assinatura</div>
-                <div class="stat-val" id="resAssinatura">R$ 0,00</div>
-            </div>
-        </div>
-        <canvas id="meuGrafico"></canvas>
+        <canvas id="graficoEvolucao" height="100"></canvas>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ano</th>
+                    <th>Valor FIPE</th>
+                    <th>Custo Mensal Dono</th>
+                    <th>Patrimônio COMPRA</th>
+                    <th>Patrimônio ASSINATURA</th>
+                </tr>
+            </thead>
+            <tbody id="tabelaDados"></tbody>
+        </table>
     </div>
 </div>
 
 <script>
     let chart;
 
-    function toggleTheme() {
-        const body = document.body;
-        body.setAttribute('data-theme', body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-    }
+    function format(v) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
 
     function calcular() {
-        const fipeInicial = parseFloat(document.getElementById('valorFipe').value);
-        const mensalidade = parseFloat(document.getElementById('assinatura').value);
-        const rendimento = parseFloat(document.getElementById('rendimento').value) / 100;
-        const depAnual = parseFloat(document.getElementById('depreciacao').value) / 100;
-        const seguroAnual = parseFloat(document.getElementById('seguro').value);
+        const vCarro = parseFloat(document.getElementById('valorCarro').value);
+        const entrada = parseFloat(document.getElementById('entrada').value);
+        const jurosM = parseFloat(document.getElementById('jurosFinanc').value) / 100;
+        const meses = parseInt(document.getElementById('mesesFinanc').value);
+        const assinatura = parseFloat(document.getElementById('precoAssinatura').value);
+        const rendM = parseFloat(document.getElementById('taxaRend').value) / 100;
+
+        // Parcela do Financiamento
+        const financiado = vCarro - entrada;
+        const parcela = financiado > 0 ? (financiado * (jurosM * Math.pow(1 + jurosM, meses))) / (Math.pow(1 + jurosM, meses) - 1) : 0;
+
+        let fipe = vCarro;
+        let invCompra = 0; 
+        let invAssina = entrada; // Capital inicial rendendo
         
-        let fipeAtual = fipeInicial;
-        let invComprador = 0;
-        let invAssinante = fipeInicial; // Começa com o valor do carro investido
-
-        let historicoComprador = [];
-        let historicoAssinante = [];
         let labels = [];
+        let dataC = [];
+        let dataA = [];
+        const corpo = document.getElementById('tabelaDados');
+        corpo.innerHTML = '';
 
-        for (let mes = 1; mes <= 60; mes++) {
-            // Lógica Comprador: Gasta com custos, investe a "sobra" da assinatura
-            if (mes % 12 === 0) fipeAtual *= (1 - depAnual);
+        for (let m = 1; m <= 60; m++) {
+            if (m % 12 === 0) fipe *= 0.92; // Depreciação 8%
             
-            let ipvaMensal = (fipeAtual * 0.04) / 12;
-            let custoDono = ipvaMensal + (seguroAnual/12) + 300; // 300 de manutenção média
-            let sobraAporte = mensalidade - custoDono;
-            
-            invComprador = (invComprador + sobraAporte) * (1 + rendimento);
-            invAssinante = (invAssinante - mensalidade) * (1 + rendimento);
+            let ipvaM = (fipe * 0.04) / 12;
+            let custosFixos = ipvaM + (4000/12) + 250; // Seguro + Manutenção estimativa
+            let custoTotalDono = (m <= meses ? parcela : 0) + custosFixos;
 
-            if (mes % 12 === 0 || mes === 1) {
-                labels.push(`Ano ${mes/12}`);
-                historicoComprador.push((invComprador + fipeAtual).toFixed(0));
-                historicoAssinante.push(invAssinante.toFixed(0));
+            // --- LÓGICA DE JUSTIÇA FINANCEIRA ---
+            // O gasto mensal de referência é o MAIOR entre (Assinatura) e (Custo Total Dono)
+            let gastoReferencia = Math.max(assinatura, custoTotalDono);
+
+            // Quem gasta menos que o "Gasto de Referência", investe a sobra
+            let sobraCompra = gastoReferencia - custoTotalDono;
+            let sobraAssina = gastoReferencia - assinatura;
+
+            // Atualização dos Investimentos
+            invCompra = (invCompra + sobraCompra) * (1 + rendM);
+            invAssina = (invAssina + sobraAssina) * (1 + rendM);
+
+            if (m % 12 === 0) {
+                let ano = m / 12;
+                labels.push("Ano " + ano);
+                dataC.push((invCompra + fipe).toFixed(2));
+                dataA.push(invAssina.toFixed(2));
+
+                corpo.innerHTML += `<tr>
+                    <td>${ano}º Ano</td>
+                    <td>${format(fipe)}</td>
+                    <td>${format(custoTotalDono)}</td>
+                    <td class="val-compra">${format(invCompra + fipe)}</td>
+                    <td class="val-assina">${format(invAssina)}</td>
+                </tr>`;
             }
         }
-
-        document.getElementById('resCompra').innerText = `R$ ${(invComprador + fipeAtual).toLocaleString('pt-BR')}`;
-        document.getElementById('resAssinatura').innerText = `R$ ${invAssinante.toLocaleString('pt-BR')}`;
-
-        renderizarGrafico(labels, historicoComprador, historicoAssinante);
+        updateChart(labels, dataC, dataA);
     }
 
-    function renderizarGrafico(labels, dadosCompra, dadosAssina) {
+    function updateChart(l, c, a) {
         if (chart) chart.destroy();
-        const ctx = document.getElementById('meuGrafico').getContext('2d');
-        chart = new Chart(ctx, {
+        chart = new Chart(document.getElementById('graficoEvolucao'), {
             type: 'line',
             data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Comprar (Carro + Investimento)',
-                    data: dadosCompra,
-                    borderColor: '#10b981',
-                    tension: 0.4,
-                    fill: false
-                }, {
-                    label: 'Assinar (Investimento Selic/BOVA)',
-                    data: dadosAssina,
-                    borderColor: '#3b82f6',
-                    tension: 0.4,
-                    fill: false
-                }]
+                labels: l,
+                datasets: [
+                    { label: 'Patrimônio Compra', data: c, borderColor: '#10b981', backgroundColor: '#10b981', tension: 0.3 },
+                    { label: 'Patrimônio Assinatura', data: a, borderColor: '#3b82f6', backgroundColor: '#3b82f6', tension: 0.3 }
+                ]
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { labels: { color: getComputedStyle(document.body).getPropertyValue('--text') } }
-                },
-                scales: {
-                    y: { grid: { color: '#444' } },
-                    x: { grid: { display: false } }
-                }
-            }
+            options: { responsive: true, plugins: { legend: { labels: { color: 'white' } } } }
         });
     }
-
-    // Iniciar cálculo
     calcular();
 </script>
-
 </body>
 </html>
