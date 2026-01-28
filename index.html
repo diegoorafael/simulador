@@ -1,149 +1,183 @@
-import React, { useState, useEffect } from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matemática do Carro - Simulador</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { 
+            background-color: #0f121a; 
+            color: #e2e8f0; 
+            font-family: 'Inter', sans-serif;
+        }
+        .glass { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+        }
+        .neon-text { text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
-const App = () => {
-  // Inputs Financeiros
-  const [valorCarro, setValorCarro] = useState(100000);
-  const [entrada, setEntrada] = useState(40000);
-  const [taxaJuros, setTaxaJuros] = useState(1.5);
-  const [prazo, setPrazo] = useState(48);
-  const [assinatura, setAssinatura] = useState(2000);
-  const [selic, setSelic] = useState(0.85);
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } = Recharts;
 
-  const [dados, setDados] = useState({ pmt: 0, ocultos: 0, total: 0, evolucao: [] });
+        const App = () => {
+            const [valorCarro, setValorCarro] = useState(100000);
+            const [entrada, setEntrada] = useState(40000);
+            const [taxaJuros, setTaxaJuros] = useState(1.5);
+            const [prazo, setPrazo] = useState(48);
+            const [assinatura, setAssinatura] = useState(2000);
+            const [selic, setSelic] = useState(0.85);
 
-  useEffect(() => {
-    // Cálculo Parcela
-    const PV = valorCarro - entrada;
-    const i = taxaJuros / 100;
-    const n = prazo;
-    const pmt = PV > 0 ? (PV * (i * Math.pow(1 + i, n))) / (Math.pow(1 + i, n) - 1) : 0;
+            const [dados, setDados] = useState({ pmt: 0, ocultos: 0, total: 0, evolucao: [] });
 
-    // Custos Ocultos (IPVA + Seguro + Manut) ~ 9% ao ano
-    const ocultos = (valorCarro * 0.09) / 12;
-    const totalFinanc = pmt + ocultos;
+            useEffect(() => {
+                const PV = valorCarro - entrada;
+                const i = taxaJuros / 100;
+                const n = prazo;
+                
+                // Parcela Tabela Price
+                const pmt = PV > 0 ? (PV * (i * Math.pow(1 + i, n))) / (Math.pow(1 + i, n) - 1) : 0;
+                
+                // Custos de propriedade (IPVA + Seguro + Manutenção) estipulados em 9% ao ano
+                const ocultos = (valorCarro * 0.09) / 12;
+                const totalFinanc = pmt + ocultos;
 
-    // Simulação Gráfico
-    let evolucao = [];
-    let saldoInvestido = entrada;
-    let valorCarroDepreciado = valorCarro;
+                let evolucao = [];
+                let saldoInvestido = entrada;
+                
+                for (let mes = 0; mes <= prazo; mes += 2) {
+                    // Depreciação média de 1% ao mês
+                    let valorCarroDepreciado = valorCarro * Math.pow(0.99, mes);
+                    
+                    // Diferença investida (Custo do financiamento - Custo da assinatura)
+                    const aporte = totalFinanc - assinatura;
+                    saldoInvestido = (saldoInvestido + aporte) * Math.pow(1 + selic/100, 2);
+                    
+                    evolucao.push({ 
+                        mes: mes, 
+                        "Valor do Carro": Math.round(valorCarroDepreciado), 
+                        "Saldo Investido": Math.round(saldoInvestido) 
+                    });
+                }
+                setDados({ pmt, ocultos, total: totalFinanc, evolucao });
+            }, [valorCarro, entrada, taxaJuros, prazo, assinatura, selic]);
 
-    for (let mes = 0; mes <= prazo; mes += 4) {
-      valorCarroDepreciado = valorCarro * Math.pow(0.99, mes); // 1% depreciação/mês
-      const aporte = totalFinanc - assinatura;
-      saldoInvestido = (saldoInvestido + aporte) * Math.pow(1 + selic/100, 4);
+            const formatMoeda = (v) => v.toLocaleString('pt-br', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
 
-      evolucao.push({
-        mes: `Mês ${mes}`,
-        carro: Math.round(valorCarroDepreciado),
-        investimento: Math.round(saldoInvestido)
-      });
-    }
-    setDados({ pmt, ocultos, total: totalFinanc, evolucao });
-  }, [valorCarro, entrada, taxaJuros, prazo, assinatura, selic]);
+            return (
+                <div className="p-4 md:p-12 max-w-7xl mx-auto min-h-screen">
+                    <header className="mb-10 text-center md:text-left border-b border-white/10 pb-6">
+                        <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase neon-text">
+                            $ Matemática do <span className="text-emerald-400">Carro</span>
+                        </h1>
+                        <p className="text-slate-500 font-bold tracking-widest mt-2 uppercase text-xs">Simulador: Financiamento vs Assinatura</p>
+                    </header>
 
-  return (
-    <div className="min-h-screen bg-[#0f121a] text-slate-200 p-6 md:p-12 font-sans selection:bg-emerald-500/30">
-      
-      {/* HEADER MODERNO */}
-      <header className="max-w-6xl mx-auto mb-12">
-        <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-white mb-2">
-          $ MATEMÁTICA DO <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">CARRO</span>
-        </h1>
-        <p className="text-slate-400 font-medium tracking-wide uppercase text-sm">Financiamento vs Assinatura • Custo de Oportunidade</p>
-      </header>
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        {/* SIDEBAR DE INPUTS */}
+                        <div className="lg:col-span-4 glass p-8 rounded-[2rem] h-fit sticky top-8">
+                            <h2 className="text-emerald-400 font-black mb-6 flex items-center gap-2 tracking-tighter uppercase">Parâmetros</h2>
+                            <div className="space-y-5 text-xs font-bold tracking-tight">
+                                <div>
+                                    <label className="text-slate-500 block mb-2 uppercase">Valor Total do Veículo</label>
+                                    <input type="number" value={valorCarro} onChange={e => setValorCarro(Number(e.target.value))} className="w-full bg-slate-900 p-4 rounded-2xl border border-white/5 text-emerald-400 font-mono text-lg focus:outline-none focus:border-emerald-500/50 transition-all" />
+                                </div>
+                                <div>
+                                    <label className="text-slate-500 block mb-2 uppercase">Entrada</label>
+                                    <input type="number" value={entrada} onChange={e => setEntrada(Number(e.target.value))} className="w-full bg-slate-900 p-4 rounded-2xl border border-white/5 text-white font-mono text-lg focus:outline-none focus:border-emerald-500/50 transition-all" />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="text-slate-500 block mb-2 uppercase">Juros (% am)</label>
+                                        <input type="number" value={taxaJuros} onChange={e => setTaxaJuros(Number(e.target.value))} className="w-full bg-slate-900 p-4 rounded-2xl border border-white/5 text-red-400 font-mono text-lg focus:outline-none focus:border-red-500/50 transition-all" />
+                                    </div>
+                                    <div>
+                                        <label className="text-slate-500 block mb-2 uppercase">Prazo (meses)</label>
+                                        <input type="number" value={prazo} onChange={e => setPrazo(Number(e.target.value))} className="w-full bg-slate-900 p-4 rounded-2xl border border-white/5 text-white font-mono text-lg focus:outline-none focus:border-emerald-500/50 transition-all" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="text-slate-500 block mb-2 uppercase tracking-tighter">Mensalidade Assinatura</label>
+                                    <input type="number" value={assinatura} onChange={e => setAssinatura(Number(e.target.value))} className="w-full bg-slate-900 p-4 rounded-2xl border border-emerald-500/30 text-emerald-400 font-mono text-lg focus:outline-none focus:border-emerald-500 transition-all shadow-[0_0_15px_rgba(16,185,129,0.1)]" />
+                                </div>
+                            </div>
+                        </div>
 
-      <main className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        {/* LADO ESQUERDO: INPUTS (GLASSMORPHISM) */}
-        <div className="lg:col-span-4 bg-white/5 backdrop-blur-lg border border-white/10 p-8 rounded-3xl shadow-2xl">
-          <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-white">
-            <span className="w-1.5 h-6 bg-emerald-500 rounded-full"></span> Parâmetros
-          </h2>
-          <div className="space-y-5">
-            {[
-              { label: "Valor do Carro (R$)", val: valorCarro, set: setValorCarro },
-              { label: "Entrada (R$)", val: entrada, set: setEntrada },
-              { label: "Juros Financiamento (% AM)", val: taxaJuros, set: setTaxaJuros },
-              { label: "Mensalidade Assinatura (R$)", val: assinatura, set: setAssinatura },
-            ].map((input, idx) => (
-              <div key={idx}>
-                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">{input.label}</label>
-                <input 
-                  type="number" 
-                  value={input.val} 
-                  onChange={(e) => input.set(Number(e.target.value))}
-                  className="w-full bg-slate-900/50 border border-white/10 p-3 rounded-xl focus:outline-none focus:border-emerald-500/50 transition-all text-emerald-400 font-mono text-lg"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+                        {/* DASHBOARD DE RESULTADOS */}
+                        <div className="lg:col-span-8 space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* CARD FINANCIAMENTO */}
+                                <div className="glass p-8 rounded-[2rem] border-t-4 border-red-500/50">
+                                    <h3 className="text-[10px] font-black text-red-500 mb-2 uppercase tracking-[0.2em]">Cenário: Financiamento</h3>
+                                    <div className="text-3xl font-black text-white">{formatMoeda(dados.total)} <span className="text-xs font-normal text-slate-500 italic">/mês</span></div>
+                                    <div className="mt-4 space-y-1 text-[11px] text-slate-400 uppercase font-bold tracking-tight">
+                                        <p className="flex justify-between">Parcela: <span>{formatMoeda(dados.pmt)}</span></p>
+                                        <p className="flex justify-between">Taxas + Seguro: <span>{formatMoeda(dados.ocultos)}</span></p>
+                                    </div>
+                                </div>
 
-        {/* LADO DIREITO: CARDS E GRÁFICO */}
-        <div className="lg:col-span-8 space-y-8">
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* CARD FINANCIAMENTO */}
-            <div className="bg-gradient-to-br from-red-500/10 to-transparent border border-red-500/20 p-6 rounded-3xl relative overflow-hidden">
-               <div className="absolute top-0 right-0 p-4 opacity-10 text-red-500 font-black text-6xl">A</div>
-               <h3 className="text-red-400 font-bold uppercase tracking-widest text-xs mb-4">Cenário A: Financiamento</h3>
-               <div className="space-y-3">
-                  <div className="flex justify-between text-slate-300"><span>Parcela:</span> <span className="font-mono">R$ {dados.pmt.toLocaleString('pt-br', {maximumFractionDigits:0})}</span></div>
-                  <div className="flex justify-between text-slate-300"><span>Custos Ocultos:</span> <span className="font-mono text-red-400">R$ {dados.ocultos.toLocaleString('pt-br', {maximumFractionDigits:0})}</span></div>
-                  <div className="pt-4 border-t border-white/5 flex justify-between items-end">
-                    <span className="text-sm">Total Mensal:</span>
-                    <span className="text-2xl font-bold text-white tracking-tighter">R$ {dados.total.toLocaleString('pt-br', {maximumFractionDigits:0})}</span>
-                  </div>
-               </div>
-            </div>
+                                {/* CARD ASSINATURA */}
+                                <div className="glass p-8 rounded-[2rem] border-t-4 border-emerald-500 shadow-[0_20px_40px_rgba(0,0,0,0.3)] relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 bg-emerald-500 text-slate-900 text-[9px] font-black px-4 py-1 rounded-bl-xl uppercase">Melhor Escolha</div>
+                                    <h3 className="text-[10px] font-black text-emerald-500 mb-2 uppercase tracking-[0.2em]">Cenário: Assinatura</h3>
+                                    <div className="text-3xl font-black text-emerald-400">{formatMoeda(assinatura)} <span className="text-xs font-normal text-slate-500 italic">/mês</span></div>
+                                    <div className="mt-4 space-y-1 text-[11px] text-emerald-500/70 uppercase font-bold tracking-tight">
+                                        <p className="flex justify-between font-black">Aporte Mensal: <span>{formatMoeda(dados.total - assinatura)}</span></p>
+                                        <p className="text-[9px] lowercase italic text-slate-500">*Diferença que você investe em Selic</p>
+                                    </div>
+                                </div>
+                            </div>
 
-            {/* CARD ASSINATURA (VENCEDOR) */}
-            <div className="bg-gradient-to-br from-emerald-500/20 to-transparent border border-emerald-500/40 p-6 rounded-3xl relative shadow-[0_0_40px_rgba(16,185,129,0.1)]">
-               <span className="absolute top-4 right-4 bg-emerald-500 text-[#0f121a] text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Vencedor</span>
-               <h3 className="text-emerald-400 font-bold uppercase tracking-widest text-xs mb-4">Cenário B: Assinatura + Selic</h3>
-               <div className="space-y-3">
-                  <div className="flex justify-between text-slate-300"><span>Mensalidade:</span> <span className="font-mono">R$ {assinatura.toLocaleString('pt-br')}</span></div>
-                  <div className="flex justify-between text-slate-300"><span>Aporte Mensal:</span> <span className="font-mono text-emerald-400">+ R$ {(dados.total - assinatura).toLocaleString('pt-br', {maximumFractionDigits:0})}</span></div>
-                  <div className="pt-4 border-t border-white/5 flex justify-between items-end">
-                    <span className="text-sm">Saldo Final:</span>
-                    <span className="text-2xl font-bold text-white tracking-tighter">R$ {dados.evolucao[dados.evolucao.length-1]?.investimento.toLocaleString('pt-br')}</span>
-                  </div>
-               </div>
-            </div>
-          </div>
+                            {/* ÁREA DO GRÁFICO */}
+                            <div className="glass p-4 md:p-8 rounded-[2.5rem] h-[450px] border border-white/5">
+                                <div className="flex justify-between items-center mb-8">
+                                    <h3 className="text-xs font-black text-slate-300 uppercase tracking-widest flex items-center gap-2">
+                                        <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                                        Evolução do Patrimônio
+                                    </h3>
+                                </div>
+                                <ResponsiveContainer width="100%" height="85%">
+                                    <AreaChart data={dados.evolucao} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                        <defs>
+                                            <linearGradient id="colorGreen" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#10b981" stopOpacity={0.4}/>
+                                                <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                                            </linearGradient>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#ffffff05" vertical={false} />
+                                        <XAxis dataKey="mes" stroke="#475569" fontSize={9} axisLine={false} tickLine={false} tickFormatter={(v) => `Mês ${v}`} />
+                                        <YAxis stroke="#475569" fontSize={9} axisLine={false} tickLine={false} tickFormatter={v => `R$${v/1000}k`} />
+                                        <Tooltip 
+                                            contentStyle={{backgroundColor: '#161b22', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', fontSize: '12px'}}
+                                            itemStyle={{fontWeight: 'bold'}}
+                                        />
+                                        <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px', fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase' }} />
+                                        <Area type="monotone" dataKey="Valor do Carro" stroke="#ef4444" fill="transparent" strokeWidth={3} dot={false} />
+                                        <Area type="monotone" dataKey="Saldo Investido" stroke="#10b981" fillOpacity={1} fill="url(#colorGreen)" strokeWidth={3} dot={false} />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
 
-          {/* GRÁFICO MODERNO */}
-          <div className="bg-white/5 border border-white/10 p-8 rounded-3xl h-[400px]">
-            <h3 className="text-white font-bold mb-6 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-              Evolução Patrimonial (Carro vs Investimento)
-            </h3>
-            <ResponsiveContainer width="100%" height="90%">
-              <AreaChart data={dados.evolucao}>
-                <defs>
-                  <linearGradient id="colorInv" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                <XAxis dataKey="mes" stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} />
-                <YAxis stroke="#64748b" fontSize={10} tickLine={false} axisLine={false} tickFormatter={(val) => `R$${val/1000}k`} />
-                <Tooltip 
-                  contentStyle={{backgroundColor: '#1e293b', border: 'none', borderRadius: '12px', fontSize: '12px'}}
-                  itemStyle={{color: '#fff'}}
-                />
-                <Area type="monotone" dataKey="carro" stroke="#ef4444" fill="transparent" strokeWidth={3} name="Valor do Carro" />
-                <Area type="monotone" dataKey="investimento" stroke="#10b981" fillOpacity={1} fill="url(#colorInv)" strokeWidth={3} name="Seu Patrimônio" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-
-        </div>
-      </main>
-    </div>
-  );
-};
-
-export default App;
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
