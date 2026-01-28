@@ -1,57 +1,202 @@
-function simular() {
-    // Pegar valores dos inputs
-    const valorCarro = parseFloat(document.getElementById('valorCarro').value);
-    const entrada = parseFloat(document.getElementById('entrada').value);
-    const parcelaFinanc = parseFloat(document.getElementById('parcelaFinanc').value);
-    const parcelaAssin = parseFloat(document.getElementById('parcelaAssin').value);
-    const selicAnual = parseFloat(document.getElementById('selicAnual').value) / 100;
-    const meses = parseInt(document.getElementById('meses').value);
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulador de Mobilização - Autoselic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --neon-green: #00ff88; --neon-red: #ff4444; --bg-dark: #0d1117; --card-dark: #161b22; }
+        body { background-color: var(--bg-dark); color: #e6edf3; font-family: 'Inter', sans-serif; }
+        .neon-text { font-family: 'Orbitron', sans-serif; color: var(--neon-green); text-shadow: 0 0 10px #00ff8844; }
+        .cyber-card { background: var(--card-dark); border: 1px solid #30363d; border-radius: 12px; transition: all 0.3s ease; }
+        .input-cyber { background: #0d1117; border: 1px solid #30363d; color: var(--neon-green); padding: 10px; border-radius: 6px; width: 100%; outline: none; }
+        .input-cyber:focus { border-color: var(--neon-green); box-shadow: 0 0 5px var(--neon-green); }
+        .label-xs { font-size: 0.65rem; font-weight: bold; color: #8b949e; text-transform: uppercase; margin-bottom: 4px; display: block; }
+    </style>
+</head>
+<body class="p-4 md:p-10">
 
-    // 1. CÁLCULO FINANCIAMENTO
-    const totalPagoFinanc = entrada + (parcelaFinanc * meses);
-    // Depreciação estimada: 10% ao ano (média simples para o exemplo)
-    const taxaDepreciacaoAnual = 0.10;
-    const patrimonioCarro = valorCarro * Math.pow((1 - taxaDepreciacaoAnual), (meses / 12));
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-10 text-center md:text-left">
+            <h1 class="neon-text text-4xl font-bold tracking-tighter">SIMULADOR DE MOBILIZAÇÃO</h1>
+            <p class="text-gray-500 font-light mt-1">Método Autoselic: Transformando passivos em patrimônio.</p>
+        </header>
 
-    // 2. CÁLCULO ASSINATURA + INVESTIMENTO
-    const totalPagoAssin = parcelaAssin * meses;
-    
-    // Converter Selic Anual para Mensal (Fórmula Equivalência)
-    const selicMensal = Math.pow((1 + selicAnual), (1/12)) - 1;
-    
-    // Investimento da Entrada (Juros Compostos)
-    let montanteInvestido = entrada * Math.pow((1 + selicMensal), meses);
-    
-    // Diferença de parcelas (se a assinatura for mais barata que a parcela do financiamento)
-    // O usuário "economiza" a diferença e também investe
-    const economiaMensal = parcelaFinanc - parcelaAssin;
-    if (economiaMensal > 0) {
-        for (let i = 0; i < meses; i++) {
-            montanteInvestido += economiaMensal * Math.pow((1 + selicMensal), (meses - i));
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <div class="lg:col-span-3 space-y-6">
+                <section class="cyber-card p-5 border-l-4 border-l-[#00ff88]">
+                    <h2 class="text-sm font-bold mb-4 flex items-center gap-2"><span class="text-green-500">|</span> PARÂMETROS</h2>
+                    <div class="space-y-4">
+                        <div><label class="label-xs">Valor do Carro (R$)</label><input type="number" id="vCarro" class="input-cyber" value="100000"></div>
+                        <div><label class="label-xs">Entrada (R$)</label><input type="number" id="vEntrada" class="input-cyber" value="40000"></div>
+                        <div><label class="label-xs">Taxa Juros (% AM)</label><input type="number" id="tJuros" class="input-cyber !border-red-500 !text-red-500" value="1.5" step="0.1"></div>
+                        <div><label class="label-xs">Prazo (Meses)</label><input type="number" id="vPrazo" class="input-cyber" value="48"></div>
+                        <div><label class="label-xs">Mensalidade Assinatura (R$)</label><input type="number" id="vAssinatura" class="input-cyber" value="2000"></div>
+                    </div>
+                </section>
+
+                <section class="cyber-card p-5 border-l-4 border-l-red-500">
+                    <h2 class="text-sm font-bold mb-4 flex items-center gap-2"><span class="text-red-500">|</span> CUSTOS DE PROPRIEDADE (% AA)</h2>
+                    <div class="space-y-4">
+                        <div><label class="label-xs">IPVA (%)</label><input type="number" id="pIpva" class="input-cyber" value="4" step="0.1"></div>
+                        <div><label class="label-xs">Seguro (%)</label><input type="number" id="pSeguro" class="input-cyber" value="3.5" step="0.1"></div>
+                        <div><label class="label-xs">Manutenção (%)</label><input type="number" id="pManu" class="input-cyber" value="1.3" step="0.1"></div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="lg:col-span-9 space-y-6">
+                
+                <div class="bg-red-500/10 border border-red-500/50 p-4 rounded-xl flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-red-500 text-black font-bold rounded-full w-8 h-8 flex items-center justify-center text-xl">!</div>
+                        <div>
+                            <p class="text-[10px] text-red-500 font-bold uppercase tracking-widest">Custos Ocultos da Compra</p>
+                            <p id="outCustoOculto" class="text-2xl font-bold text-red-500">R$ 0,00 /mês</p>
+                        </div>
+                    </div>
+                    <p class="hidden md:block text-[10px] text-red-800 text-right uppercase">IPVA + Seguro + Manutenção<br>Não inclusos na compra</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="cyber-card p-6">
+                        <p class="label-xs">Cenário A</p>
+                        <h3 class="text-xl font-bold mb-4 uppercase">Financiamento</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between border-b border-gray-800 pb-2">
+                                <span class="text-gray-500 text-sm">Parcela Mensal</span>
+                                <span id="outParcela" class="text-green-400 font-bold">R$ 0,00</span>
+                            </div>
+                            <div class="flex justify-between border-b border-gray-800 pb-2">
+                                <span class="text-gray-500 text-sm">Custo Extras</span>
+                                <span id="outExtrasA" class="text-red-500 font-bold">R$ 0,00</span>
+                            </div>
+                            <div class="flex justify-between pt-2">
+                                <span class="font-bold text-sm uppercase">Custo Total</span>
+                                <span id="outTotalA" class="text-cyan-400 font-bold text-xl">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-2 border-green-500 bg-green-500/5 p-6 rounded-xl relative">
+                        <span class="absolute -top-3 right-4 bg-green-500 text-black text-[10px] font-black px-3 py-1 rounded-full">VENCEDOR</span>
+                        <p class="label-xs">Cenário B</p>
+                        <h3 class="text-xl font-bold mb-4 uppercase">Autoselic</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between border-b border-gray-800 pb-2">
+                                <span class="text-gray-500 text-sm">Custo Real do Dono</span>
+                                <span id="outCustoDono" class="text-cyan-400 font-bold">R$ 0,00</span>
+                            </div>
+                            <div class="flex justify-between border-b border-gray-800 pb-2">
+                                <span class="text-gray-500 text-sm">Assinatura</span>
+                                <span id="outAssinatura" class="text-red-500 font-bold">R$ 0,00</span>
+                            </div>
+                            <div class="flex justify-between pt-2">
+                                <span class="font-bold text-sm uppercase">Aporte Mensal</span>
+                                <span id="outAporte" class="text-green-400 font-bold text-xl">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cyber-card p-6">
+                    <h3 class="label-xs mb-4">Evolução Patrimonial (48 Meses)</h3>
+                    <div class="h-64">
+                        <canvas id="meuGrafico"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let chart;
+
+        function calcular() {
+            const vCarro = parseFloat(document.getElementById('vCarro').value) || 0;
+            const vEntrada = parseFloat(document.getElementById('vEntrada').value) || 0;
+            const tJuros = parseFloat(document.getElementById('tJuros').value) / 100 || 0;
+            const vPrazo = parseInt(document.getElementById('vPrazo').value) || 1;
+            const vAssinatura = parseFloat(document.getElementById('vAssinatura').value) || 0;
+            
+            const pIpva = parseFloat(document.getElementById('pIpva').value) / 100;
+            const pSeguro = parseFloat(document.getElementById('pSeguro').value) / 100;
+            const pManu = parseFloat(document.getElementById('pManu').value) / 100;
+
+            // 1. Cálculos de Propriedade
+            const custoOcultoMensal = (vCarro * (pIpva + pSeguro + pManu)) / 12;
+            
+            // 2. Parcela Financiamento (PMT)
+            const vFinanciado = vCarro - vEntrada;
+            const pmt = vFinanciado > 0 ? (vFinanciado * tJuros) / (1 - Math.pow(1 + tJuros, -vPrazo)) : 0;
+            
+            const totalCustoA = pmt + custoOcultoMensal;
+            const aporteB = totalCustoA - vAssinatura;
+
+            // UI Update
+            document.getElementById('outCustoOculto').innerText = `R$ ${custoOcultoMensal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('outParcela').innerText = `R$ ${pmt.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('outExtrasA').innerText = `R$ ${custoOcultoMensal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('outTotalA').innerText = `R$ ${totalCustoA.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('outCustoDono').innerText = `R$ ${totalCustoA.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('outAssinatura').innerText = `R$ ${vAssinatura.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('outAporte').innerText = `R$ ${aporteB.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+
+            desenharGrafico(vCarro, vEntrada, aporteB, vPrazo);
         }
-    }
 
-    // Cálculo de Imposto de Renda sobre o LUCRO (Regressivo 15% para > 2 anos)
-    const lucroBruto = montanteInvestido - entrada - (economiaMensal > 0 ? economiaMensal * meses : 0);
-    const imposto = lucroBruto * 0.15;
-    const patrimonioFinalAssin = montanteInvestido - imposto;
+        function desenharGrafico(vCarro, vEntrada, aporte, meses) {
+            const ctx = document.getElementById('meuGrafico').getContext('2d');
+            const labels = Array.from({length: meses + 1}, (_, i) => i);
+            
+            // Dados Depreciação (1.2% ao mês aprox)
+            const dadosCarro = labels.map(m => vCarro * Math.pow(0.988, m));
+            
+            // Dados Investimento (Selic aprox 0.9% AM)
+            let saldo = vEntrada;
+            const dadosInvest = labels.map(m => {
+                if(m > 0) saldo = (saldo + aporte) * 1.009;
+                return saldo;
+            });
 
-    // EXIBIR RESULTADOS
-    document.getElementById('resultado').classList.remove('hidden');
-    document.getElementById('totalFinanc').innerText = totalPagoFinanc.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-    document.getElementById('patrimonioFinanc').innerText = patrimonioCarro.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-    
-    document.getElementById('totalAssin').innerText = totalPagoAssin.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
-    document.getElementById('patrimonioAssin').innerText = patrimonioFinalAssin.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+            if (chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Valor Carro (Depreciado)',
+                        data: dadosCarro,
+                        borderColor: '#ff4444',
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        fill: false
+                    }, {
+                        label: 'Saldo Investido (Autoselic)',
+                        data: dadosInvest,
+                        borderColor: '#00ff88',
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: '#333' }, ticks: { color: '#666' } },
+                        x: { grid: { display: false }, ticks: { color: '#666' } }
+                    }
+                }
+            });
+        }
 
-    const veredito = document.getElementById('veredito');
-    if (patrimonioFinalAssin > patrimonioCarro) {
-        veredito.innerHTML = `Vantagem para ASSINATURA: <br> Você termina com R$ ${(patrimonioFinalAssin - patrimonioCarro).toLocaleString('pt-BR')} a mais no bolso.`;
-        veredito.style.background = "#d4edda";
-        veredito.style.color = "#155724";
-    } else {
-        veredito.innerHTML = `Vantagem para FINANCIAMENTO: <br> O carro próprio supera o investimento em R$ ${(patrimonioCarro - patrimonioFinalAssin).toLocaleString('pt-BR')}.`;
-        veredito.style.background = "#f8d7da";
-        veredito.style.color = "#721c24";
-    }
-}
+        document.querySelectorAll('input').forEach(i => i.addEventListener('input', calcular));
+        calcular();
+    </script>
+</body>
+</html>
