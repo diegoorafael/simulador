@@ -3,122 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Master Autoselic | Diego @matematicadocarro</title>
+    <title>Autoselic PRO | Diego @matematicadocarro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #00ff88; --bg: #0a0e14; --card: #151b23; --text: #f0f6fc; --red: #ff4444; }
         body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; }
         .container { background: var(--card); border: 1px solid #30363d; border-radius: 12px; padding: 20px; width: 100%; max-width: 1100px; }
         
-        .market-bar { display: flex; justify-content: space-around; background: rgba(0, 255, 136, 0.05); border: 1px solid var(--primary); padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; font-weight: bold; color: var(--primary); }
+        .market-header { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .indicator-box { background: rgba(0, 255, 136, 0.05); border: 1px solid var(--primary); padding: 10px; border-radius: 10px; text-align: center; }
+        .indicator-label { font-size: 10px; color: #8b949e; text-transform: uppercase; margin-bottom: 5px; }
+        .indicator-value { font-size: 16px; font-weight: bold; color: var(--primary); }
 
         .main-layout { display: flex; flex-direction: column; gap: 20px; }
         @media (min-width: 950px) { .main-layout { flex-direction: row; } }
         
-        .inputs-section { flex: 1; display: flex; flex-direction: column; gap: 15px; }
-        .chart-section { flex: 1.5; position: relative; }
+        .inputs-section { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+        .chart-section { flex: 1.5; }
 
-        .label-group { display: flex; flex-direction: column; gap: 5px; }
+        .label-group { display: flex; flex-direction: column; gap: 4px; }
         .label-text { font-size: 11px; color: #8b949e; text-transform: uppercase; font-weight: bold; border-bottom: 1px solid #333; }
         
         input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #fff; font-size: 16px; outline: none; box-sizing: border-box; }
-
-        .chart-container { background: #1c2128; border-radius: 10px; padding: 15px; height: 350px; position: relative; }
-        .chart-icon { position: absolute; width: 45px; height: 45px; transform: translate(-50%, -50%); pointer-events: none; z-index: 10; display: none; }
-
-        .results-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px; }
-        @media (min-width: 600px) { .results-grid { grid-template-columns: 1fr 1fr; } }
-
-        .res-card { padding: 20px; border-radius: 12px; border: 1px solid #30363d; text-align: center; }
-        .winner { border: 2px solid var(--primary); box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); }
         
-        .btn-primary { background: var(--primary); color: #000; border: none; padding: 18px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 20px; }
+        .explicacao-box { margin-top: 15px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 11px; color: #abb2bf; text-align: left; line-height: 1.4; border-left: 3px solid var(--primary); }
+        
+        .chart-container { background: #1c2128; border-radius: 10px; padding: 15px; height: 380px; position: relative; }
+        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .res-card { padding: 15px; border-radius: 12px; border: 1px solid #30363d; text-align: center; }
+        .winner { border: 2px solid var(--primary); background: rgba(0, 255, 136, 0.02); }
+        
+        .btn-whatsapp { background: #25d366; color: #fff; border: none; padding: 18px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 20px; font-size: 14px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="market-bar">
-        <span>SELIC: <span id="selicVal">12.75</span>% AA</span>
-        <span>IPCA (INFLAÇÃO): <span id="ipcaVal">4.50</span>% AA</span>
+    <div class="market-header">
+        <div class="indicator-box">
+            <div class="indicator-label">Taxa Selic Definida</div>
+            <div class="indicator-value"><span id="selicDisplay">12.75</span>% AA</div>
+        </div>
+        <div class="indicator-box">
+            <div class="indicator-label">Inflação Estimada</div>
+            <div class="indicator-value" style="color:#40a9ff">4.50% AA</div>
+        </div>
     </div>
 
-    <h1>MATEMÁTICA DO CARRO</h1>
-    <p style="text-align: center; color:#8b949e; margin-top:-10px; font-size:12px">Diego | Especialista Localiza Meoo</p>
+    <h1 style="text-align: center; margin-bottom: 5px;">MATEMÁTICA DO CARRO</h1>
+    <p style="text-align: center; color:#8b949e; margin-top:0; font-size:12px">Diego | Mentoria Estratégica Autoselic</p>
     
     <div class="main-layout">
         <div class="inputs-section">
             <div class="label-group">
-                <span class="label-text">Frota Localiza Meoo</span>
+                <span class="label-text">Veículo (Frota Localiza Meoo)</span>
                 <select id="modeloPreset" onchange="aplicarPreset()">
-                    <option value="polo" data-fipe="125000" data-perc="2.2">VW Polo Highline (2.2% Fipe)</option>
-                    <option value="tcross" data-fipe="160000" data-perc="2.15" selected>VW T-Cross Comfortline (2.15% Fipe)</option>
-                    <option value="nivus" data-fipe="155000" data-perc="2.25">VW Nivus Highline (2.25% Fipe)</option>
-                    <option value="compass" data-fipe="215000" data-perc="2.3">Jeep Compass Limited (2.3% Fipe)</option>
-                    <option value="tracker" data-fipe="145000" data-perc="2.2">GM Tracker LTZ (2.2% Fipe)</option>
-                    <option value="corolla" data-fipe="185000" data-perc="2.4">Toyota Corolla XEi (2.4% Fipe)</option>
-                    <option value="hilux" data-fipe="320000" data-perc="2.6">Toyota Hilux SRX (2.6% Fipe)</option>
+                    <option value="polo" data-fipe="125000" data-perc="2.20">VW Polo Highline (2.20%)</option>
+                    <option value="tcross" data-fipe="165000" data-perc="2.15" selected>VW T-Cross Comfortline (2.15%)</option>
+                    <option value="compass" data-fipe="225000" data-perc="2.35">Jeep Compass Limited (2.35%)</option>
+                    <option value="hilux" data-fipe="330000" data-perc="2.60">Toyota Hilux SRX (2.60%)</option>
                 </select>
             </div>
+            
             <div class="label-group"><span class="label-text">Valor FIPE (R$)</span><input type="text" id="vCarro" oninput="mask(this); calc()"></div>
             <div class="label-group"><span class="label-text">Entrada (R$)</span><input type="text" id="entrada" value="60.000,00" oninput="mask(this); calc()"></div>
-            <div class="label-group"><span class="label-text">Assinatura Mensal (Calculado)</span><input type="text" id="assin" readonly style="background:#222; color:var(--primary)"></div>
+            <div class="label-group"><span class="label-text">Tempo (Meses)</span><input type="number" id="meses" value="36" oninput="calc()"></div>
             <div class="label-group">
-                <span class="label-text">Tempo (Meses)</span>
-                <select id="meses" onchange="calc()">
-                    <option value="24">24 Meses</option>
-                    <option value="36" selected>36 Meses</option>
-                    <option value="48">48 Meses</option>
-                </select>
+                <span class="label-text">Taxa Selic (%)</span>
+                <input type="number" id="selicInput" value="12.75" step="0.25" oninput="document.getElementById('selicDisplay').innerText = this.value; calc()">
+            </div>
+
+            <div class="explicacao-box">
+                <b>Por que a Selic está neste valor?</b><br>
+                A Selic em 12,75% é usada pelo Banco Central para controlar a inflação. Para nós, isso significa que deixar o dinheiro investido rende muito mais do que a desvalorização de um carro próprio.
             </div>
         </div>
 
         <div class="chart-section">
-            <div class="chart-container">
-                <canvas id="evolucaoChart"></canvas>
-                <img id="patrimonioIcon" src="https://i.imgur.com/G5Z5Y7r.png" class="chart-icon">
-                <img id="carroIcon" src="https://i.imgur.com/Fw91Q4j.png" class="chart-icon">
+            <div class="chart-container"><canvas id="evolucaoChart"></canvas></div>
+            <div class="results-grid">
+                <div id="cardComprador" class="res-card">
+                    <small>COMPRAR</small>
+                    <span id="resCompra" style="font-size:22px; font-weight:bold; color:var(--red); display:block;">R$ 0,00</span>
+                    <small style="font-size:9px">Imobilizar capital em lata</small>
+                </div>
+                <div id="cardAssinante" class="res-card">
+                    <small>ASSINAR</small>
+                    <span id="resAssina" style="font-size:22px; font-weight:bold; color:var(--primary); display:block;">R$ 0,00</span>
+                    <small style="font-size:9px">Rentabilizar capital líquido</small>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="results-grid">
-        <div id="cardComprador" class="res-card">
-            <small>PATRIMÔNIO: COMPRA</small>
-            <span id="resCompra" style="font-size:26px; font-weight:bold; color:var(--red); display:block;">R$ 0,00</span>
-        </div>
-        <div id="cardAssinante" class="res-card">
-            <small>PATRIMÔNIO: ASSINATURA</small>
-            <span id="resAssina" style="font-size:26px; font-weight:bold; color:var(--primary); display:block;">R$ 0,00</span>
-        </div>
-    </div>
-
-    <button class="btn-primary" onclick="gerarWhatsApp()">📲 Enviar Relatório @matematicadocarro</button>
+    <button class="btn-whatsapp" onclick="gerarWhatsApp()">📲 Enviar Relatório @matematicadocarro</button>
 </div>
 
 <script>
 let chart;
-let mercado = { selic: 12.75, ipca: 4.50 };
-
-async function atualizarIndicadores() {
-    try {
-        const s = await fetch('https://api.bcb.gov.br/dados/serie/bcdata.sgs.11/dados/ultimos/1?formato=json').then(r => r.json());
-        mercado.selic = ((Math.pow((parseFloat(s[0].valor)/100) + 1, 252) - 1) * 100).toFixed(2);
-        document.getElementById('selicVal').innerText = mercado.selic;
-        document.getElementById('ipcaVal').innerText = mercado.ipca;
-    } catch (e) { console.log("Erro API Bacen"); }
-    calc();
-}
-
 function aplicarPreset() {
     const sel = document.getElementById('modeloPreset');
     const opt = sel.options[sel.selectedIndex];
-    const fipe = parseFloat(opt.dataset.fipe);
-    const perc = parseFloat(opt.dataset.perc);
-    
-    document.getElementById('vCarro').value = fipe.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-    const valorAssin = (fipe * (perc / 100));
-    document.getElementById('assin').value = valorAssin.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+    document.getElementById('vCarro').value = parseFloat(opt.dataset.fipe).toLocaleString('pt-BR', {minimumFractionDigits: 2});
     calc();
 }
 
@@ -129,77 +115,61 @@ function mask(i) {
     i.value = v;
 }
 
-function parseMoney(v) { 
-    return parseFloat(v.toString().replace('R$', '').replace(/\./g, '').replace(',', '.').trim()) || 0; 
-}
+function parseMoney(v) { return parseFloat(v.toString().replace(/\./g, '').replace(',', '.').trim()) || 0; }
 
 function calc() {
     const v = parseMoney(document.getElementById('vCarro').value);
     const e = parseMoney(document.getElementById('entrada').value);
     const n = parseInt(document.getElementById('meses').value);
+    const selicAA = parseFloat(document.getElementById('selicInput').value) / 100;
     const sel = document.getElementById('modeloPreset');
-    const perc = parseFloat(sel.options[sel.selectedIndex].dataset.perc);
-    
-    const a = v * (perc / 100);
-    document.getElementById('assin').value = a.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+    const a = v * (parseFloat(sel.options[sel.selectedIndex].dataset.perc) / 100);
 
     const jFinan = 0.014;
     const parcela = (v - e) * (jFinan * Math.pow(1 + jFinan, n)) / (Math.pow(1 + jFinan, n) - 1);
     
     let labels = [], dAssina = [], dCompra = [];
     let capital = e;
-    const selicMensal = Math.pow(1 + (mercado.selic/100), 1/12) - 1;
+    const s_mensal = Math.pow(1 + selicAA, 1/12) - 1;
 
     for (let i = 0; i <= n; i++) {
         labels.push(i + "m");
-        let vCarroDep = v * Math.pow(1 - 0.11/12, i);
+        let vCarroDep = v * Math.pow(1 - 0.12/12, i);
         let sd = (v - e) * (Math.pow(1 + jFinan, n) - Math.pow(1 + jFinan, i)) / (Math.pow(1 + jFinan, n) - 1);
         dCompra.push(Math.max(0, vCarroDep - (i === n ? 0 : sd)));
-
         if (i > 0) {
             let custoM = parcela + (vCarroDep * 0.04 / 12) + (5000/12) + (3500/n);
-            capital = capital * (1 + selicMensal) + (custoM - a);
+            capital = capital * (1 + s_mensal) + (custoM - a);
         }
         dAssina.push(capital);
     }
 
     document.getElementById('resCompra').innerText = dCompra[n].toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
     document.getElementById('resAssina').innerText = dAssina[n].toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-
     document.getElementById('cardAssinante').className = dAssina[n] > dCompra[n] ? 'res-card winner' : 'res-card';
 
     if (chart) chart.destroy();
     chart = new Chart(document.getElementById('evolucaoChart').getContext('2d'), {
         type: 'line',
         data: { labels: labels, datasets: [
-            { label: 'Assinatura (Dinheiro)', data: dAssina, borderColor: '#00ff88', borderWidth: 3, pointRadius: 0, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.05)' },
-            { label: 'Compra (Bem)', data: dCompra, borderColor: '#ff4444', borderDash: [5,5], pointRadius: 0 }
+            { label: 'Assinatura (Dinheiro)', data: dAssina, borderColor: '#00ff88', borderWidth: 3, pointRadius: 0 },
+            { label: 'Compra (Lata)', data: dCompra, borderColor: '#ff4444', borderDash: [5,5], pointRadius: 0 }
         ]},
-        options: { responsive: true, maintainAspectRatio: false, animation: { onComplete: positionIcons } }
+        options: { responsive: true, maintainAspectRatio: false }
     });
-}
-
-function positionIcons() {
-    const iconP = document.getElementById('patrimonioIcon');
-    const iconC = document.getElementById('carroIcon');
-    const metaA = chart.getDatasetMeta(0).data;
-    const metaC = chart.getDatasetMeta(1).data;
-    iconP.style.left = metaA[metaA.length-1].x + 'px'; iconP.style.top = metaA[metaA.length-1].y + 'px'; iconP.style.display = 'block';
-    iconC.style.left = metaC[metaC.length-1].x + 'px'; iconC.style.top = metaC[metaC.length-1].y + 'px'; iconC.style.display = 'block';
 }
 
 function gerarWhatsApp() {
     const diff = parseMoney(document.getElementById('resAssina').innerText) - parseMoney(document.getElementById('resCompra').innerText);
     const msg = `*📊 RELATÓRIO @MATEMATICADOCARRO*\n` +
         `------------------------------------\n` +
-        `📈 *Selic Real:* ${mercado.selic}% AA\n` +
-        `🚙 *Veículo:* ${document.getElementById('modeloPreset').options[document.getElementById('modeloPreset').selectedIndex].text}\n\n` +
-        `🏁 *Resultado:* Assinar te deixa *${diff.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}* mais rico ao final do período.\n\n` +
+        `🔴 *COMPRAR:* É imobilizar dinheiro em algo que deprecia.\n` +
+        `🟢 *ASSINAR:* É manter o dinheiro rendendo na Selic (${document.getElementById('selicInput').value}%).\n\n` +
+        `🏆 *LUCRO FINAL:* Assinar te deixa *${diff.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}* mais rico.\n\n` +
         `_Estratégia Autoselic_`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
 }
-
-window.onload = () => { renderSelect(); aplicarPreset(); atualizarIndicadores(); };
+window.onload = () => { aplicarPreset(); };
 </script>
 </body>
 </html>
