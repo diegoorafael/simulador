@@ -12,6 +12,8 @@
         h1 { color: var(--primary); text-align: center; margin-bottom: 5px; font-size: 1.6rem; text-transform: uppercase; }
         .subtitle { text-align: center; font-size: 12px; color: #8b949e; margin-bottom: 20px; }
         
+        .selic-badge { text-align: center; background: rgba(0, 255, 136, 0.1); border: 1px solid var(--primary); color: var(--primary); padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; width: fit-content; margin: 0 auto 15px auto; }
+
         .main-layout { display: flex; flex-direction: column; gap: 15px; }
         @media (min-width: 900px) { .main-layout { flex-direction: row; } }
         
@@ -23,50 +25,39 @@
         
         input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #fff; font-size: 16px; outline: none; }
         
-        .chart-container { background: #1c2128; border-radius: 10px; padding: 15px; height: 400px; position: relative; }
+        .chart-container { background: #1c2128; border-radius: 10px; padding: 15px; height: 350px; position: relative; }
         .chart-icon { position: absolute; width: 45px; height: 45px; transform: translate(-50%, -50%); pointer-events: none; z-index: 10; display: none; }
-
-        /* Tabela de Custos Ocultos */
-        .ocultos-table { width: 100%; margin-top: 20px; border-collapse: collapse; font-size: 12px; background: rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; }
-        .ocultos-table th { background: #21262d; padding: 10px; text-align: left; color: var(--primary); }
-        .ocultos-table td { padding: 10px; border-bottom: 1px solid #30363d; }
-        .zero-cost { color: var(--primary); font-weight: bold; }
 
         .results-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px; }
         @media (min-width: 600px) { .results-grid { grid-template-columns: 1fr 1fr; } }
 
         .res-card { padding: 20px; border-radius: 12px; border: 1px solid #30363d; text-align: center; position: relative; }
-        .value { font-size: 26px; font-weight: bold; display: block; margin: 10px 0; }
         .winner { border: 2px solid var(--primary); box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); }
-        .winner::after { content: "🏆 MELHOR ESTRATÉGIA"; position: absolute; top: -10px; right: 10px; background: var(--primary); color: #000; font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
-
-        .btn-whats { margin-top: 20px; background: var(--primary); color: #000; border: none; padding: 18px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; }
+        
+        .explicacao-box { margin-top: 15px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 11px; color: #abb2bf; text-align: left; line-height: 1.4; border-left: 3px solid var(--primary); }
+        
+        .btn-primary { background: var(--primary); color: #000; border: none; padding: 15px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>MATEMÁTICA DO CARRO</h1>
-    <p class="subtitle">Diego @matematicadocarro | Especialista em Autoselic</p>
+    <div class="selic-badge">SELIC ATUAL: <span id="selicDisplay">12.75</span>% AA</div>
+    <p class="subtitle">Diego | Mentoria Autoselic</p>
     
     <div class="main-layout">
         <div class="inputs-section">
             <div class="label-group">
-                <span class="label-text">Veículo de Referência</span>
-                <select id="modeloPreset" onchange="aplicarPreset()">
-                    <option value="tcross" selected>VW T-Cross Comfortline</option>
-                    <option value="polo">VW Polo Highline</option>
-                </select>
+                <span class="label-text">Veículo</span>
+                <select id="modeloPreset" onchange="aplicarPreset()"></select>
             </div>
-            <div class="label-group"><span class="label-text">Valor FIPE (R$)</span><input type="text" id="vCarro" value="160.000,00" oninput="mask(this); calc()"></div>
+            <div class="label-group"><span class="label-text">Valor FIPE (R$)</span><input type="text" id="vCarro" oninput="mask(this); calc()"></div>
             <div class="label-group"><span class="label-text">Entrada (R$)</span><input type="text" id="entrada" value="60.000,00" oninput="mask(this); calc()"></div>
-            <div class="label-group"><span class="label-text">Prazo (Meses)</span><input type="number" id="meses" value="36" oninput="calc()"></div>
-            <div class="label-group"><span class="label-text">Mensalidade Assinatura (R$)</span><input type="text" id="assin" value="3.490,00" oninput="mask(this); calc()"></div>
-            
+            <div class="label-group"><span class="label-text">Assinatura Mensal (R$)</span><input type="text" id="assin" oninput="mask(this); calc()"></div>
             <div class="label-group">
-                <span class="label-text">Configuração Técnica (AM)</span>
-                <input type="number" id="juros" value="1.35" step="0.01" oninput="calc()">
-                <div class="mini-label">Taxa de Juros do Financiamento</div>
+                <span class="label-text">Taxa Selic (% AA)</span>
+                <input type="number" id="selicInput" value="12.75" step="0.25" oninput="document.getElementById('selicDisplay').innerText = this.value; calc()">
             </div>
         </div>
 
@@ -76,43 +67,49 @@
                 <img id="patrimonioIcon" src="https://i.imgur.com/G5Z5Y7r.png" class="chart-icon">
                 <img id="carroIcon" src="https://i.imgur.com/Fw91Q4j.png" class="chart-icon">
             </div>
-            
-            <table class="ocultos-table">
-                <thead><tr><th>Custos Ocultos (36 meses)</th><th>Financiamento</th><th>Assinatura</th></tr></thead>
-                <tbody>
-                    <tr><td>IPVA + Licenciamento</td><td id="tabIpva">R$ 0,00</td><td class="zero-cost">INCLUSO</td></tr>
-                    <tr><td>Seguro Completo</td><td id="tabSeguro">R$ 0,00</td><td class="zero-cost">INCLUSO</td></tr>
-                    <tr><td>Revisões (Oficina)</td><td id="tabRevisao">R$ 0,00</td><td class="zero-cost">INCLUSO</td></tr>
-                </tbody>
-            </table>
         </div>
     </div>
 
     <div class="results-grid">
         <div id="cardComprador" class="res-card">
-            <small>Cenário: Comprar</small>
-            <span id="valorCarroFinal" class="value" style="color: var(--red);">R$ 0,00</span>
-            <div class="label-text" style="border:none">Patrimônio em Lata (Depreciado)</div>
+            <small>CONCEITO: COMPRAR</small>
+            <span id="valorCarroFinal" style="font-size:24px; font-weight:bold; color:var(--red); display:block;">R$ 0,00</span>
+            <div class="explicacao-box">
+                <b>O que é comprar?</b> É imobilizar seu capital em um bem que perde valor. Você assume riscos de manutenção, seguro e IPVA, enquanto seu dinheiro "derrete" com a desvalorização do mercado.
+            </div>
         </div>
+        
         <div id="cardAssinante" class="res-card">
-            <small>Cenário: Autoselic</small>
-            <span id="patriB" class="value" style="color: var(--primary);">R$ 0,00</span>
-            <div class="label-text" style="border:none">Patrimônio Líquido (Dinheiro)</div>
+            <small>CONCEITO: ASSINAR (AUTOSELIC)</small>
+            <span id="patriB" style="font-size:24px; font-weight:bold; color:var(--primary); display:block;">R$ 0,00</span>
+            <div class="explicacao-box">
+                <b>O que é assinar?</b> É transformar o custo do carro em um serviço. Você mantém seu capital rendendo no Tesouro Selic e usa apenas o rendimento para morar em um carro novo, sem burocracia.
+            </div>
         </div>
     </div>
 
-    <button class="btn-whats" onclick="gerarRelatorio()">📲 Relatório WhatsApp para o Cliente</button>
+    <button class="btn-primary" onclick="gerarRelatorio()">📲 Enviar Relatório e Conceitos</button>
 </div>
 
 <script>
 let chart;
-const presets = {
-    tcross: { v: "160.000,00", a: "3.490,00", ipva: 4, seguro: 5500, revisao: 3500 },
-    polo: { v: "125.000,00", a: "2.750,00", ipva: 4, seguro: 4200, revisao: 2800 }
+let frota = JSON.parse(localStorage.getItem('frotaAutoselic')) || {
+    tcross: { nome: "VW T-Cross Comfortline", v: "160.000,00", a: "3.490,00", seguro: 5200, revisao: 3800 },
+    polo: { nome: "VW Polo Highline", v: "125.000,00", a: "2.750,00", seguro: 4100, revisao: 2900 }
 };
 
+function renderSelect() {
+    const s = document.getElementById('modeloPreset');
+    s.innerHTML = "";
+    for (let id in frota) {
+        let opt = document.createElement('option');
+        opt.value = id; opt.text = frota[id].nome;
+        s.add(opt);
+    }
+}
+
 function aplicarPreset() {
-    const p = presets[document.getElementById('modeloPreset').value];
+    const p = frota[document.getElementById('modeloPreset').value];
     document.getElementById('vCarro').value = p.v;
     document.getElementById('assin').value = p.a;
     calc();
@@ -131,19 +128,10 @@ function calc() {
     const v = parseMoney(document.getElementById('vCarro').value);
     const e = parseMoney(document.getElementById('entrada').value);
     const a_ini = parseMoney(document.getElementById('assin').value);
-    const n = parseInt(document.getElementById('meses').value) || 0;
-    const j = parseFloat(document.getElementById('juros').value) / 100 || 0;
-    const selicAA = 0.1275;
-    const p = presets[document.getElementById('modeloPreset').value];
-
-    // Cálculos de Custos Ocultos (Base Diego Mecânico)
-    const ipvaTotal = (v * (p.ipva/100)) * (n/12);
-    const seguroTotal = (p.seguro / 12) * n;
-    const revisaoTotal = p.revisao;
-    
-    document.getElementById('tabIpva').innerText = ipvaTotal.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-    document.getElementById('tabSeguro').innerText = seguroTotal.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-    document.getElementById('tabRevisao').innerText = revisaoTotal.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+    const selicAA = parseFloat(document.getElementById('selicInput').value) / 100;
+    const n = 36;
+    const j = 0.0135; 
+    const p = frota[document.getElementById('modeloPreset').value] || frota['tcross'];
 
     const valorFinan = (v - e);
     const parcela = valorFinan * (j * Math.pow(1 + j, n)) / (Math.pow(1 + j, n) - 1);
@@ -154,14 +142,12 @@ function calc() {
 
     for (let i = 0; i <= n; i++) {
         labels.push(i + "m");
-        let vCarroAtual = v * Math.pow(1 - 0.11/12, i);
+        let vCarroAtual = v * Math.pow(1 - 0.12/12, i);
         let saldoDevedor = valorFinan * (Math.pow(1 + j, n) - Math.pow(1 + j, i)) / (Math.pow(1 + j, n) - 1);
         dCarro.push(Math.max(0, vCarroAtual - (i === n ? 0 : saldoDevedor)));
-
         if (i > 0) {
-            let custoM = parcela + (vCarroAtual * (p.ipva/100) / 12) + (p.seguro/12) + (p.revisao/n);
-            let a_atual = a_ini * Math.pow(1.05, Math.floor((i-1)/12));
-            capAssinante = capAssinante * (1 + s_mensal) + (custoM - a_atual);
+            let custoM = parcela + (vCarroAtual * 0.04 / 12) + (p.seguro/12) + (p.revisao/n);
+            capAssinante = capAssinante * (1 + s_mensal) + (custoM - a_ini);
         }
         dInvestido.push(capAssinante);
     }
@@ -176,8 +162,8 @@ function calc() {
     chart = new Chart(document.getElementById('evolucaoChart').getContext('2d'), {
         type: 'line',
         data: { labels: labels, datasets: [
-            { label: 'Patrimônio Dinheiro', data: dInvestido, borderColor: '#00ff88', borderWidth: 4, pointRadius: 0, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.05)' },
-            { label: 'Patrimônio Carro', data: dCarro, borderColor: '#ff4444', borderDash: [5,5], pointRadius: 0 }
+            { label: 'Dinheiro (Assinar)', data: dInvestido, borderColor: '#00ff88', borderWidth: 3, pointRadius: 0, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.05)' },
+            { label: 'Lata (Comprar)', data: dCarro, borderColor: '#ff4444', borderDash: [5,5], pointRadius: 0 }
         ]},
         options: { responsive: true, maintainAspectRatio: false, animation: { onComplete: positionIcons } }
     });
@@ -188,25 +174,24 @@ function positionIcons() {
     const iconC = document.getElementById('carroIcon');
     const metaA = chart.getDatasetMeta(0).data;
     const metaC = chart.getDatasetMeta(1).data;
-    const lastA = metaA[metaA.length - 1];
-    const lastC = metaC[metaC.length - 1];
-    iconP.style.left = lastA.x + 'px'; iconP.style.top = lastA.y + 'px'; iconP.style.display = 'block';
-    iconC.style.left = lastC.x + 'px'; iconC.style.top = lastC.y + 'px'; iconC.style.display = 'block';
+    iconP.style.left = metaA[metaA.length-1].x + 'px'; iconP.style.top = metaA[metaA.length-1].y + 'px'; iconP.style.display = 'block';
+    iconC.style.left = metaC[metaC.length-1].x + 'px'; iconC.style.top = metaC[metaC.length-1].y + 'px'; iconC.style.display = 'block';
 }
 
 function gerarRelatorio() {
     const diff = parseMoney(document.getElementById('patriB').innerText) - parseMoney(document.getElementById('valorCarroFinal').innerText);
-    const texto = `*📊 RELATÓRIO @MATEMATICADOCARRO*\n` +
+    const texto = `*📊 RELATÓRIO MENTORIA AUTOSELIC*\n` +
         `------------------------------------\n` +
-        `🚙 *Veículo:* ${document.getElementById('modeloPreset').options[document.getElementById('modeloPreset').selectedIndex].text}\n\n` +
-        `*RESULTADO APÓS 36 MESES:*\n` +
-        `❌ *Comprar:* ${document.getElementById('valorCarroFinal').innerText}\n` +
-        `✅ *Assinar:* ${document.getElementById('patriB').innerText}\n\n` +
-        `💰 *Lucro da Assinatura:* ${diff.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}\n\n` +
-        `_Acesse: matematicadocarro.com_`;
+        `💡 *CONCEITOS BÁSICOS:*\n` +
+        `🔴 *COMPRAR:* É trocar dinheiro por um bem que perde valor e gera gastos fixos (IPVA, Seguro, Oficina).\n` +
+        `🟢 *ASSINAR:* É deixar o dinheiro rendendo e pagar apenas pelo uso, sem se preocupar com desvalorização.\n\n` +
+        `💰 *RESULTADO FINANCEIRO:* \n` +
+        `A assinatura te deixa *${diff.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}* mais rico que a compra no final do período.\n\n` +
+        `_@matematicadocarro_`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
 }
-window.onload = calc;
+
+window.onload = () => { renderSelect(); aplicarPreset(); };
 </script>
 </body>
 </html>
