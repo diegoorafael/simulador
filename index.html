@@ -1,196 +1,52 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Matemática do Carro | Oficial</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { background-color: #0a0c10; color: #f0f2f5; font-family: 'Inter', sans-serif; }
-        .glass-card { background: rgba(22, 27, 34, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; backdrop-filter: blur(10px); }
-        .input-clean { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 12px; border-radius: 10px; width: 100%; outline: none; transition: 0.2s; font-size: 0.95rem; }
-        .input-clean:focus { border-color: #00ff88; background: rgba(255, 255, 255, 0.07); }
-        .label-clean { font-size: 0.7rem; font-weight: 600; color: #8b949e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block; }
-        .neon-green { color: #00ff88; text-shadow: 0 0 15px rgba(0, 255, 136, 0.3); }
-    </style>
-</head>
-<body class="p-4 md:p-10">
-
-    <div class="max-w-6xl mx-auto">
-        <header class="mb-12 text-center">
-            <h1 class="text-3xl font-bold tracking-tight mb-2">MATEMÁTICA DO CARRO</h1>
-            <div class="h-1 w-20 bg-green-500 mx-auto rounded-full"></div>
-        </header>
-
-        <div class="glass-card p-8 mb-10 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            <div class="col-span-1">
-                <label class="label-clean">Valor do Carro</label>
-                <input type="number" id="vCarro" class="input-clean" value="100000">
-            </div>
-            <div class="col-span-1">
-                <label class="label-clean">Entrada</label>
-                <input type="number" id="vEntrada" class="input-clean" value="40000">
-            </div>
-            <div class="col-span-1">
-                <label class="label-clean">Selic Atual (% AA)</label>
-                <input type="number" id="tSelicAnual" class="input-clean !text-cyan-400 font-bold" value="15.00" step="0.01">
-            </div>
-            <div class="col-span-1">
-                <label class="label-clean">IPCA Inflação (% AA)</label>
-                <input type="number" id="tInflacao" class="input-clean" value="4.50" step="0.01">
-            </div>
-            <div class="col-span-1">
-                <label class="label-clean">Custos Posse (% AA)</label>
-                <input type="number" id="pCustosAnuais" class="input-clean" value="8.8" step="0.1">
-            </div>
-            <div class="col-span-1">
-                <label class="label-clean">Prazo (Meses)</label>
-                <input type="number" id="vPrazo" class="input-clean" value="48">
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            
-            <div class="space-y-6">
-                <div class="glass-card p-8 border-t-2 border-red-500/50">
-                    <h2 class="text-red-500 font-bold mb-6 flex items-center gap-2 italic">
-                        FINANCIAMENTO BANCÁRIO
-                    </h2>
-                    <div class="mb-8">
-                        <label class="label-clean">Taxa de Juros (% AM)</label>
-                        <input type="number" id="tJuros" class="input-clean" value="1.50" step="0.01">
-                    </div>
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center"><span class="text-gray-400 text-sm">Parcela Mensal</span> <span id="outParcela" class="font-bold text-lg">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center"><span class="text-gray-400 text-sm">Custos (IPVA/Seg/Manut)</span> <span id="outExtrasA" class="text-red-400 font-bold">R$ 0,00</span></div>
-                        <div class="pt-4 border-t border-white/5 flex justify-between items-center">
-                            <span class="text-sm font-bold uppercase">Saída de Caixa Mensal</span>
-                            <span id="outTotalA" class="text-2xl font-bold">R$ 0,00</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="space-y-6">
-                <div class="glass-card p-8 border-t-2 border-green-500">
-                    <h2 class="text-green-500 font-bold mb-6 flex items-center justify-between">
-                        ASSINATURA PREMIUM
-                        <span class="text-[10px] bg-green-500/20 text-green-500 px-2 py-1 rounded">ESTRATÉGIA VENCEDORA</span>
-                    </h2>
-                    <div class="mb-8">
-                        <label class="label-clean">Mensalidade do Plano</label>
-                        <input type="number" id="vAssinatura" class="input-clean" value="2000">
-                    </div>
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center"><span class="text-gray-400 text-sm">Custo Equivalente</span> <span id="outCustoDono" class="font-bold">R$ 0,00</span></div>
-                        <div class="flex justify-between items-center"><span class="text-gray-400 text-sm">Mensalidade Assinatura</span> <span id="outAssinatura" class="text-white font-bold">R$ 0,00</span></div>
-                        <div class="pt-4 border-t border-white/5 flex justify-between items-center text-green-400">
-                            <span class="text-sm font-bold uppercase">Aporte p/ Investimento</span>
-                            <span id="outAporte" class="text-2xl font-bold">R$ 0,00</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="lg:col-span-2 glass-card p-8">
-                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                    <h3 class="label-clean">Projeção de Patrimônio Líquido</h3>
-                    <div class="flex gap-4 text-[10px] font-bold uppercase">
-                        <span class="flex items-center gap-2"><div class="w-2 h-2 bg-red-500 rounded-full"></div> Carro (Financ.)</span>
-                        <span class="flex items-center gap-2"><div class="w-2 h-2 bg-green-500 rounded-full"></div> Investimento (Assin.)</span>
-                    </div>
-                </div>
-                <div class="h-80">
-                    <canvas id="meuGrafico"></canvas>
-                </div>
-            </div>
-        </div>
+<div class="glass-card p-8 mb-10 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
+    <div class="col-span-1">
+        <label class="label-clean">Valor do Carro</label>
+        <input type="text" id="vCarroDisplay" class="input-clean" value="R$ 100.000,00" oninput="formatarMoedaInput(this, 'vCarro')">
+        <input type="hidden" id="vCarro" value="100000">
     </div>
+    <div class="col-span-1">
+        <label class="label-clean">Entrada</label>
+        <input type="text" id="vEntradaDisplay" class="input-cyber input-clean" value="R$ 40.000,00" oninput="formatarMoedaInput(this, 'vEntrada')">
+        <input type="hidden" id="vEntrada" value="40000">
+    </div>
+    <div class="col-span-1">
+        <label class="label-clean">Prazo (Meses)</label>
+        <input type="number" id="vPrazo" class="input-clean" value="48">
+    </div>
+    <div class="col-span-1">
+        <label class="label-clean">Custos Posse (% AA)</label>
+        <input type="number" id="pCustosAnuais" class="input-clean" value="8.8" step="0.1">
+    </div>
+    <div class="col-span-1">
+        <label class="label-clean">IPCA Inflação (% AA)</label>
+        <input type="number" id="tInflacao" class="input-clean" value="4.50" step="0.01">
+    </div>
+    <div class="col-span-1">
+        <label class="label-clean">Selic Atual (% AA)</label>
+        <input type="number" id="tSelicAnual" class="input-clean !text-cyan-400 font-bold" value="15.00" step="0.01">
+    </div>
+</div>
 
-    <script>
-        let chart;
+<script>
+    // Função para formatar o valor digitado como R$ 0.000,00 em tempo real
+    function formatarMoedaInput(input, hiddenId) {
+        let valor = input.value.replace(/\D/g, "");
+        valor = (valor / 100).toFixed(2) + "";
+        valor = valor.replace(".", ",");
+        valor = valor.replace(/(\d)(\d{3})(\d{3})/, "$1.$2.$3");
+        valor = valor.replace(/(\d)(\d{3})/, "$1.$2");
+        
+        input.value = "R$ " + valor;
+        
+        // Atualiza o valor numérico escondido para o cálculo
+        document.getElementById(hiddenId).value = valor.replace(/\./g, "").replace(",", ".");
+        calcular(); // Chama o cálculo automaticamente
+    }
 
-        // Formatação BRL (Ponto e Vírgula)
-        const fmtBRL = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-        function calcular() {
-            const vCarro = parseFloat(document.getElementById('vCarro').value) || 0;
-            const vEntrada = parseFloat(document.getElementById('vEntrada').value) || 0;
-            const tJuros = (parseFloat(document.getElementById('tJuros').value) / 100) || 0;
-            const vPrazo = parseInt(document.getElementById('vPrazo').value) || 1;
-            const vAssinatura = parseFloat(document.getElementById('vAssinatura').value) || 0;
-            
-            // Selic Anual para Mensal
-            const tSelicAnual = parseFloat(document.getElementById('tSelicAnual').value) || 0;
-            const tSelicMensal = (Math.pow(1 + (tSelicAnual/100), 1/12) - 1);
-            
-            const pCustosPosse = (parseFloat(document.getElementById('pCustosAnuais').value) / 100) || 0;
-            const tInflacaoMes = (parseFloat(document.getElementById('tInflacao').value) / 1200) || 0;
-
-            const custoOcultoMensal = (vCarro * pCustosPosse) / 12;
-            const vFinanciado = vCarro - vEntrada;
-            const pmt = vFinanciado > 0 ? (vFinanciado * tJuros) / (1 - Math.pow(1 + tJuros, -vPrazo)) : 0;
-            
-            const totalCustoA = pmt + custoOcultoMensal;
-            const aporteB = totalCustoA - vAssinatura;
-
-            // Update UI com Formatação Brasileira
-            document.getElementById('outParcela').innerText = fmtBRL(pmt);
-            document.getElementById('outExtrasA').innerText = fmtBRL(custoOcultoMensal);
-            document.getElementById('outTotalA').innerText = fmtBRL(totalCustoA);
-            document.getElementById('outCustoDono').innerText = fmtBRL(totalCustoA);
-            document.getElementById('outAssinatura').innerText = fmtBRL(vAssinatura);
-            document.getElementById('outAporte').innerText = fmtBRL(aporteB);
-
-            desenharGrafico(vCarro, vEntrada, aporteB, vPrazo, tSelicMensal, pmt, tJuros, vFinanciado, tInflacaoMes);
-        }
-
-        function desenharGrafico(vCarro, vEntrada, aporte, meses, selic, pmt, jurosFinanc, vFinanc, inflacao) {
-            const ctx = document.getElementById('meuGrafico').getContext('2d');
-            const labels = Array.from({length: meses + 1}, (_, i) => i);
-            
-            let saldoDevedor = vFinanc;
-            const dadosPatrimonioFinanc = labels.map(m => {
-                const valorCarroHoje = vCarro * Math.pow(0.99 + inflacao, m);
-                if (m > 0) {
-                    const jurosMes = saldoDevedor * jurosFinanc;
-                    const amortizacao = pmt - jurosMes;
-                    saldoDevedor -= amortizacao;
-                }
-                return Math.max(0, valorCarroHoje - Math.max(0, saldoDevedor));
-            });
-            
-            let saldoInvest = vEntrada;
-            const dadosPatrimonioAssin = labels.map(m => {
-                if(m > 0) saldoInvest = (saldoInvest + aporte) * (1 + selic);
-                return saldoInvest;
-            });
-
-            if (chart) chart.destroy();
-            chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        { label: 'Financiamento', data: dadosPatrimonioFinanc, borderColor: '#ef4444', borderWidth: 2, pointRadius: 0, fill: false, tension: 0.3 },
-                        { label: 'Assinatura', data: dadosPatrimonioAssin, borderColor: '#00ff88', borderWidth: 2, pointRadius: 0, fill: false, tension: 0.3 }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#666', callback: (v) => 'R$ ' + v.toLocaleString('pt-BR') } },
-                        x: { grid: { display: false }, ticks: { color: '#666' } }
-                    }
-                }
-            });
-        }
-
-        document.querySelectorAll('input').forEach(i => i.addEventListener('input', calcular));
-        calcular();
-    </script>
-</body>
-</html>
+    // No seu script de calcular, certifique-se de pegar os valores numéricos:
+    function calcular() {
+        const vCarro = parseFloat(document.getElementById('vCarro').value) || 0;
+        const vEntrada = parseFloat(document.getElementById('vEntrada').value) || 0;
+        // ... restante do código de cálculo igual ao anterior
+    }
+</script>
