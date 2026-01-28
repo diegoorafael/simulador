@@ -8,32 +8,34 @@
     <style>
         :root { --primary: #10b981; --secondary: #3b82f6; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --border: #334155; }
         body { background-color: var(--bg); color: var(--text); font-family: sans-serif; padding: 20px; }
-        .container { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 360px 1fr; gap: 25px; }
+        .container { max-width: 1450px; margin: 0 auto; display: grid; grid-template-columns: 360px 1fr; gap: 25px; }
         .card { background: var(--card); border-radius: 16px; padding: 20px; border: 1px solid var(--border); box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
-        h1 { text-align: center; color: var(--primary); text-transform: uppercase; font-size: 1.5rem; margin-bottom: 20px; }
+        h1 { text-align: center; color: var(--primary); text-transform: uppercase; font-size: 1.4rem; margin-bottom: 20px; }
         .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         label { display: block; font-size: 0.65rem; font-weight: bold; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; }
         input { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--border); background: #0f172a; color: white; box-sizing: border-box; }
         button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.75rem; margin-top: 20px; }
-        th { background: #334155; color: #94a3b8; padding: 10px; text-align: right; }
-        td { padding: 10px; text-align: right; border-bottom: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.72rem; margin-top: 20px; }
+        th { background: #334155; color: #94a3b8; padding: 8px; text-align: right; }
+        td { padding: 8px; text-align: right; border-bottom: 1px solid var(--border); }
         .highlight-s { color: #fbbf24; font-weight: bold; }
+        .badge { font-size: 0.65rem; color: #94a3b8; display: block; }
     </style>
 </head>
 <body>
 
-<h1>Matemática do Carro: 48 Meses (4 Anos)</h1>
+<h1>Matemática do Carro: Financiamento ou Assinatura?</h1>
 
 <div class="container">
     <div class="card">
         <div class="grid-inputs">
             <div class="input-group" style="grid-column: span 2;"><label>Valor do Carro (R$)</label><input type="text" id="valorCarro" value="100.000,00" onblur="formatarMoeda(this)"></div>
-            <div class="input-group" style="grid-column: span 2;"><label>Entrada (Invest. Inicial)</label><input type="text" id="entrada" value="30.000,00" onblur="formatarMoeda(this)"></div>
+            <div class="input-group" style="grid-column: span 2;"><label>Entrada (R$)</label><input type="text" id="entrada" value="30.000,00" onblur="formatarMoeda(this)"></div>
             <div class="input-group"><label>Juros Finan. (% a.m.)</label><input type="text" id="jurosM" value="1,50" onblur="formatarTaxa(this)"></div>
             <div class="input-group"><label>Prazo (Meses)</label><input type="number" id="prazo" value="48"></div>
             <div class="input-group" style="grid-column: span 2;"><label>Assinatura Mensal (R$)</label><input type="text" id="assinatura" value="3.500,00" onblur="formatarMoeda(this)"></div>
-            <div class="input-group" style="grid-column: span 2;"><label>Selic Mensal (%)</label><input type="text" id="rendimento" value="0,90" onblur="formatarTaxa(this)"></div>
+            <div class="input-group" style="grid-column: span 2;"><label>Rend. Selic Mensal (%)</label><input type="text" id="rendimento" value="0,90" onblur="formatarTaxa(this)"></div>
+            <div class="input-group" style="grid-column: span 2;"><label>Inflação Estimada (% a.a.)</label><input type="text" id="inflacaoA" value="5,0" onblur="formatarTaxa(this)"></div>
         </div>
         <hr style="border: 0.5px solid var(--border); margin: 15px 0;">
         <div class="grid-inputs">
@@ -46,16 +48,18 @@
     </div>
 
     <div class="card">
-        <canvas id="graficoEvolucao" height="100"></canvas>
+        <canvas id="graficoEvolucao" height="95"></canvas>
         <table>
             <thead>
                 <tr>
                     <th>Ano</th>
-                    <th>Custo Dono (P+I+S+M)</th>
+                    <th>Valor FIPE</th>
+                    <th>Custos Dono</th>
                     <th>Assinatura</th>
+                    <th>Selic / Inflação (Anual)</th>
                     <th>Sobra p/ Selic</th>
-                    <th>Patrimônio COMPRA</th>
-                    <th>Patrimônio SELIC</th>
+                    <th>Patr. COMPRA</th>
+                    <th>Patr. SELIC</th>
                 </tr>
             </thead>
             <tbody id="tabelaDados"></tbody>
@@ -76,4 +80,70 @@
         const jM = parse(document.getElementById('jurosM').value)/100;
         const pz = parseInt(document.getElementById('prazo').value);
         const assBase = parse(document.getElementById('assinatura').value);
-        const rend
+        const rendM = parse(document.getElementById('rendimento').value)/100;
+        const infA = parse(document.getElementById('inflacaoA').value)/100;
+        const depreA = parse(document.getElementById('taxaDepre').value)/100;
+        const tIpva = parse(document.getElementById('taxaIpva').value)/100;
+        const tSeg = parse(document.getElementById('taxaSeguro').value)/100;
+        const tMan = parse(document.getElementById('taxaManut').value)/100;
+
+        const financ = vC - ent;
+        const parc = financ > 0 ? (financ * (jM * Math.pow(1+jM, pz))) / (Math.pow(1+jM, pz)-1) : 0;
+
+        let fipe = vC; let invC = 0; let invA = ent; let saldoD = financ;
+        let labels = ["Início"]; let dC = [ent]; let dA = [ent];
+        const corpo = document.getElementById('tabelaDados'); corpo.innerHTML = '';
+
+        for (let m = 1; m <= pz; m++) {
+            // Depreciação mensal para atualização de FIPE e IPVA
+            fipe *= Math.pow(1 - depreA, 1/12);
+            let fatorInf = Math.pow(1 + (infA/12), m);
+            
+            let ipvaM = (fipe * tIpva / 12);
+            let segM = (vC * tSeg / 12) * fatorInf;
+            let manM = (vC * tMan / 12) * fatorInf;
+            let assM = assBase * fatorInf;
+            
+            let custoD = parc + ipvaM + segM + manM;
+            let ref = Math.max(assM, custoD);
+            let sobra = ref - custoD;
+
+            invC = (invC + sobra) * (1 + rendM);
+            invA = (invA + (ref - assM)) * (1 + rendM);
+
+            let jurosMes = saldoD * jM;
+            saldoD -= (parc - jurosMes);
+
+            if (m % 12 === 0) {
+                let ano = m/12;
+                let patC = (fipe - Math.max(0, saldoD)) + invC;
+                labels.push("Ano " + ano);
+                dC.push(patC.toFixed(2)); dA.push(invA.toFixed(2));
+                
+                let sAnual = (Math.pow(1 + rendM, 12) - 1) * 100;
+                
+                corpo.innerHTML += `<tr>
+                    <td>${ano}º Ano</td>
+                    <td>${brl(fipe)}</td>
+                    <td>${brl(custoD)}</td>
+                    <td>${brl(assM)}</td>
+                    <td><span class="badge">Selic: ${sAnual.toFixed(1)}%</span><span class="badge">Inflação: ${(infA*100).toFixed(1)}%</span></td>
+                    <td class="highlight-s">${brl(sobra)}</td>
+                    <td style="color: #10b981; font-weight: bold;">${brl(patC)}</td>
+                    <td style="color: #3b82f6; font-weight: bold;">${brl(invA)}</td>
+                </tr>`;
+            }
+        }
+        if (chart) chart.destroy();
+        chart = new Chart(document.getElementById('graficoEvolucao'), {
+            type: 'line', data: { labels: labels, datasets: [
+                { label: 'Patrimônio Compra (Líquido)', data: dC, borderColor: '#10b981', tension: 0.3 },
+                { label: 'Patrimônio Selic', data: dA, borderColor: '#3b82f6', tension: 0.3 }
+            ]},
+            options: { plugins: { legend: { labels: { color: 'white' } } }, scales: { y: { ticks: { color: '#94a3b8' } }, x: { ticks: { color: '#94a3b8' } } } }
+        });
+    }
+    calcular();
+</script>
+</body>
+</html>
