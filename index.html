@@ -3,197 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dashboard Autoselic | Diego @matematicadocarro</title>
+    <title>Autoselic PRO | Diego @matematicadocarro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --primary: #00ff88; --bg: #0d1117; --card: #161b22; --text: #f0f6fc; --red: #ff4d4d; --orange: #ff9f43; }
+        :root { --primary: #00ff88; --bg: #0d1117; --card: #161b22; --text: #f0f6fc; --red: #ff4d4d; --orange: #ff9f43; --blue: #40a9ff; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 15px; display: flex; justify-content: center; }
         .container { background: var(--card); border: 1px solid #30363d; border-radius: 16px; padding: 25px; width: 100%; max-width: 1200px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         
-        /* Header Market Data */
-        .market-data { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .data-box { background: rgba(255,255,255,0.03); border: 1px solid #30363d; padding: 12px; border-radius: 12px; text-align: center; }
-        .data-label { font-size: 10px; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-        .data-value { font-size: 18px; font-weight: 800; color: var(--primary); }
+        /* Dashboard de Indicadores de Mercado */
+        .market-header { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 25px; }
+        .indicator { background: rgba(255,255,255,0.03); border: 1px solid #30363d; padding: 12px; border-radius: 12px; text-align: center; }
+        .ind-label { font-size: 10px; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .ind-val { font-size: 18px; font-weight: 800; color: var(--primary); }
 
         .main-grid { display: grid; grid-template-columns: 1fr; gap: 25px; }
         @media (min-width: 1000px) { .main-grid { grid-template-columns: 380px 1fr; } }
         
         .panel { display: flex; flex-direction: column; gap: 18px; }
         .label-group { display: flex; flex-direction: column; gap: 6px; }
-        .label-text { font-size: 11px; color: #8b949e; text-transform: uppercase; font-weight: 700; }
+        .label-text { font-size: 11px; color: #8b949e; text-transform: uppercase; font-weight: 700; border-bottom: 1px solid #333; padding-bottom: 2px; }
         
-        input, select { background: #0d1117; border: 1px solid #30363d; border-radius: 10px; padding: 14px; color: #fff; font-size: 16px; transition: 0.3s; }
-        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 2px rgba(0,255,136,0.1); }
+        input, select { background: #0d1117; border: 1px solid #30363d; border-radius: 10px; padding: 12px; color: #fff; font-size: 15px; outline: none; }
+        input:focus { border-color: var(--primary); }
 
-        /* Tabela de Drenagem de Capital */
-        .costs-table { background: rgba(255,255,255,0.02); border-radius: 12px; padding: 15px; border: 1px solid #30363d; }
-        .cost-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #21262d; font-size: 13px; }
-        .cost-item:last-child { border: none; font-weight: 800; color: var(--orange); font-size: 14px; }
-        .cost-val { color: var(--red); }
+        /* Raio-X de Gastos Totais */
+        .costs-box { background: rgba(255,255,255,0.02); border-radius: 12px; padding: 15px; border: 1px solid #30363d; }
+        .cost-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #2d333b; font-size: 13px; }
+        .cost-row:last-child { border: none; font-weight: 800; color: var(--orange); padding-top: 12px; }
+        .val-red { color: var(--red); font-weight: bold; }
 
-        .chart-container { background: #0d1117; border-radius: 15px; border: 1px solid #30363d; padding: 20px; height: 400px; position: relative; }
+        .chart-container { background: #0d1117; border-radius: 15px; border: 1px solid #30363d; padding: 20px; height: 380px; position: relative; }
         
-        /* Resultados de Impacto */
-        .results-box { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
-        .res-card { padding: 20px; border-radius: 16px; border: 1px solid #30363d; text-align: center; transition: 0.4s; }
-        .winner { border: 2px solid var(--primary); background: rgba(0,255,136,0.05); transform: translateY(-5px); }
-        .res-label { font-size: 11px; color: #8b949e; text-transform: uppercase; margin-bottom: 8px; display: block; }
-        .res-value { font-size: 26px; font-weight: 900; }
+        /* Resultados Comparativos */
+        .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
+        .res-card { padding: 20px; border-radius: 16px; border: 1px solid #30363d; text-align: center; position: relative; }
+        .winner { border: 2px solid var(--primary); background: rgba(0,255,136,0.05); }
+        .res-val { font-size: 24px; font-weight: 900; display: block; margin: 8px 0; }
 
-        .btn-send { background: var(--primary); color: #000; border: none; padding: 20px; border-radius: 12px; font-weight: 800; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 25px; font-size: 15px; letter-spacing: 1px; transition: 0.3s; }
-        .btn-send:hover { transform: scale(1.02); filter: brightness(1.1); }
+        .btn-zap { background: #25d366; color: #fff; border: none; padding: 18px; border-radius: 12px; font-weight: 800; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 25px; font-size: 14px; transition: 0.3s; }
+        .btn-zap:hover { transform: translateY(-2px); filter: brightness(1.1); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="market-data">
-        <div class="data-box"><div class="data-label">Selic (Atual)</div><div id="valSelic" class="data-value">--%</div></div>
-        <div class="data-box"><div class="data-label">Inflação (IPCA)</div><div id="valIpca" class="data-value" style="color:#40a9ff">--%</div></div>
-        <div class="data-box"><div class="data-label">Status Mercado</div><div class="data-value" style="font-size:12px; color:var(--orange)">ALTA RENTABILIDADE</div></div>
+    <div class="market-header">
+        <div class="indicator"><div class="ind-label">Selic (Atual)</div><div id="mSelic" class="ind-val">--%</div></div>
+        <div class="indicator"><div class="ind-label">Inflação (IPCA)</div><div id="mIpca" class="ind-val" style="color:var(--blue)">--%</div></div>
+        <div class="indicator"><div class="ind-label">Rendimento Mensal</div><div id="mRend" class="ind-val" style="color:var(--orange)">--%</div></div>
     </div>
 
-    <h1 style="text-align:center; margin:0 0 10px 0; letter-spacing:-1px;">MATEMÁTICA DO CARRO</h1>
-    <p style="text-align:center; color:#8b949e; font-size:13px; margin-bottom:30px;">Diego | Consultoria Estratégica Autoselic</p>
+    <h1 style="text-align:center; margin:0 0 5px 0; letter-spacing:-1px;">MATEMÁTICA DO CARRO</h1>
+    <p style="text-align:center; color:#8b949e; font-size:12px; margin-bottom:30px;">Diego | Mentoria Estratégica Autoselic</p>
 
     <div class="main-grid">
         <div class="panel">
             <div class="label-group">
                 <span class="label-text">Modelo Localiza Meoo</span>
                 <select id="preset" onchange="aplicar()">
-                    <option value="polo" data-fipe="125000" data-perc="2.2">VW Polo Highline</option>
-                    <option value="tcross" data-fipe="165000" data-perc="2.15" selected>VW T-Cross Comfortline</option>
-                    <option value="compass" data-fipe="225000" data-perc="2.35">Jeep Compass Limited</option>
-                    <option value="hilux" data-fipe="330000" data-perc="2.6">Toyota Hilux SRX</option>
-                </select>
-            </div>
-            <div class="label-group"><span class="label-text">Valor FIPE (R$)</span><input type="text" id="fipe" oninput="mask(this); calc()"></div>
-            <div class="label-group"><span class="label-text">Entrada (R$)</span><input type="text" id="entrada" value="60.000,00" oninput="mask(this); calc()"></div>
-            <div class="label-group"><span class="label-text">Juros Financiamento (% AM)</span><input type="number" id="juros" value="1.42" step="0.01" oninput="calc()"></div>
-            <div class="label-group"><span class="label-text">Tempo (Meses)</span><input type="number" id="meses" value="36" oninput="calc()"></div>
-
-            <div class="costs-table">
-                <div style="font-size:10px; font-weight:800; color:var(--primary); margin-bottom:12px">DRENAGEM DE CAPITAL (PROPRIEDADE)</div>
-                <div class="cost-item"><span>IPVA/Licenc.</span><span id="t-ipva" class="cost-val">R$ 0,00</span></div>
-                <div class="cost-item"><span>Seguro Estimado</span><span id="t-seguro" class="cost-val">R$ 0,00</span></div>
-                <div class="cost-item"><span>Manutenção/Revisão</span><span id="t-manut" class="cost-val">R$ 0,00</span></div>
-                <div class="cost-item"><span>Total Perdido</span><span id="t-total">R$ 0,00</span></div>
-            </div>
-        </div>
-
-        <div class="panel">
-            <div class="chart-container"><canvas id="mainChart"></canvas></div>
-            <div class="results-box">
-                <div id="c-compra" class="res-card">
-                    <span class="res-label">Patrimônio: Comprar</span>
-                    <span id="v-compra" class="res-value" style="color:var(--red)">R$ 0,00</span>
-                </div>
-                <div id="c-assina" class="res-card">
-                    <span class="res-label">Patrimônio: Assinar</span>
-                    <span id="v-assina" class="res-value" style="color:var(--primary)">R$ 0,00</span>
-                </div>
-            </div>
-            <p id="veredito" style="font-size:12px; color:#8b949e; line-height:1.6; background:rgba(255,255,255,0.03); padding:15px; border-radius:12px;"></p>
-        </div>
-    </div>
-
-    <button class="btn-send" onclick="zap()">📲 Gerar Relatório Autoselic Profissional</button>
-</div>
-
-<script>
-let chart;
-let mkt = { selic: 12.75, ipca: 4.60 };
-
-async function loadMkt() {
-    try {
-        const s = await fetch('https://api.bcb.gov.br/dados/serie/bcdata.sgs.11/dados/ultimos/1?formato=json').then(r => r.json());
-        mkt.selic = ((Math.pow((parseFloat(s[0].valor)/100) + 1, 252) - 1) * 100).toFixed(2);
-        document.getElementById('valSelic').innerText = mkt.selic + "%";
-        document.getElementById('valIpca').innerText = mkt.ipca + "%";
-    } catch(e) { document.getElementById('valSelic').innerText = "12.75%"; }
-    calc();
-}
-
-function aplicar() {
-    const s = document.getElementById('preset');
-    const o = s.options[s.selectedIndex];
-    document.getElementById('fipe').value = parseFloat(o.dataset.fipe).toLocaleString('pt-BR', {minimumFractionDigits:2});
-    calc();
-}
-
-function mask(i) {
-    let v = i.value.replace(/\D/g,'');
-    v = (v/100).toFixed(2) + '';
-    v = v.replace(".",",").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-    i.value = v;
-}
-
-function parse(v) { return parseFloat(v.toString().replace(/\./g,'').replace(',','.').trim()) || 0; }
-
-function calc() {
-    const v = parse(document.getElementById('fipe').value);
-    const e = parse(document.getElementById('entrada').value);
-    const n = parseInt(document.getElementById('meses').value);
-    const j = parseFloat(document.getElementById('juros').value)/100;
-    const s = document.getElementById('preset');
-    const a = v * (parseFloat(s.options[s.selectedIndex].dataset.perc)/100);
-
-    const ipva = v * 0.04;
-    const seg = v * 0.035;
-    const man = v * 0.02;
-    const oc = (ipva + seg) * (n/12) + man;
-
-    document.getElementById('t-ipva').innerText = (ipva*(n/12)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('t-seguro').innerText = (seg*(n/12)).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('t-manut').innerText = man.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('t-total').innerText = oc.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-
-    const parc = (v-e) * (j * Math.pow(1+j, n)) / (Math.pow(1+j, n) - 1);
-    let labs = [], dAss = [], dCom = [], cap = e;
-    const sm = Math.pow(1 + (mkt.selic/100), 1/12) - 1;
-
-    for (let i = 0; i <= n; i++) {
-        labs.push(i+"m");
-        let dep = v * Math.pow(1 - 0.12/12, i);
-        let sd = (v-e) * (Math.pow(1+j, n) - Math.pow(1+j, i)) / (Math.pow(1+j, n) - 1);
-        dCom.push(Math.max(0, dep - (i === n ? 0 : sd)));
-        if (i > 0) cap = cap * (1+sm) + ((parc + (ipva/12) + (seg/12) + (man/n)) - a);
-        dAss.push(cap);
-    }
-
-    document.getElementById('v-compra').innerText = dCom[n].toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('v-assina').innerText = dAss[n].toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('c-assina').className = dAss[n] > dCom[n] ? 'res-card winner' : 'res-card';
-    
-    const dif = dAss[n] - dCom[n];
-    document.getElementById('veredito').innerHTML = `💡 <b>Veredito Autoselic:</b> Em ${n} meses, a assinatura gera um patrimônio <b>${Math.abs(dif).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</b> ${dif>0?'MAIOR':'MENOR'} que a compra. Isso ocorre porque seu capital rendeu juros compostos na Selic enquanto o carro próprio drenou capital com taxas e depreciação.`;
-
-    if (chart) chart.destroy();
-    chart = new Chart(document.getElementById('mainChart').getContext('2d'), {
-        type: 'line',
-        data: { labels: labs, datasets: [
-            { label: 'Assinante (Liquidez)', data: dAss, borderColor: '#00ff88', borderWidth: 4, pointRadius: 0, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.05)' },
-            { label: 'Comprador (Bem)', data: dCom, borderColor: '#ff4d4d', borderDash: [5,5], pointRadius: 0 }
-        ]},
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#8b949e', font: { weight: 'bold' } } } } }
-    });
-}
-
-function zap() {
-    const d = parse(document.getElementById('v-assina').innerText) - parse(document.getElementById('v-compra').innerText);
-    const m = document.getElementById('preset').options[document.getElementById('preset').selectedIndex].text;
-    const t = `*📊 RELATÓRIO MENTORIA AUTOSELIC*\n` +
-        `------------------------------------\n` +
-        `🚙 *Veículo:* ${m}\n` +
-        `📈 *Selic:* ${mkt.selic}% | *Inflação:* ${mkt.ipca}%\n\n` +
-        `❌ *COMPRAR:* Termina com ${document.getElementById('v-compra').innerText}\n` +
-        `✅ *ASSINAR:* Termina com ${document.getElementById('v-assina').innerText}\n\n` +
-        `🏆 *DIFERENÇA:* +${d.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} de lucro assinando.\n\n` +
-        `_Simulação por Diego @matematicadocarro_`;
-    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(t)}`, '_blank');
-}
-window.onload = () => { loadMkt(); aplicar(); };
-</script>
-</body>
-</html>
+                    <option value="polo" data-fipe="125000" data-perc="2.2">VW Polo Highline (2.2%)</option>
+                    <option value="tcross" data-fipe="165000" data-perc="2.15" selected>VW T-Cross Comfortline (2.15%)</option>
+                    <option value="nivus" data-fipe="155000" data-perc="2.25">VW Nivus Highline (2.25%)</option>
+                    <option value="compass" data-fipe="225000
