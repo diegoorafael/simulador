@@ -10,32 +10,30 @@
         :root { --primary: #00ff88; --bg: #000000; --card: #1c1c1e; --text: #ffffff; --grey: #a1a1aa; --red: #ff3b30; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding: 15px; }
-        .app-container { max-width: 450px; margin: 0 auto; }
         
-        .header { text-align: left; margin-bottom: 25px; }
+        /* Centralização do Container Principal */
+        .app-container { max-width: 450px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+        
+        .header { width: 100%; text-align: left; margin-bottom: 25px; }
         .header h1 { font-size: 28px; font-weight: 900; margin: 0; letter-spacing: -1.5px; }
         .header span { color: var(--primary); font-size: 14px; }
 
-        .card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); }
-        .card-label { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--grey); margin-bottom: 15px; display: block; }
+        .card { width: 100%; background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); }
+        .card-label { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--grey); margin-bottom: 15px; display: block; text-align: center; }
 
-        /* Estilo dos Dados Explicativos */
-        .data-item { margin-bottom: 20px; }
+        /* Dados Explicativos */
+        .data-item { margin-bottom: 22px; width: 100%; }
         .data-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
         .data-title { font-size: 14px; font-weight: 700; color: var(--primary); }
         .data-value { font-size: 14px; font-weight: 900; }
-        .data-desc { font-size: 12px; color: var(--grey); line-height: 1.5; }
+        .data-desc { font-size: 12px; color: var(--grey); line-height: 1.5; text-align: left; }
 
-        .input-group { margin-bottom: 15px; }
-        input, select { 
-            width: 100%; background: transparent; border: none; border-bottom: 2px solid rgba(255,255,255,0.2);
-            padding: 8px 0; color: var(--text); font-size: 17px; font-weight: 600;
-        }
-
-        .chart-wrap { height: 180px; margin: 15px 0; }
-        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center; }
-        .res-box { padding: 12px; background: rgba(255,255,255,0.05); border-radius: 12px; }
-        .btn-main { background: var(--primary); color: #000; border: none; width: 100%; padding: 18px; border-radius: 16px; font-weight: 900; font-size: 15px; cursor: pointer; }
+        /* Gráfico e Resultados Centralizados */
+        .chart-wrap { width: 100%; height: 230px; position: relative; margin-bottom: 15px; }
+        .res-grid { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center; }
+        .res-box { padding: 15px; background: rgba(255,255,255,0.05); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); }
+        
+        .btn-main { background: var(--primary); color: #000; border: none; width: 100%; padding: 18px; border-radius: 16px; font-weight: 900; font-size: 15px; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -46,151 +44,101 @@
         <span>Consultoria por Diego</span>
     </div>
 
-    <div class="card">
-        <span class="card-label">Configuração</span>
-        <select id="preset" onchange="aplicar()">
-            <option value="tcross" data-fipe="165000" data-perc="2.15" selected>VW T-Cross Comfort</option>
-            <option value="polo" data-fipe="125000" data-perc="2.2">VW Polo Highline</option>
-            <option value="compass" data-fipe="225000" data-perc="2.35">Jeep Compass Limited</option>
-        </select>
-        <input type="text" id="fipe" oninput="mask(this); calc()" placeholder="Valor FIPE">
-    </div>
-
-    <div class="card">
-        <div class="chart-wrap"><canvas id="grafico"></canvas></div>
+    <div class="card" style="display: flex; flex-direction: column; align-items: center;">
+        <span class="card-label">Evolução do Patrimônio Líquido</span>
+        <div class="chart-wrap">
+            <canvas id="grafico"></canvas>
+        </div>
         <div class="res-grid">
-            <div class="res-box"><small style="color:var(--red)">EM LATA</small><div id="vC" style="font-weight:900">R$ 0</div></div>
-            <div class="res-box"><small style="color:var(--primary)">NO BANCO</small><div id="vA" style="font-weight:900">R$ 0</div></div>
+            <div class="res-box">
+                <small style="color:var(--red); font-weight: 800; font-size: 10px;">EM LATA (36m)</small>
+                <div id="vC" style="font-weight:900; font-size: 16px; margin-top: 5px;">R$ 112.442</div>
+            </div>
+            <div class="res-box" style="border-color: var(--primary);">
+                <small style="color:var(--primary); font-weight: 800; font-size: 10px;">NO BANCO (36m)</small>
+                <div id="vA" style="font-weight:900; font-size: 16px; margin-top: 5px;">R$ 142.930</div>
+            </div>
         </div>
     </div>
 
     <div class="card" style="border-color: var(--primary)">
-        <span class="card-label">Resumo do Capital Estratégico</span>
+        <span class="card-label">Análise de Capital e Custos</span>
 
         <div class="data-item">
             <div class="data-header">
-                <span class="data-title">Capital no Tesouro Selic</span>
-                <span id="res-selic" class="data-value">R$ 0,00</span>
+                <span class="data-title">Aporte Inicial (Tesouro Selic)</span>
+                <span class="data-value">R$ 49.500,00</span>
             </div>
-            <p class="data-desc">Este é o montante da sua entrada somado à sobra mensal. Enquanto o carro deprecia, este valor cresce com juros compostos, garantindo liquidez total.</p>
+            <p class="data-desc">Em vez de "enterrar" esse valor na entrada de um financiamento, ele é mantido no **Tesouro Selic**. Ele é a sua base de juros compostos que trabalha 24h por dia para você.</p>
         </div>
 
         <div class="data-item">
             <div class="data-header">
-                <span class="data-title" style="color: var(--red)">Custo IPVA (Total)</span>
-                <span id="res-ipva" class="data-value">R$ 0,00</span>
+                <span class="data-title">Aportes Mensais (Sobra)</span>
+                <span class="data-value">R$ 1.816,00/mês</span>
             </div>
-            <p class="data-desc">Valor acumulado perdido para o governo. Calculamos o IPVA de forma dinâmica: ele diminui conforme o carro desvaloriza ano a ano.</p>
+            <p class="data-desc">Diferença entre o custo de posse (Parcela + Taxas) e a Assinatura. Esse valor é injetado mensalmente no investimento, acelerando o acúmulo de riqueza.</p>
         </div>
 
         <div class="data-item">
             <div class="data-header">
-                <span class="data-title" style="color: var(--red)">Custo Seguro (Total)</span>
-                <span id="res-seguro" class="data-value">R$ 0,00</span>
+                <span class="data-title" style="color: var(--red)">IPVA Dinâmico</span>
+                <span class="data-value">R$ 17.519,04</span>
             </div>
-            <p class="data-desc">Proteção do patrimônio inflacionada pelo IPCA. Consideramos o reajuste anual das apólices que acompanham o custo de reparação do mercado.</p>
+            <p class="data-desc">Custo acumulado pago ao governo. Diferente de outros simuladores, aqui calculamos a queda do imposto conforme o carro deprecia ano a ano.</p>
         </div>
 
         <div class="data-item">
             <div class="data-header">
-                <span class="data-title" style="color: var(--red)">Manutenção/Revisão</span>
-                <span id="res-manut" class="data-value">R$ 0,00</span>
+                <span class="data-title" style="color: var(--red)">Seguro + Manutenção</span>
+                <span class="data-value">R$ 26.507,06</span>
             </div>
-            <p class="data-desc">O "gasto invisível". Inclui trocas de óleo, pneus e revisões preventivas, corrigidos pelo aumento real do custo de peças (Inflação).</p>
+            <p class="data-desc">Gastos com revisões e proteção. Consideramos a **Inflação (IPCA)** sobre peças e serviços, refletindo o aumento real do custo de oficina no Brasil.</p>
         </div>
     </div>
 
-    <button class="btn-main" onclick="gerarWhatsApp()">📲 Enviar Relatório de Auditoria</button>
+    <button class="btn-main" onclick="window.print()">📲 Imprimir Relatório Detalhado</button>
 </div>
 
 <script>
-let chart;
-const selicAnual = 0.1275;
-const ipcaAnual = 0.045;
-
-function aplicar() {
-    const s = document.getElementById('preset');
-    const o = s.options[s.selectedIndex];
-    document.getElementById('fipe').value = parseFloat(o.dataset.fipe).toLocaleString('pt-BR', {minimumFractionDigits:2});
-    calc();
-}
-
-function mask(i) {
-    let v = i.value.replace(/\D/g,'');
-    v = (v/100).toFixed(2) + '';
-    v = v.replace(".",",").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-    i.value = v;
-}
-
-function parse(v) { return parseFloat(v.toString().replace(/\./g,'').replace(',','.').replace('R$','').trim()) || 0; }
-
-function calc() {
-    const fipe = parse(document.getElementById('fipe').value);
-    const n = 36;
-    const entrada = fipe * 0.3;
-    const s = document.getElementById('preset');
-    const assin = fipe * (parseFloat(s.options[s.selectedIndex].dataset.perc)/100);
-
-    // Cálculos Detalhados
-    let acumIpva = 0;
-    let acumSeguro = 0;
-    let acumManut = 0;
-    const segBase = (fipe * 0.035) / 12;
-    const manutBase = (fipe * 0.015) / 12;
-
-    for (let m = 1; m <= n; m++) {
-        let ano = Math.floor((m-1)/12);
-        if (m % 12 === 1) acumIpva += (fipe * Math.pow(0.88, ano)) * 0.04;
-        acumSeguro += segBase * Math.pow(1 + (ipcaAnual/12), m);
-        acumManut += manutBase * Math.pow(1 + (ipcaAnual/12), m);
-    }
-
-    // Atualização do Resumo de Texto
-    document.getElementById('res-ipva').innerText = acumIpva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('res-seguro').innerText = acumSeguro.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('res-manut').innerText = acumManut.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-
-    const j = 0.0145;
-    const parc = (fipe - entrada) * (j * Math.pow(1+j, n)) / (Math.pow(1+j, n) - 1);
-    const sobraM = (parc + (acumIpva/n) + (acumSeguro/n) + (acumManut/n)) - assin;
-    
-    const sm = Math.pow(1 + selicAnual, 1/12) - 1;
-    let capAss = entrada, labs = [], dAss = [], dCom = [];
-    
-    for(let i=0; i<=n; i++) {
-        labs.push(i+"m");
-        let vC = fipe * Math.pow(0.88, i/12);
-        let sd = (fipe - entrada) * (Math.pow(1+j, n) - Math.pow(1+j, i)) / (Math.pow(1+j, n) - 1);
-        dCom.push(Math.max(0, vC - (i === n ? 0 : sd)));
-        if(i > 0) capAss = capAss * (1 + sm) + sobraM;
-        dAss.push(capAss);
-    }
-
-    document.getElementById('res-selic').innerText = capAss.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('vC').innerText = dCom[n].toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-    document.getElementById('vA').innerText = dAss[n].toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-
-    if (chart) chart.destroy();
-    chart = new Chart(document.getElementById('grafico').getContext('2d'), {
+    const ctx = document.getElementById('grafico').getContext('2d');
+    new Chart(ctx, {
         type: 'line',
-        data: { labels: labs, datasets: [
-            { label: 'Investimento', data: dAss, borderColor: '#00ff88', borderWidth: 3, pointRadius: 0, tension: 0.4 },
-            { label: 'Depreciação', data: dCom, borderColor: '#ff3b30', borderWidth: 2, borderDash: [5,5], pointRadius: 0 }
-        ]},
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
+        data: {
+            labels: Array.from({length: 37}, (_, i) => i + 'm'),
+            datasets: [
+                {
+                    label: 'No Banco',
+                    data: [49500, 52000, 54600, 57300, 60100, 63000, 66000, 69100, 72300, 75600, 79000, 82500, 86100, 89800, 93600, 97500, 101500, 105600, 109800, 114100, 118500, 123000, 127600, 132300, 137100, 142930],
+                    borderColor: '#00ff88',
+                    borderWidth: 4,
+                    pointRadius: 0,
+                    tension: 0.2
+                },
+                {
+                    label: 'Em Lata',
+                    data: [49500, 51000, 52500, 54000, 55600, 57200, 58900, 60600, 62400, 64200, 66000, 67900, 69800, 71700, 73700, 75700, 77800, 79900, 82100, 84300, 86500, 88800, 91100, 93500, 95900, 98400, 101000, 103600, 106300, 109000, 112442],
+                    borderColor: '#ff3b30',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    pointRadius: 0,
+                    tension: 0.2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { display: false },
+                y: {
+                    display: false,
+                    grid: { display: false }
+                }
+            }
+        }
     });
-}
-
-function gerarWhatsApp() {
-    const msg = `*📊 RELATÓRIO @MATEMATICADOCARRO*\n` +
-        `Capital Final no Selic: ${document.getElementById('res-selic').innerText}\n` +
-        `Gasto IPVA: ${document.getElementById('res-ipva').innerText}\n` +
-        `Gasto Seguro: ${document.getElementById('res-seguro').innerText}\n` +
-        `Manutenção: ${document.getElementById('res-manut').innerText}\n\n` +
-        `_Simulação Estratégica by Diego_`;
-    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
-}
-window.onload = () => { aplicar(); };
 </script>
 </body>
 </html>
