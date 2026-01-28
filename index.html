@@ -9,12 +9,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body { background-color: #0a0c10; color: #f0f2f5; font-family: 'Inter', sans-serif; }
-        .glass-card { background: rgba(22, 27, 34, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; backdrop-filter: blur(10px); transition: all 0.5s ease; }
+        .glass-card { background: rgba(22, 27, 34, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; backdrop-filter: blur(10px); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .input-clean { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 12px; border-radius: 10px; width: 100%; outline: none; transition: 0.2s; }
-        .input-clean:focus { border-color: #00ff88; }
+        .input-clean:focus { border-color: #00ff88; box-shadow: 0 0 10px rgba(0, 255, 136, 0.2); }
         .label-clean { font-size: 0.7rem; font-weight: 600; color: #8b949e; text-transform: uppercase; margin-bottom: 6px; display: block; }
-        .winner-card { border: 2px solid #00ff88 !important; background: rgba(0, 255, 136, 0.1) !important; transform: scale(1.03); z-index: 10; }
-        .loser-card { opacity: 0.4; transform: scale(0.97); }
+        
+        .winner-card { border: 2px solid #00ff88 !important; background: rgba(0, 255, 136, 0.08) !important; transform: scale(1.05); z-index: 10; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+        .loser-card { opacity: 0.5; transform: scale(0.95); filter: grayscale(0.5); }
+
+        /* Estilos da Tabela */
+        .table-container { overflow-x: auto; margin-top: 2rem; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; }
+        th { background: rgba(255, 255, 255, 0.03); color: #8b949e; font-weight: 600; text-transform: uppercase; padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        td { padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #f0f2f5; }
+        tr:hover { background: rgba(255, 255, 255, 0.02); }
     </style>
 </head>
 <body class="p-4 md:p-10">
@@ -22,7 +30,8 @@
     <div class="max-w-6xl mx-auto">
         <header class="mb-12 text-center">
             <h1 class="text-3xl font-bold tracking-tight mb-2 uppercase text-white">MATEMÁTICA DO CARRO</h1>
-            <div class="h-1 w-20 bg-green-500 mx-auto rounded-full"></div>
+            <p class="text-gray-500 text-sm italic">Simulador de Viabilidade: Carro Próprio vs. Assinatura</p>
+            <div class="h-1 w-20 bg-green-500 mx-auto mt-4 rounded-full"></div>
         </header>
 
         <div class="glass-card p-6 md:p-8 mb-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
@@ -42,73 +51,91 @@
             </div>
             <div>
                 <label class="label-clean">Custos Posse (% AA)</label>
-                <input type="number" id="pCustosAnuais" class="input-clean" value="8.8" step="0.1" oninput="calcular()">
+                <input type="number" id="pCustosAnuais" class="input-clean" value="10.0" step="0.1" oninput="calcular()">
             </div>
             <div>
                 <label class="label-clean">Inflação (% AA)</label>
                 <input type="number" id="tInflacao" class="input-clean" value="4.50" step="0.01" oninput="calcular()">
             </div>
             <div>
-                <label class="label-clean">Selic Atual (% AA)</label>
-                <input type="number" id="tSelicAnual" class="input-clean !text-cyan-400 font-bold" value="15.00" step="0.01" oninput="calcular()">
+                <label class="label-clean">Selic (Simulação)</label>
+                <input type="number" id="tSelicAnual" class="input-clean !text-cyan-400 font-bold border-cyan-500/30" value="11.75" step="0.01" oninput="calcular()">
+                <p class="text-[9px] text-cyan-500/70 mt-1">Livre para alteração</p>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="glass-card p-8 border-t-2 border-red-500">
-                <h2 class="text-red-500 font-bold mb-6 uppercase">Financiamento</h2>
+            <div class="glass-card p-8 border-t-4 border-red-500">
+                <h2 class="text-red-500 font-bold mb-6 uppercase tracking-widest">Financiamento</h2>
                 <div class="mb-8">
                     <label class="label-clean">Taxa de Juros (% AM)</label>
-                    <input type="number" id="tJuros" class="input-clean" value="1.50" step="0.01" oninput="calcular()">
+                    <input type="number" id="tJuros" class="input-clean" value="1.60" step="0.01" oninput="calcular()">
                 </div>
                 <div class="space-y-4">
-                    <div class="flex justify-between"><span class="text-gray-400">Parcela Mensal</span> <span id="outParcela" class="font-bold">R$ 0,00</span></div>
-                    <div class="flex justify-between"><span class="text-gray-400">Custos de Posse</span> <span id="outExtrasA" class="text-red-400 font-bold">R$ 0,00</span></div>
+                    <div class="flex justify-between"><span class="text-gray-400">Parcela Mensal</span> <span id="outParcela" class="font-bold text-white text-lg">R$ 0,00</span></div>
+                    <div class="flex justify-between"><span class="text-gray-400">Extras (IPVA/Seguro/Mant)</span> <span id="outExtrasA" class="text-red-400 font-bold">R$ 0,00</span></div>
                     <div class="pt-4 border-t border-white/5 flex justify-between items-center text-white">
-                        <span class="text-sm font-bold uppercase">Saída de Caixa Mensal</span>
+                        <span class="text-sm font-bold uppercase">Custo Caixa Total</span>
                         <span id="outTotalA" class="text-2xl font-bold">R$ 0,00</span>
                     </div>
                 </div>
             </div>
 
-            <div class="glass-card p-8 border-t-2 border-green-500">
-                <h2 class="text-green-500 font-bold mb-6 uppercase">Assinatura</h2>
+            <div class="glass-card p-8 border-t-4 border-green-500">
+                <h2 class="text-green-500 font-bold mb-6 uppercase tracking-widest">Assinatura</h2>
                 <div class="mb-8">
                     <label class="label-clean">Mensalidade Assinatura</label>
-                    <input type="text" id="vAssinaturaDisp" class="input-clean" value="R$ 2.000,00" oninput="mask(this, 'vAssinatura')">
-                    <input type="hidden" id="vAssinatura" value="2000">
+                    <input type="text" id="vAssinaturaDisp" class="input-clean" value="R$ 2.400,00" oninput="mask(this, 'vAssinatura')">
+                    <input type="hidden" id="vAssinatura" value="2400">
                 </div>
                 <div class="space-y-4">
-                    <div class="flex justify-between"><span class="text-gray-400">Custo Equivalente</span> <span id="outCustoDono" class="font-bold">R$ 0,00</span></div>
-                    <div class="flex justify-between"><span class="text-gray-400">Mensalidade Fixa</span> <span id="outAssinLabel" class="text-white font-bold text-lg">R$ 0,00</span></div>
+                    <div class="flex justify-between"><span class="text-gray-400">Equivalente p/ Comparar</span> <span id="outCustoDono" class="font-bold">R$ 0,00</span></div>
+                    <div class="flex justify-between"><span class="text-gray-400">Custo Assinatura</span> <span id="outAssinLabel" class="text-white font-bold text-lg">R$ 0,00</span></div>
                     <div class="pt-4 border-t border-white/5 flex justify-between items-center text-green-400">
-                        <span class="text-sm font-bold uppercase">Aporte p/ Investimento</span>
+                        <span class="text-sm font-bold uppercase">Aporte Mensal Selic</span>
                         <span id="outAporte" class="text-2xl font-bold">R$ 0,00</span>
                     </div>
                 </div>
             </div>
 
             <div class="lg:col-span-2 glass-card p-8">
-                <h3 class="label-clean mb-6 text-center">Patrimônio Líquido Final</h3>
+                <h3 class="label-clean mb-6 text-center">Resultados após <span id="displayMeses" class="text-white">48</span> meses</h3>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 mb-10">
                     <div id="resCardA" class="glass-card p-6 flex flex-col items-center">
-                        <span id="trofeuA" class="hidden text-2xl mb-2">🏆</span>
-                        <p class="label-clean">Patrimônio Carro</p>
-                        <p id="resFinalFinanc" class="text-2xl font-bold">R$ 0,00</p>
-                        <p id="labelWinA" class="hidden text-[10px] text-green-400 font-bold mt-2 uppercase">Melhor Patrimônio</p>
+                        <span id="trofeuA" class="hidden text-3xl mb-2">🏆</span>
+                        <p class="label-clean">Valor Líquido (Carro)</p>
+                        <p id="resFinalFinanc" class="text-3xl font-bold">R$ 0,00</p>
+                        <p id="labelWinA" class="hidden text-[11px] text-green-400 font-bold mt-3 uppercase tracking-tighter">Opção Vencedora</p>
                     </div>
 
                     <div id="resCardB" class="glass-card p-6 flex flex-col items-center">
-                        <span id="trofeuB" class="hidden text-2xl mb-2">🏆</span>
-                        <p class="label-clean">Patrimônio Investido</p>
-                        <p id="resFinalAssin" class="text-2xl font-bold">R$ 0,00</p>
-                        <p id="labelWinB" class="hidden text-[10px] text-green-400 font-bold mt-2 uppercase">Melhor Patrimônio</p>
+                        <span id="trofeuB" class="hidden text-3xl mb-2">🏆</span>
+                        <p class="label-clean">Montante Investido</p>
+                        <p id="resFinalAssin" class="text-3xl font-bold">R$ 0,00</p>
+                        <p id="labelWinB" class="hidden text-[11px] text-green-400 font-bold mt-3 uppercase tracking-tighter">Opção Vencedora</p>
                     </div>
                 </div>
 
-                <div class="h-80">
+                <div class="h-80 w-full mb-10">
                     <canvas id="meuGrafico"></canvas>
+                </div>
+
+                <h3 class="label-clean text-center mb-4">Detalhamento Mês a Mês</h3>
+                <div class="table-container">
+                    <table id="tabelaDados">
+                        <thead>
+                            <tr>
+                                <th>Mês</th>
+                                <th>Dívida Carro</th>
+                                <th>Valor do Carro</th>
+                                <th>Patrimônio Líquido Carro</th>
+                                <th>Saldo Investimento (Assinatura)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpoTabela">
+                            </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -145,6 +172,7 @@
             const totalA = pmt + custosMes;
             const aporte = totalA - vAssinatura;
 
+            document.getElementById('displayMeses').innerText = vPrazo;
             document.getElementById('outParcela').innerText = fmt(pmt);
             document.getElementById('outExtrasA').innerText = fmt(custosMes);
             document.getElementById('outTotalA').innerText = fmt(totalA);
@@ -156,44 +184,58 @@
         }
 
         function render(vCarro, vEntrada, aporte, meses, selic, pmt, jurosF, vF, inf) {
-            let sD = vF, pF = [], pA = [], sI = vEntrada;
+            let sD = vF, pFinanc = [], pAssin = [], sInvest = vEntrada;
+            let rowsHtml = "";
+            
             for(let m=0; m<=meses; m++) {
-                let vCH = vCarro * Math.pow(0.99 + inf, m);
+                let vCarroHoje = vCarro * Math.pow(0.99 + inf, m); 
+                
                 if (m > 0) {
-                    let jM = sD * jurosF;
-                    sD -= (pmt - jM);
-                    sI = (sI + aporte) * (1 + selic);
+                    let jurosMensalFinanc = sD * jurosF;
+                    sD -= (pmt - jurosMensalFinanc);
+                    sInvest = (sInvest + aporte) * (1 + selic);
                 }
-                pF.push(Math.max(0, vCH - Math.max(0, sD)));
-                pA.push(sI);
+
+                let patLiqCarro = Math.max(0, vCarroHoje - Math.max(0, sD));
+                pFinanc.push(patLiqCarro);
+                pAssin.push(sInvest);
+
+                // Popular Tabela (amostragem inteligente)
+                if (m % Math.ceil(meses/12) === 0 || m === meses) {
+                    rowsHtml += `<tr>
+                        <td>${m}</td>
+                        <td>${fmt(Math.max(0, sD))}</td>
+                        <td>${fmt(vCarroHoje)}</td>
+                        <td class="font-bold">${fmt(patLiqCarro)}</td>
+                        <td class="font-bold text-green-400">${fmt(sInvest)}</td>
+                    </tr>`;
+                }
             }
             
-            const fA = pF[meses]; // Final Financ
-            const fB = pA[meses]; // Final Assin
+            document.getElementById('corpoTabela').innerHTML = rowsHtml;
+            const finalFinanc = pFinanc[meses];
+            const finalAssin = pAssin[meses];
             
-            document.getElementById('resFinalFinanc').innerText = fmt(fA);
-            document.getElementById('resFinalAssin').innerText = fmt(fB);
+            document.getElementById('resFinalFinanc').innerText = fmt(finalFinanc);
+            document.getElementById('resFinalAssin').innerText = fmt(finalAssin);
 
-            // LOGICA DINAMICA DO CAMPEÃO
-            const cardA = document.getElementById('resCardA');
-            const cardB = document.getElementById('resCardB');
-            const trofeuA = document.getElementById('trofeuA');
-            const trofeuB = document.getElementById('trofeuB');
-            const winA = document.getElementById('labelWinA');
-            const winB = document.getElementById('labelWinB');
-
-            if (fB > fA) {
-                // Assinatura Ganhou
-                cardB.className = "glass-card p-6 flex flex-col items-center winner-card";
-                cardA.className = "glass-card p-6 flex flex-col items-center loser-card";
-                trofeuB.classList.remove('hidden'); trofeuA.classList.add('hidden');
-                winB.classList.remove('hidden'); winA.classList.add('hidden');
+            const cardFin = document.getElementById('resCardA');
+            const cardAss = document.getElementById('resCardB');
+            
+            if (finalAssin > finalFinanc) {
+                cardAss.classList.add('winner-card'); cardAss.classList.remove('loser-card');
+                cardFin.classList.add('loser-card'); cardFin.classList.remove('winner-card');
+                document.getElementById('trofeuB').classList.remove('hidden');
+                document.getElementById('trofeuA').classList.add('hidden');
+                document.getElementById('labelWinB').classList.remove('hidden');
+                document.getElementById('labelWinA').classList.add('hidden');
             } else {
-                // Financiamento Ganhou
-                cardA.className = "glass-card p-6 flex flex-col items-center winner-card";
-                cardB.className = "glass-card p-6 flex flex-col items-center loser-card";
-                trofeuA.classList.remove('hidden'); trofeuB.classList.add('hidden');
-                winA.classList.remove('hidden'); winB.classList.add('hidden');
+                cardFin.classList.add('winner-card'); cardFin.classList.remove('loser-card');
+                cardAss.classList.add('loser-card'); cardAss.classList.remove('winner-card');
+                document.getElementById('trofeuA').classList.remove('hidden');
+                document.getElementById('trofeuB').classList.add('hidden');
+                document.getElementById('labelWinA').classList.remove('hidden');
+                document.getElementById('labelWinB').classList.add('hidden');
             }
 
             if (chart) chart.destroy();
@@ -202,14 +244,20 @@
                 data: {
                     labels: Array.from({length: meses + 1}, (_, i) => i),
                     datasets: [
-                        { label: 'Financiamento', data: pF, borderColor: '#ef4444', borderWidth: 2, pointRadius: 0, fill: false },
-                        { label: 'Assinatura', data: pA, borderColor: '#00ff88', borderWidth: 4, pointRadius: 0, fill: false }
+                        { label: 'Patrimônio Carro', data: pFinanc, borderColor: '#ef4444', borderWidth: 2, pointRadius: 0, fill: false, tension: 0.2 },
+                        { label: 'Patrimônio Investido', data: pAssin, borderColor: '#00ff88', borderWidth: 4, pointRadius: 0, fill: false, tension: 0.2 }
                     ]
                 },
                 options: { 
                     responsive: true, maintainAspectRatio: false, 
                     plugins: { legend: { display: false } },
-                    scales: { y: { ticks: { color: '#666', callback: (v) => 'R$ ' + v.toLocaleString('pt-BR') } } }
+                    scales: { 
+                        y: { 
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: '#8b949e', font: { size: 10 }, callback: (v) => 'R$ ' + v.toLocaleString('pt-BR') } 
+                        },
+                        x: { grid: { display: false }, ticks: { color: '#8b949e' } }
+                    }
                 }
             });
         }
