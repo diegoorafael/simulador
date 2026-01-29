@@ -13,18 +13,16 @@
         .nav-blur { background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); }
         .glass-panel { background: var(--card); border: 1px solid var(--border); border-radius: 20px; transition: 0.3s; }
         .input-luxury { background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 12px; width: 100%; outline: none; transition: 0.3s; }
-        .input-luxury:focus { border-color: var(--brand); }
         .label-luxury { font-size: 0.65rem; color: #666; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-bottom: 6px; display: block; }
         .btn-luxury { background: #fff; color: #000; font-weight: 700; padding: 0.8rem 1.5rem; border-radius: 10px; font-size: 0.7rem; text-transform: uppercase; transition: 0.3s; cursor: pointer; }
         .btn-luxury:hover { background: var(--brand); transform: translateY(-2px); }
         .card-duel { border-top: 4px solid var(--brand); background: linear-gradient(180deg, rgba(0, 255, 136, 0.05) 0%, transparent 100%); }
-        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #fff; color: #000; padding: 12px 24px; border-radius: 100px; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 10px; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.3s; }
-        .whatsapp-float:hover { background: var(--brand); transform: scale(1.05); }
+        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #fff; color: #000; padding: 12px 24px; border-radius: 100px; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 10px; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
 
-    <a href="https://wa.me/5512983009090?text=Olá! Vi os duelos de patrimônio e quero uma consultoria privada." class="whatsapp-float" target="_blank">
+    <a href="https://wa.me/5512983009090" class="whatsapp-float" target="_blank">
         <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
         CONSULTORIA PRIVATE
     </a>
@@ -75,7 +73,7 @@
         </header>
 
         <section id="simulador-completo" class="py-20 border-t border-white/5">
-            <h2 class="text-center text-[11px] font-bold uppercase tracking-[0.6em] text-gray-600 mb-16">Custom Analysis Framework</h2>
+            <h2 class="text-center text-[11px] font-bold uppercase tracking-[0.6em] text-gray-600 mb-16 italic">Simulador Estratégico Completo</h2>
             
             <div class="glass-panel p-8 md:p-12 mb-10">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
@@ -85,16 +83,138 @@
                     <div><label class="label-luxury">Taxa Selic (% AA)</label><input type="number" id="tSelicAnual" class="input-luxury !text-cyan-400 font-bold" value="12.75" step="0.01" oninput="calcular()"></div>
                     <div><label class="label-luxury">Prazo (Meses)</label><input type="number" id="vPrazo" class="input-luxury" value="48" oninput="calcular()"></div>
                     <div><label class="label-luxury">Custos Posse (% AA)</label><input type="number" id="pCustosAnuais" class="input-luxury" value="10.0" step="0.1" oninput="calcular()"></div>
-                    <div><label class="label-luxury">Inflação IPCA (% AA)</label><input type="number" id="tInflacaoAnual" class="input-luxury" value="4.50" step="0.01" oninput="calcular()"></div>
+                    <div><label class="label-luxury">Inflação (% AA)</label><input type="number" id="tInflacaoAnual" class="input-luxury" value="4.50" step="0.01" oninput="calcular()"></div>
                     <div><label class="label-luxury">Assinatura Mensal</label><input type="text" id="vAssinaturaDisp" class="input-luxury" value="R$ 2.400,00" oninput="mask(this, 'vAssinatura')"><input type="hidden" id="vAssinatura" value="2400"></div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-16 items-start">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-16">
+                    <div class="glass-panel p-8 border-l-4 border-red-500/50">
+                        <label class="label-luxury !mb-6">Custo de Financiamento</label>
+                        <div class="grid grid-cols-2 gap-6 mb-6">
+                            <div><p class="text-[10px] text-gray-500 uppercase font-bold">Juros AM (%)</p><input type="number" id="tJurosMensal" class="input-luxury !py-2 !text-sm" value="1.60" oninput="calcular()"></div>
+                            <div><p class="text-[10px] text-gray-500 uppercase font-bold">Parcela Mensal</p><p id="outParcela" class="text-lg font-bold text-white">R$ 0,00</p></div>
+                        </div>
+                        <div class="pt-6 border-t border-white/5 flex justify-between items-center text-red-500">
+                            <span class="text-[11px] font-bold uppercase tracking-widest">Saída Mensal Caixa</span>
+                            <span id="outTotalA" class="text-2xl font-black">R$ 0,00</span>
+                        </div>
+                    </div>
+
                     <div class="space-y-8">
-                        <div class="glass-panel p-8 border-l-4 border-red-500/50">
-                            <label class="label-luxury !mb-6">Custo de Financiamento</label>
-                            <div class="grid grid-cols-2 gap-6 mb-6">
-                                <div><p class="text-[10px] text-gray-500 uppercase font-bold">Juros AM (%)</p><input type="number" id="tJurosMensal" class="input-luxury !py-2 !text-sm" value="1.60" oninput="calcular()"></div>
-                                <div><p class="text-[10px] text-gray-500 uppercase font-bold">Parcela Mensal</p><p id="outParcela" class="text-lg font-bold">R$ 0,00</p></div>
-                            </div>
-                            <div class="pt-6 border-t border-white/5 flex justify-between items
+                        <div class="grid grid-cols-2 gap-4 text-center">
+                            <div class="glass-panel p-6"><p class="label-luxury">Patrimônio Carro</p><p id="resFinalFinanc" class="text-2xl font-bold">R$ 0,00</p></div>
+                            <div class="glass-panel p-6 border-l-2 border-green-500"><p class="label-luxury text-green-500">Capital no Banco</p><p id="resFinalAssin" class="text-2xl font-bold text-green-400">R$ 0,00</p></div>
+                        </div>
+                        <div class="h-64"><canvas id="meuGrafico"></canvas></div>
+                        <div id="painelVeredito" class="p-4 rounded-xl bg-white/5 text-center text-xs text-gray-400 italic"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let chart;
+        const fmt = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        function mask(i, id) {
+            let v = i.value.replace(/\D/g, "");
+            v = (v / 100).toFixed(2);
+            let p = v.split(".");
+            p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            i.value = "R$ " + p[0] + "," + p[1];
+            document.getElementById(id).value = v;
+            calcular();
+        }
+
+        function setCarro(modelo) {
+            const el = document.getElementById('simulador-completo');
+            if (modelo === 'hilux') {
+                updateField('vCarro', 330000, 'vCarroDisp');
+                updateField('vEntrada', 120000, 'vEntradaDisp');
+                document.getElementById('pDepAnual').value = "10.0";
+                updateField('vAssinatura', 8600, 'vAssinaturaDisp');
+            } else if (modelo === 'bmw') {
+                updateField('vCarro', 360000, 'vCarroDisp');
+                updateField('vEntrada', 130000, 'vEntradaDisp');
+                document.getElementById('pDepAnual').value = "18.0";
+                updateField('vAssinatura', 9100, 'vAssinaturaDisp');
+            } else if (modelo === 'tcross') {
+                updateField('vCarro', 180000, 'vCarroDisp');
+                updateField('vEntrada', 60000, 'vEntradaDisp');
+                document.getElementById('pDepAnual').value = "12.0";
+                updateField('vAssinatura', 4150, 'vAssinaturaDisp');
+            }
+            window.scrollTo({ top: el.offsetTop - 100, behavior: 'smooth' });
+            calcular(); // Dispara o cálculo imediato após preencher
+        }
+
+        function updateField(id, val, disp) {
+            document.getElementById(id).value = val;
+            document.getElementById(disp).value = fmt(val);
+        }
+
+        function calcular() {
+            const vC = parseFloat(document.getElementById('vCarro').value) || 0;
+            const vE = parseFloat(document.getElementById('vEntrada').value) || 0;
+            const tJ = (parseFloat(document.getElementById('tJurosMensal').value) / 100) || 0;
+            const vP = parseInt(document.getElementById('vPrazo').value) || 1;
+            const vA = parseFloat(document.getElementById('vAssinatura').value) || 0;
+            const tS = parseFloat(document.getElementById('tSelicAnual').value) || 0;
+            const tI = parseFloat(document.getElementById('tInflacaoAnual').value) || 0;
+            const pD = parseFloat(document.getElementById('pDepAnual').value) || 0;
+            const pC = parseFloat(document.getElementById('pCustosAnuais').value) || 0;
+
+            const selicLiqM = (Math.pow(1 + ((tS * 0.85)/100), 1/12) - 1);
+            const depM = 1 - Math.pow(1 - (pD/100), 1/12);
+            const infM = (Math.pow(1 + (tI/100), 1/12) - 1);
+            const custosM = (vC * (pC/100)) / 12;
+
+            const vFin = vC - vE;
+            const pmt = vFin > 0 ? (vFin * tJ) / (1 - Math.pow(1 + tJ, -vP)) : 0;
+            const totalM = pmt + custosM;
+            const ap = totalM - vA;
+
+            document.getElementById('outParcela').innerText = fmt(pmt);
+            document.getElementById('outTotalA').innerText = fmt(totalM);
+
+            let sD = vFin, pF = [], pAs = [], sInv = vE;
+            for(let m=0; m<=vP; m++) {
+                let vCH = vC * Math.pow((1 - depM + infM), m);
+                if (m > 0) { 
+                    sD -= (pmt - (sD * tJ)); 
+                    sInv = (sInv + ap) * (1 + selicLiqM); 
+                }
+                pF.push(Math.max(0, vCH - Math.max(0, sD))); 
+                pAs.push(sInv);
+            }
+
+            document.getElementById('resFinalFinanc').innerText = fmt(pF[vP]);
+            document.getElementById('resFinalAssin').innerText = fmt(pAs[vP]);
+            
+            const dif = Math.abs(pAs[vP] - pF[vP]);
+            document.getElementById('painelVeredito').innerHTML = pAs[vP] > pF[vP] ? 
+                `Estratégia vencedora: Assinatura. Vantagem líquida de ${fmt(dif)}.` :
+                `Estratégia vencedora: Propriedade. Vantagem residual de ${fmt(dif)}.`;
+
+            if (chart) chart.destroy();
+            chart = new Chart(document.getElementById('meuGrafico'), {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: vP + 1}, (_, i) => i),
+                    datasets: [
+                        { label: 'Propriedade', data: pF, borderColor: '#333', borderWidth: 1, pointRadius: 0 },
+                        { label: 'Assinatura', data: pAs, borderColor: '#00ff88', borderWidth: 2, pointRadius: 0 }
+                    ]
+                },
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } },
+                    scales: { y: { display: false }, x: { display: false } }
+                }
+            });
+        }
+        window.onload = calcular;
+    </script>
+</body>
+</html>
