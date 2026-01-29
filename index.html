@@ -3,24 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultor Financeiro Automotivo | Estratégia Private</title>
+    <title>Consultoria Financeira Automotiva | Private Strategy</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #00ff88; --bg: #000000; --card: #0a0a0a; --danger: #ff4444; }
         body { background-color: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        
         .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; transition: 0.4s; }
-        .result-card { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 160px; padding: 24px; border: 1px solid rgba(255,255,255,0.03); }
+        
+        /* Centralização Vertical e Horizontal Absoluta nos Cards */
+        .result-card { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 160px; padding: 24px; border: 1px solid rgba(255,255,255,0.03); width: 100%; }
+        
         .input-luxury { background: #111; border: 1px solid #222; color: #fff; padding: 14px; border-radius: 16px; width: 100%; outline: none; transition: 0.3s; font-size: 0.95rem; text-align: center; font-weight: 600; }
         .input-luxury:focus { border-color: var(--brand); box-shadow: 0 0 20px rgba(0, 255, 136, 0.15); }
-        .label-luxury { font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; margin-bottom: 8px; display: block; text-align: center; }
+        
+        .label-luxury { font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; margin-bottom: 10px; display: block; text-align: center; }
+        
         .btn-luxury { background: #fff; color: #000; font-weight: 800; padding: 16px; border-radius: 18px; font-size: 0.8rem; transition: 0.3s; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; }
         .btn-luxury:hover { background: var(--brand); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 255, 136, 0.2); }
+        
+        /* Ajuste do Retângulo da Mensalidade */
+        .mensalidade-container { background: rgba(0, 255, 136, 0.05); padding: 20px; border-radius: 24px; border: 1px solid rgba(0, 255, 136, 0.15); min-width: 220px; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        
         .section-tag { font-size: 0.7rem; font-weight: 900; letter-spacing: 3px; color: var(--brand); text-transform: uppercase; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
         .section-tag::after { content: ''; height: 1px; background: rgba(0, 255, 136, 0.2); flex-grow: 1; }
-        .winner-highlight { border: 2px solid var(--brand) !important; background: rgba(0, 255, 136, 0.08) !important; transform: scale(1.03); box-shadow: 0 20px 40px rgba(0, 255, 136, 0.15); }
-        .loser-dim { opacity: 0.3; filter: grayscale(1); }
+        
+        .winner-highlight { border: 2px solid var(--brand) !important; background: linear-gradient(180deg, rgba(0, 255, 136, 0.08) 0%, transparent 100%) !important; transform: scale(1.03); box-shadow: 0 20px 40px rgba(0, 255, 136, 0.15); }
+        .loser-dim { opacity: 0.35; filter: grayscale(1); }
+        .text-neon { color: var(--brand); text-shadow: 0 0 15px rgba(0, 255, 136, 0.4); }
+        
         .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #fff; color: #000; padding: 16px 32px; border-radius: 100px; font-weight: 800; font-size: 0.85rem; z-index: 100; box-shadow: 0 15px 45px rgba(0,0,0,0.7); }
     </style>
 </head>
@@ -30,23 +43,27 @@
 
     <header class="max-w-7xl mx-auto mb-20 text-center">
         <h1 class="text-5xl md:text-8xl font-extrabold tracking-tighter uppercase mb-4">Matemática <span class="text-green-500 italic">do Carro</span></h1>
-        <p class="text-gray-500 text-xs md:text-sm font-light tracking-[0.5em] uppercase">Consultor Financeiro Automotivo</p>
+        <p class="text-gray-500 text-xs md:text-sm font-light tracking-[0.5em] uppercase">Consultoria Financeira Automotiva</p>
     </header>
 
     <main class="max-w-7xl mx-auto">
+        
         <section class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
             <div class="glass p-10 text-center border-b-4 border-white/5">
+                <span class="text-[10px] font-bold text-gray-600 uppercase mb-2 block">Cenário 01</span>
                 <h3 class="text-2xl font-black uppercase italic mb-1">Polo Highline</h3>
                 <p class="text-[9px] text-gray-500 mb-8 tracking-[0.3em]">Hatch Premium (R$ 108k)</p>
                 <button onclick="setCarro('polo')" class="btn-luxury w-full">Auditar Polo</button>
             </div>
             <div class="glass p-10 text-center border-b-4 border-green-500/30">
+                <span class="text-[10px] font-bold text-green-600 uppercase mb-2 block">Cenário 02</span>
                 <h3 class="text-2xl font-black uppercase italic mb-1 text-green-400">T-Cross Highline</h3>
                 <p class="text-[9px] text-gray-500 mb-8 tracking-[0.3em]">SUV Executivo (R$ 171k)</p>
                 <button onclick="setCarro('tcross')" class="btn-luxury w-full">Auditar T-Cross</button>
             </div>
             <div class="glass p-10 text-center border-b-4 border-blue-500/30">
-                <h3 class="text-xl font-black uppercase italic mb-1">BMW 320i M Sport</h3>
+                <span class="text-[10px] font-bold text-blue-600 uppercase mb-2 block">Cenário 03</span>
+                <h3 class="text-2xl font-black uppercase italic mb-1">BMW 320i M Sport</h3>
                 <p class="text-[9px] text-gray-500 mb-8 tracking-[0.3em]">Status & Performance (R$ 360k)</p>
                 <button onclick="setCarro('bmw')" class="btn-luxury w-full">Auditar BMW</button>
             </div>
@@ -54,44 +71,38 @@
 
         <section id="simulador" class="glass p-8 md:p-16 mb-24">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+                
                 <div class="lg:col-span-5 space-y-12">
                     <div>
-                        <div class="section-tag">01. Dados do Veículo</div>
+                        <div class="section-tag">01. Ativo Imobilizado</div>
                         <div class="grid grid-cols-2 gap-6 text-center">
                             <div class="col-span-2">
                                 <label class="label-luxury">Valor FIPE do Ativo</label>
                                 <input type="text" id="vCarroDisp" class="input-luxury" value="R$ 100.000,00" oninput="mask(this, 'vCarro')">
                                 <input type="hidden" id="vCarro" value="100000">
                             </div>
-                            <div>
-                                <label class="label-luxury">Capital de Entrada</label>
-                                <input type="text" id="vEntradaDisp" class="input-luxury" value="R$ 40.000,00" oninput="mask(this, 'vEntrada')">
-                                <input type="hidden" id="vEntrada" value="40000">
-                            </div>
-                            <div>
-                                <label class="label-luxury">Depreciação (% AA)</label>
-                                <input type="number" id="pDepAnual" class="input-luxury" value="12.0" oninput="calcular()">
-                            </div>
+                            <div><label class="label-luxury">Entrada</label><input type="text" id="vEntradaDisp" class="input-luxury" value="R$ 40.000,00" oninput="mask(this, 'vEntrada')"><input type="hidden" id="vEntrada" value="40000"></div>
+                            <div><label class="label-luxury">Depreciação (% AA)</label><input type="number" id="pDepAnual" class="input-luxury" value="12.0" oninput="calcular()"></div>
                         </div>
                     </div>
 
                     <div>
                         <div class="section-tag">02. Indicadores Macro</div>
                         <div class="grid grid-cols-2 gap-6 text-center">
-                            <div><label class="label-luxury">Taxa Selic (% AA)</label><input type="number" id="tSelicAnual" class="input-luxury !text-cyan-400" value="12.75" oninput="calcular()"></div>
-                            <div><label class="label-luxury">Inflação IPCA (% AA)</label><input type="number" id="tInflacaoAnual" class="input-luxury" value="4.50" oninput="calcular()"></div>
+                            <div><label class="label-luxury">Selic Bruta (% AA)</label><input type="number" id="tSelicAnual" class="input-luxury !text-cyan-400" value="12.75" oninput="calcular()"></div>
+                            <div><label class="label-luxury">Inflação (% AA)</label><input type="number" id="tInflacaoAnual" class="input-luxury" value="4.50" oninput="calcular()"></div>
                         </div>
                     </div>
 
                     <div>
                         <div class="section-tag">03. Custos de Fluxo</div>
-                        <div class="grid grid-cols-2 gap-6 text-center">
+                        <div class="grid grid-cols-2 gap-6 text-center items-center">
                             <div><label class="label-luxury">Juros Banco (% AM)</label><input type="number" id="tJurosMensal" class="input-luxury" value="1.60" oninput="calcular()"></div>
-                            <div><label class="label-luxury">Manut/IPVA/Seg (% AA)</label><input type="number" id="pCustosAnuais" class="input-luxury" value="10.5" oninput="calcular()"></div>
+                            <div><label class="label-luxury">Custos Posse (% AA)</label><input type="number" id="pCustosAnuais" class="input-luxury" value="10.5" oninput="calcular()"></div>
                             <div><label class="label-luxury">Prazo (Meses)</label><input type="number" id="vPrazo" class="input-luxury" value="48" oninput="calcular()"></div>
-                            <div class="bg-green-500/5 p-4 rounded-2xl border border-green-500/10">
+                            <div class="mensalidade-container">
                                 <label class="label-luxury text-green-500">Mensalidade Assinatura</label>
-                                <input type="text" id="vAssinaturaDisp" class="input-luxury !border-green-500/30 !text-lg font-bold min-w-[140px]" value="R$ 2.450,00" oninput="mask(this, 'vAssinatura')">
+                                <input type="text" id="vAssinaturaDisp" class="input-luxury !border-green-500/30 !text-xl font-bold" value="R$ 2.450,00" oninput="mask(this, 'vAssinatura')">
                                 <input type="hidden" id="vAssinatura" value="2450">
                             </div>
                         </div>
@@ -99,22 +110,23 @@
                 </div>
 
                 <div class="lg:col-span-7 space-y-10">
+                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="glass border-l-4 border-red-600 result-card">
-                            <p class="label-luxury text-red-500">Custo Mensal (Propriedade)</p>
+                            <p class="label-luxury text-red-500">Dreno Mensal (Propriedade)</p>
                             <p id="outTotalA" class="text-4xl font-black mb-2 tracking-tighter">R$ 0,00</p>
                             <p class="text-[10px] text-gray-500 uppercase">Soma da Parcela + Gastos Ocultos</p>
                         </div>
                         <div id="reinvestCard" class="glass border-l-4 border-green-500 bg-green-500/5 result-card">
                             <p class="label-luxury text-green-500 font-black">Sobra Reinvestida</p>
                             <p id="outAporte" class="text-4xl font-black mb-2 text-green-400 tracking-tighter">R$ 0,00</p>
-                            <p class="text-[9px] text-gray-400 uppercase font-bold px-4">Capital que trabalha para você em vez de pagar depreciação</p>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold px-4">Diferencial de Liquidez Mensal</p>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-6">
                         <div id="resCardA" class="glass result-card transition-all">
-                            <p class="label-luxury">Revenda do Veículo</p>
+                            <p class="label-luxury">Valor Residual Carro</p>
                             <p id="resFinalFinanc" class="text-2xl font-black">R$ 0,00</p>
                         </div>
                         <div id="resCardB" class="glass result-card transition-all">
@@ -127,9 +139,9 @@
                         <canvas id="meuGrafico"></canvas>
                     </div>
 
-                    <div id="painelVeredito" class="bg-white/[0.02] p-8 rounded-3xl text-center border border-white/5 flex flex-col gap-2">
+                    <div id="painelVeredito" class="bg-white/[0.02] p-10 rounded-3xl text-center border border-white/5 flex flex-col gap-2">
                         <span class="text-gray-600 text-[10px] uppercase font-bold tracking-[0.4em]">Strategic Conclusion</span>
-                        <span id="textoVeredito" class="text-xl font-black tracking-tight uppercase italic text-green-500"></span>
+                        <span id="textoVeredito" class="text-xl font-black tracking-tight uppercase italic"></span>
                     </div>
                 </div>
             </div>
@@ -151,24 +163,16 @@
         }
 
         function setCarro(modelo) {
-            const el = document.getElementById('simulador');
             if (modelo === 'polo') {
-                updateField('vCarro', 108350, 'vCarroDisp');
-                updateField('vEntrada', 45000, 'vEntradaDisp');
-                document.getElementById('pDepAnual').value = "12.0";
-                updateField('vAssinatura', 2450, 'vAssinaturaDisp');
+                updateField('vCarro', 108350, 'vCarroDisp'); updateField('vEntrada', 45000, 'vEntradaDisp');
+                document.getElementById('pDepAnual').value = "12.0"; updateField('vAssinatura', 2450, 'vAssinaturaDisp');
             } else if (modelo === 'tcross') {
-                updateField('vCarro', 171400, 'vCarroDisp');
-                updateField('vEntrada', 60000, 'vEntradaDisp');
-                document.getElementById('pDepAnual').value = "12.0";
-                updateField('vAssinatura', 3850, 'vAssinaturaDisp');
+                updateField('vCarro', 171400, 'vCarroDisp'); updateField('vEntrada', 60000, 'vEntradaDisp');
+                document.getElementById('pDepAnual').value = "12.0"; updateField('vAssinatura', 3850, 'vAssinaturaDisp');
             } else if (modelo === 'bmw') {
-                updateField('vCarro', 360000, 'vCarroDisp');
-                updateField('vEntrada', 150000, 'vEntradaDisp');
-                document.getElementById('pDepAnual').value = "18.0";
-                updateField('vAssinatura', 9100, 'vAssinaturaDisp');
+                updateField('vCarro', 360000, 'vCarroDisp'); updateField('vEntrada', 150000, 'vEntradaDisp');
+                document.getElementById('pDepAnual').value = "18.0"; updateField('vAssinatura', 9100, 'vAssinaturaDisp');
             }
-            window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' });
             calcular();
         }
 
@@ -212,34 +216,36 @@
             document.getElementById('resFinalFinanc').innerText = fmt(rF);
             document.getElementById('resFinalAssin').innerText = fmt(rA);
             
-            const vB = document.getElementById('resCardB');
-            const vPr = document.getElementById('resCardA');
+            const cardB = document.getElementById('resCardB');
+            const cardA = document.getElementById('resCardA');
+            const cardRe = document.getElementById('reinvestCard');
             const veredito = document.getElementById('textoVeredito');
             
             if (rA > rF) {
-                vB.classList.add('winner-highlight'); vPr.classList.add('loser-dim');
-                veredito.innerText = `Assinatura Vence: + ${fmt(rA - rF)}`;
+                cardB.classList.add('winner-highlight'); cardA.classList.add('loser-dim');
+                cardRe.classList.add('winner-highlight');
+                veredito.innerHTML = `<span class="text-neon">Assinatura Vence: + ${fmt(rA - rF)}</span>`;
             } else {
-                vPr.classList.add('winner-highlight'); vB.classList.add('loser-dim');
-                veredito.innerText = `Propriedade Vence: + ${fmt(rF - rA)}`;
+                cardA.classList.add('winner-highlight'); cardB.classList.add('loser-dim');
+                cardRe.classList.remove('winner-highlight');
+                veredito.innerHTML = `<span class="text-white">Propriedade Vence: + ${fmt(rF - rA)}</span>`;
             }
 
             if (chart) chart.destroy();
             const ctx = document.getElementById('meuGrafico').getContext('2d');
             const gradVerde = ctx.createLinearGradient(0, 0, 0, 400);
-            gradVerde.addColorStop(0, 'rgba(0, 255, 136, 0.15)');
-            gradVerde.addColorStop(1, 'transparent');
+            gradVerde.addColorStop(0, 'rgba(0, 255, 136, 0.2)'); gradVerde.addColorStop(1, 'transparent');
 
             chart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: Array.from({length: vP + 1}, (_, i) => i),
                     datasets: [
-                        { label: 'Propriedade', data: pF, borderColor: '#ef4444', borderWidth: 1, pointRadius: 0, borderDash: [5, 5] },
+                        { label: 'Propriedade', data: pF, borderColor: '#ff4444', borderWidth: 2, pointRadius: 0, borderDash: [5, 5] },
                         { label: 'Assinatura', data: pAs, borderColor: '#00ff88', borderWidth: 4, pointRadius: 0, fill: true, backgroundColor: gradVerde }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#333', font: { size: 9 } } } } }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#333', font: { size: 10 } } } } }
             });
         }
         window.onload = calcular;
