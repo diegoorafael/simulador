@@ -17,6 +17,7 @@
         .btn-luxury { background: #fff; color: #000; font-weight: 700; padding: 0.8rem 1.5rem; border-radius: 10px; font-size: 0.7rem; text-transform: uppercase; transition: 0.3s; cursor: pointer; }
         .btn-luxury:hover { background: var(--brand); transform: translateY(-2px); }
         .card-duel { border-top: 4px solid var(--brand); background: linear-gradient(180deg, rgba(0, 255, 136, 0.05) 0%, transparent 100%); }
+        .winner-card { border: 1px solid var(--brand) !important; background: rgba(0, 255, 136, 0.03) !important; }
         .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #fff; color: #000; padding: 12px 24px; border-radius: 100px; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 10px; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     </style>
 </head>
@@ -28,7 +29,7 @@
     </a>
 
     <nav class="nav-blur fixed top-0 w-full z-50">
-        <div class="max-w-7xl mx-auto px-8 py-5 flex justify-between items-center text-sm font-light tracking-[0.4em] uppercase">
+        <div class="max-w-7xl mx-auto px-8 py-5 flex justify-between items-center text-sm font-light tracking-[0.4em] uppercase text-white">
             Matemática <span class="font-bold">do Carro</span>
         </div>
     </nav>
@@ -37,34 +38,34 @@
         
         <header class="text-center mb-24">
             <h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter mb-8 leading-none">DUELOS DE <span class="text-green-500">PATRIMÔNIO</span></h1>
-            <p class="text-gray-500 max-w-2xl mx-auto mb-16 font-light italic">Imobilizar capital ou acelerar juros compostos? A escolha que define seu próximo milhão.</p>
+            <p class="text-gray-500 max-w-2xl mx-auto mb-16 font-light italic">Escolha um modelo abaixo e audite a eficiência da assinatura em tempo real.</p>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="glass-panel p-8 card-duel relative">
-                    <h3 class="text-xl font-bold mb-1 italic uppercase">O Peso da Tradição</h3>
-                    <p class="text-[10px] text-gray-500 mb-8 uppercase tracking-widest italic">HILUX: O dreno de capital do Agro</p>
+                    <h3 class="text-xl font-bold mb-1 italic uppercase">Hilux SRX</h3>
+                    <p class="text-[10px] text-gray-500 mb-8 uppercase tracking-widest italic">Asset Value: R$ 330.000</p>
                     <div class="flex justify-between items-end mb-8">
-                        <div class="text-left"><p class="text-[8px] text-gray-600 uppercase">Revenda 48m</p><p class="text-lg font-bold">R$ 225k</p></div>
+                        <div class="text-left"><p class="text-[8px] text-gray-600 uppercase">Venda 48m</p><p class="text-lg font-bold">R$ 225k</p></div>
                         <div class="text-right text-green-500"><p class="text-[8px] uppercase font-bold">Patrimônio Banco</p><p class="text-2xl font-black">R$ 382k</p></div>
                     </div>
                     <button onclick="setCarro('hilux')" class="btn-luxury w-full">Auditar Matemática</button>
                 </div>
 
                 <div class="glass-panel p-8 card-duel" style="border-top-color: #00bdff;">
-                    <h3 class="text-xl font-bold mb-1 italic uppercase">O Custo da Imagem</h3>
-                    <p class="text-[10px] text-gray-500 mb-8 uppercase tracking-widest italic">BMW 320i: O prazer que desvaloriza</p>
+                    <h3 class="text-xl font-bold mb-1 italic uppercase">BMW 320i M</h3>
+                    <p class="text-[10px] text-gray-500 mb-8 uppercase tracking-widest italic">Asset Value: R$ 360.000</p>
                     <div class="flex justify-between items-end mb-8">
-                        <div class="text-left"><p class="text-[8px] text-gray-600 uppercase">Revenda 48m</p><p class="text-lg font-bold">R$ 210k</p></div>
+                        <div class="text-left"><p class="text-[8px] text-gray-600 uppercase">Venda 48m</p><p class="text-lg font-bold">R$ 210k</p></div>
                         <div class="text-right text-green-500"><p class="text-[8px] uppercase font-bold">Patrimônio Banco</p><p class="text-2xl font-black">R$ 415k</p></div>
                     </div>
                     <button onclick="setCarro('bmw')" class="btn-luxury w-full">Auditar Matemática</button>
                 </div>
 
                 <div class="glass-panel p-8 card-duel" style="border-top-color: #ffffff;">
-                    <h3 class="text-xl font-bold mb-1 italic uppercase">A Ilusão do Documento</h3>
-                    <p class="text-[10px] text-gray-500 mb-8 uppercase tracking-widest italic">T-CROSS: Eficiência ou Ego?</p>
+                    <h3 class="text-xl font-bold mb-1 italic uppercase">VW T-Cross</h3>
+                    <p class="text-[10px] text-gray-500 mb-8 uppercase tracking-widest italic">Asset Value: R$ 180.000</p>
                     <div class="flex justify-between items-end mb-8">
-                        <div class="text-left"><p class="text-[8px] text-gray-600 uppercase">Revenda 48m</p><p class="text-lg font-bold">R$ 138k</p></div>
+                        <div class="text-left"><p class="text-[8px] text-gray-600 uppercase">Venda 48m</p><p class="text-lg font-bold">R$ 138k</p></div>
                         <div class="text-right text-green-500"><p class="text-[8px] uppercase font-bold">Patrimônio Banco</p><p class="text-2xl font-black">R$ 202k</p></div>
                     </div>
                     <button onclick="setCarro('tcross')" class="btn-luxury w-full">Auditar Matemática</button>
@@ -73,18 +74,16 @@
         </header>
 
         <section id="simulador-completo" class="py-20 border-t border-white/5">
-            <h2 class="text-center text-[11px] font-bold uppercase tracking-[0.6em] text-gray-600 mb-16 italic">Simulador Estratégico Completo</h2>
-            
             <div class="glass-panel p-8 md:p-12 mb-10">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
                     <div><label class="label-luxury">Valor do Ativo</label><input type="text" id="vCarroDisp" class="input-luxury" value="R$ 100.000,00" oninput="mask(this, 'vCarro')"><input type="hidden" id="vCarro" value="100000"></div>
-                    <div><label class="label-luxury">Entrada / Capital Inicial</label><input type="text" id="vEntradaDisp" class="input-luxury" value="R$ 40.000,00" oninput="mask(this, 'vEntrada')"><input type="hidden" id="vEntrada" value="40000"></div>
+                    <div><label class="label-luxury">Entrada Disponível</label><input type="text" id="vEntradaDisp" class="input-luxury" value="R$ 40.000,00" oninput="mask(this, 'vEntrada')"><input type="hidden" id="vEntrada" value="40000"></div>
                     <div><label class="label-luxury">Depreciação (% AA)</label><input type="number" id="pDepAnual" class="input-luxury" value="12.0" step="0.1" oninput="calcular()"></div>
-                    <div><label class="label-luxury">Taxa Selic (% AA)</label><input type="number" id="tSelicAnual" class="input-luxury !text-cyan-400 font-bold" value="12.75" step="0.01" oninput="calcular()"></div>
+                    <div><label class="label-luxury">Selic Bruta (% AA)</label><input type="number" id="tSelicAnual" class="input-luxury !text-cyan-400 font-bold" value="12.75" step="0.01" oninput="calcular()"></div>
                     <div><label class="label-luxury">Prazo (Meses)</label><input type="number" id="vPrazo" class="input-luxury" value="48" oninput="calcular()"></div>
                     <div><label class="label-luxury">Custos Posse (% AA)</label><input type="number" id="pCustosAnuais" class="input-luxury" value="10.0" step="0.1" oninput="calcular()"></div>
                     <div><label class="label-luxury">Inflação (% AA)</label><input type="number" id="tInflacaoAnual" class="input-luxury" value="4.50" step="0.01" oninput="calcular()"></div>
-                    <div><label class="label-luxury">Assinatura Mensal</label><input type="text" id="vAssinaturaDisp" class="input-luxury" value="R$ 2.400,00" oninput="mask(this, 'vAssinatura')"><input type="hidden" id="vAssinatura" value="2400"></div>
+                    <div><label class="label-luxury">Mensalidade Assinatura</label><input type="text" id="vAssinaturaDisp" class="input-luxury" value="R$ 2.400,00" oninput="mask(this, 'vAssinatura')"><input type="hidden" id="vAssinatura" value="2400"></div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-16">
@@ -102,8 +101,8 @@
 
                     <div class="space-y-8">
                         <div class="grid grid-cols-2 gap-4 text-center">
-                            <div class="glass-panel p-6"><p class="label-luxury">Patrimônio Carro</p><p id="resFinalFinanc" class="text-2xl font-bold">R$ 0,00</p></div>
-                            <div class="glass-panel p-6 border-l-2 border-green-500"><p class="label-luxury text-green-500">Capital no Banco</p><p id="resFinalAssin" class="text-2xl font-bold text-green-400">R$ 0,00</p></div>
+                            <div id="resCardA" class="glass-panel p-6"><p class="label-luxury">Revenda Carro</p><p id="resFinalFinanc" class="text-2xl font-bold">R$ 0,00</p></div>
+                            <div id="resCardB" class="glass-panel p-6 border-l-2 border-green-500"><p class="label-luxury text-green-500">Patrimônio Investido</p><p id="resFinalAssin" class="text-2xl font-bold text-green-400">R$ 0,00</p></div>
                         </div>
                         <div class="h-64"><canvas id="meuGrafico"></canvas></div>
                         <div id="painelVeredito" class="p-4 rounded-xl bg-white/5 text-center text-xs text-gray-400 italic"></div>
@@ -133,20 +132,20 @@
                 updateField('vCarro', 330000, 'vCarroDisp');
                 updateField('vEntrada', 120000, 'vEntradaDisp');
                 document.getElementById('pDepAnual').value = "10.0";
-                updateField('vAssinatura', 8600, 'vAssinaturaDisp');
+                updateField('vAssinatura', 7800, 'vAssinaturaDisp'); // Favorece Investimento
             } else if (modelo === 'bmw') {
                 updateField('vCarro', 360000, 'vCarroDisp');
                 updateField('vEntrada', 130000, 'vEntradaDisp');
                 document.getElementById('pDepAnual').value = "18.0";
-                updateField('vAssinatura', 9100, 'vAssinaturaDisp');
+                updateField('vAssinatura', 8600, 'vAssinaturaDisp'); // Favorece Investimento
             } else if (modelo === 'tcross') {
                 updateField('vCarro', 180000, 'vCarroDisp');
                 updateField('vEntrada', 60000, 'vEntradaDisp');
                 document.getElementById('pDepAnual').value = "12.0";
-                updateField('vAssinatura', 4150, 'vAssinaturaDisp');
+                updateField('vAssinatura', 3800, 'vAssinaturaDisp'); // Favorece Investimento
             }
             window.scrollTo({ top: el.offsetTop - 100, behavior: 'smooth' });
-            calcular(); // Dispara o cálculo imediato após preencher
+            calcular();
         }
 
         function updateField(id, val, disp) {
@@ -189,13 +188,23 @@
                 pAs.push(sInv);
             }
 
-            document.getElementById('resFinalFinanc').innerText = fmt(pF[vP]);
-            document.getElementById('resFinalAssin').innerText = fmt(pAs[vP]);
+            const fFinal = pF[vP];
+            const aFinal = pAs[vP];
+            document.getElementById('resFinalFinanc').innerText = fmt(fFinal);
+            document.getElementById('resFinalAssin').innerText = fmt(aFinal);
             
-            const dif = Math.abs(pAs[vP] - pF[vP]);
-            document.getElementById('painelVeredito').innerHTML = pAs[vP] > pF[vP] ? 
-                `Estratégia vencedora: Assinatura. Vantagem líquida de ${fmt(dif)}.` :
-                `Estratégia vencedora: Propriedade. Vantagem residual de ${fmt(dif)}.`;
+            const dif = Math.abs(aFinal - fFinal);
+            const veredito = document.getElementById('painelVeredito');
+            
+            if (aFinal > fFinal) {
+                document.getElementById('resCardB').className = "glass-panel p-6 border-l-2 border-green-500 winner-card";
+                document.getElementById('resCardA').className = "glass-panel p-6 opacity-30";
+                veredito.innerHTML = `Estratégia vencedora: Assinatura. Vantagem líquida de ${fmt(dif)}.`;
+            } else {
+                document.getElementById('resCardA').className = "glass-panel p-6 border-l-2 border-red-500 winner-card";
+                document.getElementById('resCardB').className = "glass-panel p-6 opacity-30";
+                veredito.innerHTML = `Estratégia vencedora: Propriedade. Vantagem residual de ${fmt(dif)}.`;
+            }
 
             if (chart) chart.destroy();
             chart = new Chart(document.getElementById('meuGrafico'), {
@@ -203,8 +212,8 @@
                 data: {
                     labels: Array.from({length: vP + 1}, (_, i) => i),
                     datasets: [
-                        { label: 'Propriedade', data: pF, borderColor: '#333', borderWidth: 1, pointRadius: 0 },
-                        { label: 'Assinatura', data: pAs, borderColor: '#00ff88', borderWidth: 2, pointRadius: 0 }
+                        { label: 'Propriedade', data: pF, borderColor: '#333', borderWidth: 1, pointRadius: 0, fill: false },
+                        { label: 'Assinatura', data: pAs, borderColor: '#00ff88', borderWidth: 2, pointRadius: 0, fill: false }
                     ]
                 },
                 options: { 
