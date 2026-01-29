@@ -13,7 +13,7 @@
         
         .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; transition: 0.4s; }
         
-        /* Centralização Vertical e Horizontal dos Resultados */
+        /* Centralização Absoluta nos Cards de Resultado */
         .result-card { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 160px; padding: 24px; border: 1px solid rgba(255,255,255,0.03); }
         
         .input-luxury { background: #111; border: 1px solid #222; color: #fff; padding: 14px; border-radius: 16px; width: 100%; outline: none; transition: 0.3s; font-size: 0.95rem; text-align: center; font-weight: 600; }
@@ -21,19 +21,21 @@
         
         .label-luxury { font-size: 0.65rem; color: #666; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; margin-bottom: 8px; display: block; text-align: center; }
         
-        .btn-luxury { background: #fff; color: #000; font-weight: 800; padding: 16px; border-radius: 18px; font-size: 0.8rem; transition: 0.3s; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; }
+        /* Botões de Seleção */
+        .btn-luxury { background: #fff; color: #000; font-weight: 800; padding: 16px; border-radius: 18px; font-size: 0.8rem; transition: 0.3s; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; width: 100%; }
         .btn-luxury:hover { background: var(--brand); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 255, 136, 0.2); }
         
-        /* Retângulo de Mensalidade Estilizado */
-        .highlight-box { background: rgba(0, 255, 136, 0.03); border: 1px solid rgba(0, 255, 136, 0.15); border-radius: 28px; padding: 24px; width: 100%; }
+        /* CORREÇÃO VISUAL DA MENSALIDADE */
+        .mensalidade-container { background: rgba(0, 255, 136, 0.05); border: 1px solid rgba(0, 255, 136, 0.2); border-radius: 24px; padding: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .mensalidade-input { background: #111; border: 1px solid rgba(0, 255, 136, 0.3); color: #fff; padding: 12px; border-radius: 16px; width: 100%; text-align: center; font-size: 1.5rem; font-weight: 800; outline: none; }
 
         .section-tag { font-size: 0.7rem; font-weight: 900; letter-spacing: 3px; color: var(--brand); text-transform: uppercase; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
         .section-tag::after { content: ''; height: 1px; background: rgba(0, 255, 136, 0.2); flex-grow: 1; }
         
-        .winner-highlight { border: 2px solid var(--brand) !important; background: linear-gradient(180deg, rgba(0, 255, 136, 0.08) 0%, transparent 100%) !important; transform: scale(1.03); box-shadow: 0 20px 40px rgba(0, 255, 136, 0.15); }
+        .winner-highlight { border: 2px solid var(--brand) !important; background: linear-gradient(180deg, rgba(0, 255, 136, 0.08) 0%, transparent 100%) !important; transform: scale(1.02); box-shadow: 0 20px 40px rgba(0, 255, 136, 0.15); }
         .loser-dim { opacity: 0.3; filter: grayscale(1); }
         .text-neon { color: var(--brand); text-shadow: 0 0 15px rgba(0, 255, 136, 0.4); }
-        
+
         .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #fff; color: #000; padding: 16px 32px; border-radius: 100px; font-weight: 800; font-size: 0.85rem; z-index: 100; box-shadow: 0 15px 45px rgba(0,0,0,0.7); }
     </style>
 </head>
@@ -49,20 +51,20 @@
     <main class="max-w-7xl mx-auto">
         
         <section class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
-            <div class="glass p-10 text-center flex flex-col items-center justify-center">
+            <div class="glass p-10 text-center border-b-4 border-white/5">
                 <h3 class="text-2xl font-black uppercase italic mb-1">Polo Highline</h3>
                 <p class="text-[9px] text-gray-500 mb-8 tracking-[0.3em]">Hatch Premium (R$ 108k)</p>
-                <button onclick="setCarro('polo')" class="btn-luxury w-full">Auditar Polo</button>
+                <button onclick="setCarro('polo')" class="btn-luxury">Auditar Polo</button>
             </div>
-            <div class="glass p-10 text-center flex flex-col items-center justify-center border-b-4 border-green-500/30">
+            <div class="glass p-10 text-center border-b-4 border-green-500/30">
                 <h3 class="text-2xl font-black uppercase italic mb-1 text-green-400">T-Cross Highline</h3>
                 <p class="text-[9px] text-gray-500 mb-8 tracking-[0.3em]">SUV Executivo (R$ 171k)</p>
-                <button onclick="setCarro('tcross')" class="btn-luxury w-full">Auditar T-Cross</button>
+                <button onclick="setCarro('tcross')" class="btn-luxury">Auditar T-Cross</button>
             </div>
-            <div class="glass p-10 text-center flex flex-col items-center justify-center">
+            <div class="glass p-10 text-center border-b-4 border-blue-500/30">
                 <h3 class="text-2xl font-black uppercase italic mb-1">BMW 320i M Sport</h3>
                 <p class="text-[9px] text-gray-500 mb-8 tracking-[0.3em]">Status & Performance (R$ 360k)</p>
-                <button onclick="setCarro('bmw')" class="btn-luxury w-full">Auditar BMW</button>
+                <button onclick="setCarro('bmw')" class="btn-luxury">Auditar BMW</button>
             </div>
         </section>
 
@@ -71,22 +73,15 @@
                 
                 <div class="lg:col-span-5 space-y-12">
                     <div>
-                        <div class="section-tag">01. Ativo Imobilizado</div>
+                        <div class="section-tag">01. Dados do Veículo</div>
                         <div class="grid grid-cols-2 gap-6 text-center">
                             <div class="col-span-2">
-                                <label class="label-luxury">Valor FIPE do Veículo</label>
+                                <label class="label-luxury">Valor FIPE do Ativo</label>
                                 <input type="text" id="vCarroDisp" class="input-luxury" value="R$ 100.000,00" oninput="mask(this, 'vCarro')">
                                 <input type="hidden" id="vCarro" value="100000">
                             </div>
-                            <div>
-                                <label class="label-luxury">Entrada</label>
-                                <input type="text" id="vEntradaDisp" class="input-luxury" value="R$ 40.000,00" oninput="mask(this, 'vEntrada')">
-                                <input type="hidden" id="vEntrada" value="40000">
-                            </div>
-                            <div>
-                                <label class="label-luxury">Depreciação (% AA)</label>
-                                <input type="number" id="pDepAnual" class="input-luxury" value="12.0" oninput="calcular()">
-                            </div>
+                            <div><label class="label-luxury">Entrada</label><input type="text" id="vEntradaDisp" class="input-luxury" value="R$ 40.000,00" oninput="mask(this, 'vEntrada')"><input type="hidden" id="vEntrada" value="40000"></div>
+                            <div><label class="label-luxury">Depreciação (% AA)</label><input type="number" id="pDepAnual" class="input-luxury" value="12.0" oninput="calcular()"></div>
                         </div>
                     </div>
 
@@ -94,7 +89,7 @@
                         <div class="section-tag">02. Cenário Econômico</div>
                         <div class="grid grid-cols-2 gap-6 text-center">
                             <div><label class="label-luxury">Taxa Selic (% AA)</label><input type="number" id="tSelicAnual" class="input-luxury !text-cyan-400" value="12.75" oninput="calcular()"></div>
-                            <div><label class="label-luxury">Inflação IPCA (% AA)</label><input type="number" id="tInflacaoAnual" class="input-luxury" value="4.50" oninput="calcular()"></div>
+                            <div><label class="label-luxury">Inflação (% AA)</label><input type="number" id="tInflacaoAnual" class="input-luxury" value="4.50" oninput="calcular()"></div>
                         </div>
                     </div>
 
@@ -102,12 +97,11 @@
                         <div class="section-tag">03. Custos de Fluxo</div>
                         <div class="grid grid-cols-2 gap-6 text-center items-center">
                             <div><label class="label-luxury">Juros Banco (% AM)</label><input type="number" id="tJurosMensal" class="input-luxury" value="1.60" oninput="calcular()"></div>
-                            <div><label class="label-luxury">Custos Posse (% AA)</label><input type="number" id="pCustosAnuais" class="input-luxury" value="10.5" oninput="calcular()"></div>
+                            <div><label class="label-luxury">IPVA/Seg/Manut (% AA)</label><input type="number" id="pCustosAnuais" class="input-luxury" value="10.5" oninput="calcular()"></div>
                             <div><label class="label-luxury">Prazo (Meses)</label><input type="number" id="vPrazo" class="input-luxury" value="48" oninput="calcular()"></div>
-                            
-                            <div class="highlight-box flex flex-col items-center justify-center">
+                            <div class="mensalidade-container">
                                 <label class="label-luxury text-green-500 font-black">Mensalidade Assinatura</label>
-                                <input type="text" id="vAssinaturaDisp" class="bg-transparent text-white text-2xl font-black text-center outline-none w-full" value="R$ 2.450,00" oninput="mask(this, 'vAssinatura')">
+                                <input type="text" id="vAssinaturaDisp" class="mensalidade-input" value="R$ 2.450,00" oninput="mask(this, 'vAssinatura')">
                                 <input type="hidden" id="vAssinatura" value="2450">
                             </div>
                         </div>
@@ -115,23 +109,22 @@
                 </div>
 
                 <div class="lg:col-span-7 space-y-10">
-                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="glass border-l-4 border-red-600 result-card">
-                            <p class="label-luxury text-red-500">Custo Mensal (Propriedade)</p>
+                            <p class="label-luxury text-red-500">Dreno Mensal (Propriedade)</p>
                             <p id="outTotalA" class="text-4xl font-black mb-2 tracking-tighter">R$ 0,00</p>
-                            <p class="text-[10px] text-gray-500 uppercase font-bold">Saída de Caixa Mensal</p>
+                            <p class="text-[10px] text-gray-500 uppercase">Saída de Caixa Mensal</p>
                         </div>
                         <div id="reinvestCard" class="glass border-l-4 border-green-500 bg-green-500/5 result-card">
                             <p class="label-luxury text-green-500 font-black">Sobra Reinvestida</p>
                             <p id="outAporte" class="text-4xl font-black mb-2 text-green-400 tracking-tighter">R$ 0,00</p>
-                            <p class="text-[10px] text-gray-400 uppercase font-bold">Diferencial de Liquidez</p>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold px-4">Capital em Juros Compostos</p>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-6">
                         <div id="resCardA" class="glass result-card transition-all">
-                            <p class="label-luxury">Revenda Líquida (Carro)</p>
+                            <p class="label-luxury">Revenda Carro</p>
                             <p id="resFinalFinanc" class="text-2xl font-black">R$ 0,00</p>
                         </div>
                         <div id="resCardB" class="glass result-card transition-all">
@@ -142,7 +135,7 @@
 
                     <div class="bg-[#050505] p-8 rounded-[32px] border border-white/5 h-[400px] relative">
                         <canvas id="meuGrafico"></canvas>
-                        <p class="absolute bottom-2 left-1/2 -translate-x-1/2 text-[9px] text-gray-600 uppercase font-bold tracking-widest">Passe o mouse para detalhar os meses</p>
+                        <p class="absolute bottom-2 left-1/2 -translate-x-1/2 text-[9px] text-gray-700 uppercase font-bold">Interaja com o gráfico para ver detalhes mensais</p>
                     </div>
 
                     <div id="painelVeredito" class="bg-white/[0.02] p-8 rounded-3xl text-center border border-white/5 flex flex-col gap-2">
@@ -249,31 +242,15 @@
                     ]
                 },
                 options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
                     plugins: { 
                         legend: { display: false },
-                        tooltip: {
-                            backgroundColor: '#000',
-                            titleFont: { size: 14, weight: 'bold' },
-                            bodyFont: { size: 12 },
-                            padding: 12,
-                            borderColor: 'rgba(255,255,255,0.1)',
-                            borderWidth: 1,
-                            callbacks: {
-                                label: function(context) {
-                                    return context.dataset.label + ': ' + fmt(context.parsed.y);
-                                }
-                            }
-                        }
+                        tooltip: { backgroundColor: '#000', titleFont: { size: 14 }, bodyFont: { size: 12 }, padding: 12, borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1 }
                     },
                     scales: { 
                         y: { display: false }, 
-                        x: { 
-                            grid: { color: 'rgba(255,255,255,0.05)' }, 
-                            ticks: { color: '#888', font: { size: 11, weight: 'bold' }, maxTicksLimit: 12 } 
-                        } 
+                        x: { grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#444', font: { size: 10, weight: 'bold' }, maxTicksLimit: 12 } } 
                     } 
                 }
             });
