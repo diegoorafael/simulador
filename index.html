@@ -13,125 +13,140 @@
         .input-clean { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 12px; border-radius: 10px; width: 100%; outline: none; transition: 0.2s; }
         .input-clean:focus { border-color: #00ff88; box-shadow: 0 0 10px rgba(0, 255, 136, 0.2); }
         .label-clean { font-size: 0.7rem; font-weight: 600; color: #8b949e; text-transform: uppercase; margin-bottom: 6px; display: block; }
-        
         .winner-card { border: 2px solid #00ff88 !important; background: rgba(0, 255, 136, 0.08) !important; transform: scale(1.05); z-index: 10; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
         .loser-card { opacity: 0.5; transform: scale(0.95); filter: grayscale(0.5); }
-
         .table-container { overflow-x: auto; margin-top: 2rem; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); }
         table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; }
         th { background: rgba(255, 255, 255, 0.03); color: #8b949e; font-weight: 600; text-transform: uppercase; padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
         td { padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #f0f2f5; }
-        tr:hover { background: rgba(255, 255, 255, 0.02); }
     </style>
 </head>
 <body class="p-4 md:p-10">
 
     <div class="max-w-6xl mx-auto">
-        <header class="mb-12 text-center">
+        <header class="mb-8 text-center">
             <h1 class="text-3xl font-bold tracking-tight mb-2 uppercase text-white">MATEMÁTICA DO CARRO</h1>
-            <p class="text-gray-500 text-sm italic">Simulador de Viabilidade: Carro Próprio vs. Assinatura</p>
+            <p class="text-gray-500 text-sm italic">Simulador Profissional: Propriedade vs. Assinatura</p>
             <div class="h-1 w-20 bg-green-500 mx-auto mt-4 rounded-full"></div>
         </header>
 
-        <div class="glass-card p-6 md:p-8 mb-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
+        <div class="mb-10 flex flex-wrap gap-3 justify-center">
+            <button onclick="setPerfil('popular')" class="px-5 py-2 rounded-full border border-gray-600 text-[10px] font-bold uppercase hover:bg-white hover:text-black transition">🚗 Carro Popular</button>
+            <button onclick="setPerfil('premium')" class="px-5 py-2 rounded-full border border-orange-500 text-orange-500 text-[10px] font-bold uppercase hover:bg-orange-500 hover:text-white transition">💎 Premium / Importado</button>
+            <button onclick="setPerfil('assinatura')" class="px-5 py-2 rounded-full border border-green-500 text-green-500 text-[10px] font-bold uppercase hover:bg-green-500 hover:text-white transition">📈 Foco Assinatura</button>
+        </div>
+
+        <div class="glass-card p-6 md:p-8 mb-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div>
-                <label class="label-clean">Valor do Carro</label>
+                <label class="label-clean">Valor do Carro (Zero)</label>
                 <input type="text" id="vCarroDisp" class="input-clean" value="R$ 100.000,00" oninput="mask(this, 'vCarro')">
                 <input type="hidden" id="vCarro" value="100000">
             </div>
             <div>
-                <label class="label-clean">Entrada</label>
+                <label class="label-clean">Entrada / Capital Inicial</label>
                 <input type="text" id="vEntradaDisp" class="input-clean" value="R$ 40.000,00" oninput="mask(this, 'vEntrada')">
                 <input type="hidden" id="vEntrada" value="40000">
+            </div>
+            <div>
+                <label class="label-clean">Depreciação (% AA)</label>
+                <input type="number" id="pDepreciacaoAnual" class="input-clean !text-orange-400" value="12.0" step="0.1" oninput="calcular()">
+            </div>
+            <div>
+                <label class="label-clean">Selic / Investimento (% AA)</label>
+                <input type="number" id="tSelicAnual" class="input-clean !text-cyan-400 font-bold" value="12.75" step="0.01" oninput="calcular()">
             </div>
             <div>
                 <label class="label-clean">Prazo (Meses)</label>
                 <input type="number" id="vPrazo" class="input-clean" value="48" oninput="calcular()">
             </div>
             <div>
-                <label class="label-clean">Custos Posse (% AA)</label>
+                <label class="label-clean">Manutenção/Seguro/IPVA (% AA)</label>
                 <input type="number" id="pCustosAnuais" class="input-clean" value="10.0" step="0.1" oninput="calcular()">
             </div>
             <div>
-                <label class="label-clean">Inflação (% AA)</label>
+                <label class="label-clean">Inflação Projetada (% AA)</label>
                 <input type="number" id="tInflacao" class="input-clean" value="4.50" step="0.01" oninput="calcular()">
             </div>
             <div>
-                <label class="label-clean">Selic (Simulação)</label>
-                <input type="number" id="tSelicAnual" class="input-clean !text-cyan-400 font-bold border-cyan-500/30" value="15.00" step="0.01" oninput="calcular()">
-                <p class="text-[9px] text-cyan-500/70 mt-1">Livre para alteração</p>
+                <label class="label-clean">Mensalidade Assinatura</label>
+                <input type="text" id="vAssinaturaDisp" class="input-clean" value="R$ 2.400,00" oninput="mask(this, 'vAssinatura')">
+                <input type="hidden" id="vAssinatura" value="2400">
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
             <div class="glass-card p-8 border-t-4 border-red-500">
-                <h2 class="text-red-500 font-bold mb-6 uppercase tracking-widest">Financiamento</h2>
+                <h2 class="text-red-500 font-bold mb-6 uppercase tracking-widest text-sm">Cenário Financiamento</h2>
                 <div class="mb-8">
-                    <label class="label-clean">Taxa de Juros (% AM)</label>
+                    <label class="label-clean">Taxa de Juros do Banco (% AM)</label>
                     <input type="number" id="tJuros" class="input-clean" value="1.60" step="0.01" oninput="calcular()">
                 </div>
                 <div class="space-y-4">
-                    <div class="flex justify-between"><span class="text-gray-400">Parcela Mensal</span> <span id="outParcela" class="font-bold text-white text-lg">R$ 0,00</span></div>
-                    <div class="flex justify-between"><span class="text-gray-400">Extras (IPVA/Seguro/Mant)</span> <span id="outExtrasA" class="text-red-400 font-bold">R$ 0,00</span></div>
+                    <div class="flex justify-between"><span class="text-gray-400">Parcela do Carro</span> <span id="outParcela" class="font-bold text-white text-lg">R$ 0,00</span></div>
+                    <div class="flex justify-between"><span class="text-gray-400">Custos Médios Mensais</span> <span id="outExtrasA" class="text-red-400 font-bold">R$ 0,00</span></div>
                     <div class="pt-4 border-t border-white/5 flex justify-between items-center text-white">
-                        <span class="text-sm font-bold uppercase">Custo Caixa Total</span>
+                        <span class="text-sm font-bold uppercase text-red-500">Gasto Mensal Total</span>
                         <span id="outTotalA" class="text-2xl font-bold">R$ 0,00</span>
                     </div>
                 </div>
             </div>
 
             <div class="glass-card p-8 border-t-4 border-green-500">
-                <h2 class="text-green-500 font-bold mb-6 uppercase tracking-widest">Assinatura</h2>
-                <div class="mb-8">
-                    <label class="label-clean">Mensalidade Assinatura</label>
-                    <input type="text" id="vAssinaturaDisp" class="input-clean" value="R$ 2.400,00" oninput="mask(this, 'vAssinatura')">
-                    <input type="hidden" id="vAssinatura" value="2400">
-                </div>
-                <div class="space-y-4">
-                    <div class="flex justify-between"><span class="text-gray-400">Equivalente p/ Comparar</span> <span id="outCustoDono" class="font-bold">R$ 0,00</span></div>
-                    <div class="flex justify-between"><span class="text-gray-400">Custo Assinatura</span> <span id="outAssinLabel" class="text-white font-bold text-lg">R$ 0,00</span></div>
-                    <div class="pt-4 border-t border-white/5 flex justify-between items-center text-green-400">
-                        <span class="text-sm font-bold uppercase">Aporte Mensal Selic</span>
-                        <span id="outAporte" class="text-2xl font-bold">R$ 0,00</span>
+                <h2 class="text-green-500 font-bold mb-6 uppercase tracking-widest text-sm">Cenário Assinatura</h2>
+                <div class="space-y-6 mt-2">
+                    <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl">
+                        <div>
+                            <p class="label-clean !mb-0 text-[10px]">Aporte Mensal na Selic</p>
+                            <p id="outAporte" class="text-2xl font-bold text-green-400">R$ 0,00</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="label-clean !mb-0">Diferença de Fluxo</p>
+                            <p id="outAssinLabel" class="text-white font-bold">R$ 0,00</p>
+                        </div>
                     </div>
+                    <p class="text-[10px] text-gray-500 text-center italic">O capital de entrada + a economia mensal rendem juros compostos para você.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="lg:col-span-2 glass-card p-8">
+            <h3 class="label-clean mb-6 text-center">Patrimônio Líquido Final em <span id="displayMeses">48</span> Meses</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 mb-10">
+                <div id="resCardA" class="glass-card p-6 flex flex-col items-center">
+                    <span id="trofeuA" class="hidden text-3xl mb-2">🏆</span>
+                    <p class="label-clean">Patrimônio (Venda do Carro)</p>
+                    <p id="resFinalFinanc" class="text-3xl font-bold">R$ 0,00</p>
+                </div>
+                <div id="resCardB" class="glass-card p-6 flex flex-col items-center">
+                    <span id="trofeuB" class="hidden text-3xl mb-2">🏆</span>
+                    <p class="label-clean">Patrimônio (Investimento)</p>
+                    <p id="resFinalAssin" class="text-3xl font-bold text-green-400">R$ 0,00</p>
                 </div>
             </div>
 
-            <div class="lg:col-span-2 glass-card p-8">
-                <h3 class="label-clean mb-6 text-center">Patrimônio Líquido Final (<span id="displayMeses">48</span> Meses)</h3>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 mb-10">
-                    <div id="resCardA" class="glass-card p-6 flex flex-col items-center">
-                        <span id="trofeuA" class="hidden text-3xl mb-2">🏆</span>
-                        <p class="label-clean">Patrimônio Carro</p>
-                        <p id="resFinalFinanc" class="text-3xl font-bold">R$ 0,00</p>
-                    </div>
-                    <div id="resCardB" class="glass-card p-6 flex flex-col items-center">
-                        <span id="trofeuB" class="hidden text-3xl mb-2">🏆</span>
-                        <p class="label-clean">Patrimônio Investido</p>
-                        <p id="resFinalAssin" class="text-3xl font-bold">R$ 0,00</p>
-                    </div>
-                </div>
+            <div id="painelVeredito" class="mb-10 p-6 rounded-2xl border-2 border-dashed border-gray-700 bg-gray-900/50 hidden">
+                <h4 class="text-lg font-bold mb-3 text-center uppercase tracking-widest text-white">Veredito Matemática do Carro</h4>
+                <div id="textoVeredito" class="text-center text-gray-300 text-sm leading-relaxed"></div>
+            </div>
 
-                <div class="h-80 w-full mb-10">
-                    <canvas id="meuGrafico"></canvas>
-                </div>
+            <div class="h-80 w-full mb-10">
+                <canvas id="meuGrafico"></canvas>
+            </div>
 
-                <h3 class="label-clean text-center mb-4">Evolução do Patrimônio Líquido</h3>
-                <div class="table-container">
-                    <table id="tabelaDados">
-                        <thead>
-                            <tr>
-                                <th>Mês</th>
-                                <th>Valor do Carro (Depreciado)</th>
-                                <th>Dívida Pendente</th>
-                                <th>Líquido (Carro)</th>
-                                <th>Investimento (Assinatura)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="corpoTabela"></tbody>
-                    </table>
-                </div>
+            <div class="table-container">
+                <table id="tabelaDados">
+                    <thead>
+                        <tr>
+                            <th>Mês</th>
+                            <th>FIPE Estimada</th>
+                            <th>Saldo Devedor</th>
+                            <th>Líquido (Carro)</th>
+                            <th>Invest. (Assinatura)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="corpoTabela"></tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -150,19 +165,50 @@
             calcular();
         }
 
+        function setPerfil(tipo) {
+            const vCarroDisp = document.getElementById('vCarroDisp');
+            const vAssinDisp = document.getElementById('vAssinaturaDisp');
+            
+            if (tipo === 'popular') {
+                updateField(vCarroDisp, 'vCarro', 85000);
+                document.getElementById('tJuros').value = "1.49";
+                document.getElementById('pCustosAnuais').value = "9.0";
+                document.getElementById('pDepreciacaoAnual').value = "10.0";
+                updateField(vAssinDisp, 'vAssinatura', 2150);
+            } else if (tipo === 'premium') {
+                updateField(vCarroDisp, 'vCarro', 250000);
+                document.getElementById('tJuros').value = "1.85";
+                document.getElementById('pCustosAnuais').value = "14.0";
+                document.getElementById('pDepreciacaoAnual').value = "18.0";
+                updateField(vAssinDisp, 'vAssinatura', 5800);
+            } else if (tipo === 'assinatura') {
+                updateField(vCarroDisp, 'vCarro', 140000);
+                document.getElementById('tJuros').value = "2.10";
+                document.getElementById('pCustosAnuais').value = "11.0";
+                document.getElementById('pDepreciacaoAnual').value = "14.0";
+                updateField(vAssinDisp, 'vAssinatura', 3100);
+            }
+            calcular();
+        }
+
+        function updateField(input, hiddenId, valor) {
+            document.getElementById(hiddenId).value = valor;
+            input.value = "R$ " + valor.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+        }
+
         function calcular() {
             const vCarro = parseFloat(document.getElementById('vCarro').value) || 0;
             const vEntrada = parseFloat(document.getElementById('vEntrada').value) || 0;
             const tJuros = (parseFloat(document.getElementById('tJuros').value) / 100) || 0;
             const vPrazo = parseInt(document.getElementById('vPrazo').value) || 1;
             const vAssinatura = parseFloat(document.getElementById('vAssinatura').value) || 0;
-            
-            // CAPTURA A SELIC DO INPUT EM TEMPO REAL
             const tSelicAnual = parseFloat(document.getElementById('tSelicAnual').value) || 0;
             const tSelicMensal = (Math.pow(1 + (tSelicAnual/100), 1/12) - 1);
-            
             const pCustos = (parseFloat(document.getElementById('pCustosAnuais').value) / 100) || 0;
-            const tInf = (parseFloat(document.getElementById('tInflacao').value) / 1200) || 0;
+            const tInf = (parseFloat(document.getElementById('tInflacao').value) / 100);
+            const tInfMensal = (Math.pow(1 + tInf, 1/12) - 1);
+            const pDepAnual = (parseFloat(document.getElementById('pDepreciacaoAnual').value) / 100) || 0;
+            const depMensal = 1 - Math.pow(1 - pDepAnual, 1/12);
 
             const custosMes = (vCarro * pCustos) / 12;
             const vFin = vCarro - vEntrada;
@@ -174,24 +220,23 @@
             document.getElementById('outParcela').innerText = fmt(pmt);
             document.getElementById('outExtrasA').innerText = fmt(custosMes);
             document.getElementById('outTotalA').innerText = fmt(totalA);
-            document.getElementById('outCustoDono').innerText = fmt(totalA);
             document.getElementById('outAssinLabel').innerText = fmt(vAssinatura);
             document.getElementById('outAporte').innerText = fmt(aporte);
 
-            render(vCarro, vEntrada, aporte, vPrazo, tSelicMensal, pmt, tJuros, vFin, tInf);
+            render(vCarro, vEntrada, aporte, vPrazo, tSelicMensal, pmt, tJuros, vFin, tInfMensal, depMensal);
         }
 
-        function render(vCarro, vEntrada, aporte, meses, selic, pmt, jurosF, vF, inf) {
+        function render(vCarro, vEntrada, aporte, meses, selic, pmt, jurosF, vF, inf, dep) {
             let sD = vF, pFinanc = [], pAssin = [], sInvest = vEntrada;
             let rowsHtml = "";
             
             for(let m=0; m<=meses; m++) {
-                let vCarroHoje = vCarro * Math.pow(0.99 + inf, m); 
+                let fatorMercado = Math.pow((1 - dep + inf), m);
+                let vCarroHoje = vCarro * fatorMercado;
                 
                 if (m > 0) {
                     let jM = sD * jurosF;
                     sD -= (pmt - jM);
-                    // O rendimento do investimento usa a Selic capturada no input
                     sInvest = (sInvest + aporte) * (1 + selic);
                 }
 
@@ -199,7 +244,7 @@
                 pFinanc.push(patLiqCarro);
                 pAssin.push(sInvest);
 
-                if (m % Math.ceil(meses/12) === 0 || m === meses) {
+                if (m % 12 === 0 || m === meses) {
                     rowsHtml += `<tr>
                         <td>${m}</td>
                         <td>${fmt(vCarroHoje)}</td>
@@ -212,23 +257,23 @@
             
             document.getElementById('corpoTabela').innerHTML = rowsHtml;
             const fF = pFinanc[meses], fA = pAssin[meses];
-            
             document.getElementById('resFinalFinanc').innerText = fmt(fF);
             document.getElementById('resFinalAssin').innerText = fmt(fA);
 
-            const cardA = document.getElementById('resCardA');
-            const cardB = document.getElementById('resCardB');
-            const trofeuA = document.getElementById('trofeuA');
-            const trofeuB = document.getElementById('trofeuB');
+            // LOGICA DO VEREDITO
+            const painel = document.getElementById('painelVeredito');
+            const texto = document.getElementById('textoVeredito');
+            const dif = Math.abs(fA - fF);
+            painel.classList.remove('hidden');
 
             if (fA > fF) {
-                cardB.className = "glass-card p-6 flex flex-col items-center winner-card";
-                cardA.className = "glass-card p-6 flex flex-col items-center loser-card";
-                trofeuB.classList.remove('hidden'); trofeuA.classList.add('hidden');
+                document.getElementById('resCardB').className = "glass-card p-6 flex flex-col items-center winner-card";
+                document.getElementById('resCardA').className = "glass-card p-6 flex flex-col items-center loser-card";
+                texto.innerHTML = `Vantagem financeira para a <b>ASSINATURA</b>. Seu patrimônio final será <span class="text-green-400 font-bold">${fmt(dif)}</span> maior do que se tivesse comprado o carro. Isso equivale a uma economia real de <b>${fmt(dif/meses)} por mês</b>.`;
             } else {
-                cardA.className = "glass-card p-6 flex flex-col items-center winner-card";
-                cardB.className = "glass-card p-6 flex flex-col items-center loser-card";
-                trofeuA.classList.remove('hidden'); trofeuB.classList.add('hidden');
+                document.getElementById('resCardA').className = "glass-card p-6 flex flex-col items-center winner-card";
+                document.getElementById('resCardB').className = "glass-card p-6 flex flex-col items-center loser-card";
+                texto.innerHTML = `Vantagem para a <b>COMPRA/FINANCIAMENTO</b>. Nesse cenário, o valor de revenda do carro supera o rendimento dos investimentos em <span class="text-red-400 font-bold">${fmt(dif)}</span> ao final do período.`;
             }
 
             if (chart) chart.destroy();
