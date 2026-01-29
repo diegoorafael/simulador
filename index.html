@@ -3,35 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matemática do Carro | Private Mobility Consulting</title>
+    <title>Matemática do Carro | Private Mobility</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #00ff88; --bg: #050505; --card: #0a0a0a; --border: rgba(255,255,255,0.08); }
         body { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        
         .nav-blur { background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); }
-        .glass-panel { background: var(--card); border: 1px solid var(--border); border-radius: 20px; transition: all 0.4s ease; }
+        .glass-panel { background: var(--card); border: 1px solid var(--border); border-radius: 20px; transition: 0.3s; }
         .glass-panel:hover { border-color: rgba(0, 255, 136, 0.2); }
-
-        .input-luxury { background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 12px; width: 100%; outline: none; transition: 0.3s; font-size: 0.95rem; }
-        .input-luxury:focus { border-color: var(--brand); background: rgba(0,255,136,0.02); }
-        
+        .input-luxury { background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 12px; width: 100%; outline: none; transition: 0.3s; }
+        .input-luxury:focus { border-color: var(--brand); }
         .label-luxury { font-size: 0.65rem; color: #666; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-bottom: 6px; display: block; }
-        .helper-text { font-size: 0.6rem; color: #444; margin-bottom: 8px; font-style: italic; }
-
-        .btn-luxury { background: #fff; color: #000; font-weight: 700; padding: 1rem 2rem; border-radius: 12px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; font-size: 0.75rem; }
-        .btn-luxury:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
-
-        .winner-card { border: 1px solid var(--brand) !important; background: rgba(0, 255, 136, 0.03) !important; }
-        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #fff; color: #000; padding: 12px 24px; border-radius: 100px; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 10px; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.3s; }
-        .whatsapp-float:hover { transform: scale(1.05); background: #00ff88; }
+        .btn-luxury { background: #fff; color: #000; font-weight: 700; padding: 0.8rem 1.5rem; border-radius: 10px; font-size: 0.7rem; text-transform: uppercase; transition: 0.3s; }
+        .btn-luxury:hover { background: var(--brand); transform: translateY(-2px); }
+        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #fff; color: #000; padding: 12px 24px; border-radius: 100px; font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 10px; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
 
-    <a href="https://wa.me/5512983009090?text=Olá! Usei o seu simulador e gostaria de uma consultoria de viabilidade patrimonial." class="whatsapp-float" target="_blank">
+    <a href="https://wa.me/5512983009090" class="whatsapp-float" target="_blank">
         <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
         CONSULTORIA PRIVATE
     </a>
@@ -39,35 +31,36 @@
     <nav class="nav-blur fixed top-0 w-full z-50">
         <div class="max-w-7xl mx-auto px-8 py-5 flex justify-between items-center">
             <div class="text-sm font-light tracking-[0.4em] uppercase">Matemática <span class="font-bold">do Carro</span></div>
-            <div class="hidden md:flex gap-10 text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold">
-                <a href="#simulador" class="hover:text-white transition">Simulador</a>
-                <a href="#metodo" class="hover:text-white transition">Estratégia</a>
-            </div>
-            <a href="#simulador" class="border border-white/20 px-4 py-2 rounded-lg text-[9px] uppercase font-bold hover:bg-white hover:text-black transition">Analisar Agora</a>
         </div>
     </nav>
 
-    <header class="pt-48 pb-32 text-center px-6">
-        <h1 class="text-5xl md:text-7xl font-light tracking-tight mb-8 leading-tight">
-            Eficiência de Capital. <br><span class="font-bold italic">Mobilidade Inteligente.</span>
-        </h1>
-        <p class="text-gray-500 text-lg max-w-2xl mx-auto font-light leading-relaxed mb-12">
-            Análise técnica para veículos de alto padrão. Compare a viabilidade entre propriedade e assinatura com foco em liquidez e custo de oportunidade.
-        </p>
-        <div class="flex flex-col md:flex-row justify-center gap-6">
-            <a href="#simulador" class="btn-luxury">Acessar Simulador Completo</a>
-        </div>
-    </header>
-
-    <main id="simulador" class="max-w-7xl mx-auto px-6 py-24">
+    <main class="max-w-7xl mx-auto px-6 pt-32 pb-24">
         
-        <div class="flex flex-wrap gap-4 justify-center mb-16">
-            <button onclick="setPerfil('popular')" class="px-6 py-2 rounded-full border border-white/10 text-[9px] uppercase font-bold tracking-widest hover:border-white transition">Executivo</button>
-            <button onclick="setPerfil('premium')" class="px-6 py-2 rounded-full border border-orange-500/30 text-orange-500 text-[9px] uppercase font-bold tracking-widest hover:border-orange-500 transition">Premium / SUV</button>
-            <button onclick="setPerfil('assinatura')" class="px-6 py-2 rounded-full border border-green-500/30 text-green-500 text-[9px] uppercase font-bold tracking-widest hover:border-green-500 transition">Ultra Eficiência</button>
-        </div>
+        <section class="mb-24">
+            <h2 class="text-center text-xs font-bold uppercase tracking-[0.4em] text-gray-500 mb-10">Duelos de Patrimônio Líquido</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-panel p-8 text-center border-b-4 border-orange-500/30">
+                    <p class="text-[10px] text-orange-500 font-bold uppercase mb-2">Utilitário Premium</p>
+                    <h3 class="text-xl font-bold mb-4 italic">Toyota Hilux SRX</h3>
+                    <p class="text-gray-500 text-xs mb-6">Investimento Inicial: R$ 330.000</p>
+                    <button onclick="setCarro('hilux')" class="btn-luxury w-full">Simular Duelo</button>
+                </div>
+                <div class="glass-panel p-8 text-center border-b-4 border-blue-500/30">
+                    <p class="text-[10px] text-blue-500 font-bold uppercase mb-2">Sedan de Luxo</p>
+                    <h3 class="text-xl font-bold mb-4 italic">BMW 320i M Sport</h3>
+                    <p class="text-gray-500 text-xs mb-6">Investimento Inicial: R$ 360.000</p>
+                    <button onclick="setCarro('bmw')" class="btn-luxury w-full">Simular Duelo</button>
+                </div>
+                <div class="glass-panel p-8 text-center border-b-4 border-green-500/30">
+                    <p class="text-[10px] text-green-500 font-bold uppercase mb-2">SUV Executivo</p>
+                    <h3 class="text-xl font-bold mb-4 italic">VW T-Cross Highline</h3>
+                    <p class="text-gray-500 text-xs mb-6">Investimento Inicial: R$ 180.000</p>
+                    <button onclick="setCarro('tcross')" class="btn-luxury w-full">Simular Duelo</button>
+                </div>
+            </div>
+        </section>
 
-        <div class="glass-panel p-8 md:p-12 mb-12">
+        <div id="simulador" class="glass-panel p-8 md:p-12 mb-12">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
                 <div>
                     <label class="label-luxury">Valor do Ativo</label>
@@ -75,13 +68,13 @@
                     <input type="hidden" id="vCarro" value="200000">
                 </div>
                 <div>
-                    <label class="label-luxury">Capital de Entrada</label>
+                    <label class="label-luxury">Entrada / Capital Inicial</label>
                     <input type="text" id="vEntradaDisp" class="input-luxury" value="R$ 80.000,00" oninput="mask(this, 'vEntrada')">
                     <input type="hidden" id="vEntrada" value="80000">
                 </div>
                 <div>
                     <label class="label-luxury">Depreciação (% AA)</label>
-                    <input type="number" id="pDepreciacaoAnual" class="input-luxury" value="12.0" step="0.1" oninput="calcular()">
+                    <input type="number" id="pDepAnual" class="input-luxury" value="12.0" step="0.1" oninput="calcular()">
                 </div>
                 <div>
                     <label class="label-luxury">Taxa Selic (% AA)</label>
@@ -97,10 +90,10 @@
                 </div>
                 <div>
                     <label class="label-luxury">Inflação (% AA)</label>
-                    <input type="number" id="tInflacao" class="input-luxury" value="4.50" step="0.01" oninput="calcular()">
+                    <input type="number" id="tInflacaoAnual" class="input-luxury" value="4.50" step="0.01" oninput="calcular()">
                 </div>
                 <div>
-                    <label class="label-luxury">Mensalidade Assinatura</label>
+                    <label class="label-luxury">Assinatura Mensal</label>
                     <input type="text" id="vAssinaturaDisp" class="input-luxury" value="R$ 5.200,00" oninput="mask(this, 'vAssinatura')">
                     <input type="hidden" id="vAssinatura" value="5200">
                 </div>
@@ -109,39 +102,30 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
                 <div class="space-y-6">
                     <div class="glass-panel p-6 border-l-4 border-red-500/50">
-                        <label class="label-luxury !mb-4">Fluxo de Financiamento</label>
+                        <label class="label-luxury !mb-4 italic">Custo de Oportunidade (Propriedade)</label>
                         <div class="grid grid-cols-2 gap-4 mb-4">
-                            <div><p class="text-[10px] text-gray-500 uppercase">Juros (% AM)</p><input type="number" id="tJuros" class="input-luxury !py-1 !text-sm" value="1.60" oninput="calcular()"></div>
-                            <div><p class="text-[10px] text-gray-500 uppercase">Parcela</p><p id="outParcela" class="text-sm font-bold">R$ 0,00</p></div>
+                            <div><p class="text-[10px] text-gray-500 uppercase">Juros (% AM)</p><input type="number" id="tJurosMensal" class="input-luxury !py-1 !text-sm" value="1.60" oninput="calcular()"></div>
+                            <div><p class="text-[10px] text-gray-500 uppercase font-bold text-white">Parcela:</p><p id="outParcela" class="text-sm font-bold">R$ 0,00</p></div>
                         </div>
-                        <div class="pt-4 border-t border-white/5 flex justify-between items-center">
-                            <span class="text-[10px] font-bold uppercase text-red-500">Saída Mensal</span>
+                        <div class="pt-4 border-t border-white/5 flex justify-between items-center text-red-500">
+                            <span class="text-[10px] font-bold uppercase">Dreno Mensal de Liquidez</span>
                             <span id="outTotalA" class="text-xl font-bold">R$ 0,00</span>
                         </div>
-                    </div>
-
-                    <div class="glass-panel p-6 border-l-4 border-green-500/50">
-                        <label class="label-luxury !mb-4">Investimento (Assinatura)</label>
-                        <div class="bg-white/5 p-4 rounded-xl text-center mb-2">
-                            <p class="text-[9px] text-gray-500 uppercase mb-1">Capital Reinvestido (Líquido)</p>
-                            <p id="outAporte" class="text-2xl font-bold text-green-400">R$ 0,00</p>
-                        </div>
-                        <p class="text-[8px] text-center text-gray-600 uppercase tracking-widest">Desconto de 15% de IR aplicado</p>
                     </div>
                 </div>
 
                 <div class="space-y-6">
                     <div class="grid grid-cols-2 gap-4">
-                        <div id="resCardA" class="glass-panel p-6 text-center">
+                        <div class="glass-panel p-6 text-center">
                             <p class="label-luxury">Patrimônio Carro</p>
                             <p id="resFinalFinanc" class="text-xl font-bold">R$ 0,00</p>
                         </div>
-                        <div id="resCardB" class="glass-panel p-6 text-center">
-                            <p class="label-luxury text-green-500">Capital no Banco</p>
+                        <div class="glass-panel p-6 text-center border-l-2 border-green-500">
+                            <p class="label-luxury text-green-500">Capital Líquido</p>
                             <p id="resFinalAssin" class="text-xl font-bold text-green-400">R$ 0,00</p>
                         </div>
                     </div>
-                    <div id="painelVeredito" class="p-6 rounded-2xl bg-white/2 border border-white/5 hidden text-center">
+                    <div id="painelVeredito" class="p-6 rounded-2xl bg-white/2 border border-white/5 text-center">
                         <p id="textoVeredito" class="text-sm font-light text-gray-300 italic"></p>
                     </div>
                     <div class="h-48">
@@ -151,27 +135,6 @@
             </div>
         </div>
     </main>
-
-    <section id="metodo" class="py-32 px-6 max-w-7xl mx-auto border-t border-white/5">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-            <div>
-                <h2 class="text-3xl font-light mb-8 italic">Gestão de Liquidez</h2>
-                <p class="text-gray-500 font-light leading-relaxed mb-6 italic text-sm">
-                    Para o investidor consciente, o automóvel não é um ativo, mas sim uma despesa de mobilidade. Nossa metodologia compara a imobilização de capital contra o rendimento de juros compostos, considerando todas as variáveis de mercado.
-                </p>
-                <a href="https://wa.me/5512983009090" target="_blank" class="text-[10px] font-bold text-white uppercase tracking-[0.3em] border-b border-green-500 pb-1">Agendar análise privada</a>
-            </div>
-            <div class="glass-panel p-10 text-center bg-gradient-to-b from-white/5 to-transparent">
-                <p class="text-xs text-gray-400 font-light uppercase tracking-widest mb-4 leading-loose">
-                    Proteja sua liquidez. <br>Maximize seu patrimônio. <br>Simplifique sua vida.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <footer class="py-20 text-center border-t border-white/5">
-        <p class="text-[9px] text-gray-700 tracking-[0.5em] uppercase">Matemática do Carro Private © 2026</p>
-    </footer>
 
     <script>
         let chart;
@@ -187,107 +150,87 @@
             calcular();
         }
 
-        function setPerfil(tipo) {
-            const vC = document.getElementById('vCarroDisp');
-            const vA = document.getElementById('vAssinaturaDisp');
-            if (tipo === 'popular') {
-                updateField(vC, 'vCarro', 130000);
-                document.getElementById('tJuros').value = "1.55";
-                document.getElementById('pCustosAnuais').value = "9.0";
-                document.getElementById('pDepreciacaoAnual').value = "11.0";
-                updateField(vA, 'vAssinatura', 2900);
-            } else if (tipo === 'premium') {
-                updateField(vC, 'vCarro', 380000);
-                document.getElementById('tJuros').value = "1.95";
-                document.getElementById('pCustosAnuais').value = "15.0";
-                document.getElementById('pDepreciacaoAnual').value = "18.0";
-                updateField(vA, 'vAssinatura', 8800);
-            } else if (tipo === 'assinatura') {
-                updateField(vC, 'vCarro', 190000);
-                updateField(vA, 'vAssinatura', 4100);
+        // FUNÇÃO DE ATALHO PARA OS CARROS DO DUELO
+        function setCarro(modelo) {
+            if (modelo === 'hilux') {
+                updateField('vCarro', 330000, 'vCarroDisp');
+                updateField('vEntrada', 100000, 'vEntradaDisp');
+                document.getElementById('pDepAnual').value = "10.0";
+                updateField('vAssinatura', 8500, 'vAssinaturaDisp');
+            } else if (modelo === 'bmw') {
+                updateField('vCarro', 360000, 'vCarroDisp');
+                updateField('vEntrada', 120000, 'vEntradaDisp');
+                document.getElementById('pDepAnual').value = "18.0";
+                updateField('vAssinatura', 9200, 'vAssinaturaDisp');
+            } else if (modelo === 'tcross') {
+                updateField('vCarro', 180000, 'vCarroDisp');
+                updateField('vEntrada', 50000, 'vEntradaDisp');
+                document.getElementById('pDepAnual').value = "12.0";
+                updateField('vAssinatura', 4100, 'vAssinaturaDisp');
             }
             calcular();
         }
 
-        function updateField(input, hiddenId, valor) {
+        function updateField(hiddenId, valor, dispId) {
             document.getElementById(hiddenId).value = valor;
-            input.value = "R$ " + valor.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+            document.getElementById(dispId).value = fmt(valor);
         }
 
         function calcular() {
-            const vCarro = parseFloat(document.getElementById('vCarro').value) || 0;
-            const vEntrada = parseFloat(document.getElementById('vEntrada').value) || 0;
-            const tJuros = (parseFloat(document.getElementById('tJuros').value) / 100) || 0;
-            const vPrazo = parseInt(document.getElementById('vPrazo').value) || 1;
-            const vAssinatura = parseFloat(document.getElementById('vAssinatura').value) || 0;
-            const tSelicAnual = parseFloat(document.getElementById('tSelicAnual').value) || 0;
-            
-            const tSelicAnualLiquida = tSelicAnual * 0.85;
-            const tSelicMensalLiquida = (Math.pow(1 + (tSelicAnualLiquida/100), 1/12) - 1);
-            
-            const pCustos = (parseFloat(document.getElementById('pCustosAnuais').value) / 100) || 0;
-            const tInfMensal = (Math.pow(1 + (parseFloat(document.getElementById('tInflacao').value)/100), 1/12) - 1);
-            const pDepAnual = (parseFloat(document.getElementById('pDepreciacaoAnual').value) / 100) || 0;
-            const depMensal = 1 - Math.pow(1 - pDepAnual, 1/12);
+            const vC = parseFloat(document.getElementById('vCarro').value) || 0;
+            const vE = parseFloat(document.getElementById('vEntrada').value) || 0;
+            const tJ = (parseFloat(document.getElementById('tJurosMensal').value) / 100) || 0;
+            const vP = parseInt(document.getElementById('vPrazo').value) || 1;
+            const vA = parseFloat(document.getElementById('vAssinatura').value) || 0;
+            const tS = parseFloat(document.getElementById('tSelicAnual').value) || 0;
+            const tI = parseFloat(document.getElementById('tInflacaoAnual').value) || 0;
+            const pD = parseFloat(document.getElementById('pDepAnual').value) || 0;
+            const pC = parseFloat(document.getElementById('pCustosAnuais').value) || 0;
 
-            const custosMes = (vCarro * pCustos) / 12;
-            const vFin = vCarro - vEntrada;
-            const pmt = vFin > 0 ? (vFin * tJuros) / (1 - Math.pow(1 + tJuros, -vPrazo)) : 0;
-            const totalA = pmt + custosMes;
-            const aporte = totalA - vAssinatura;
+            const selicLiqMensal = (Math.pow(1 + ((tS * 0.85)/100), 1/12) - 1);
+            const depMensal = 1 - Math.pow(1 - (pD/100), 1/12);
+            const infMensal = (Math.pow(1 + (tI/100), 1/12) - 1);
+            const custosMes = (vC * (pC/100)) / 12;
+
+            const vFin = vC - vE;
+            const pmt = vFin > 0 ? (vFin * tJ) / (1 - Math.pow(1 + tJ, -vP)) : 0;
+            const totalMesProp = pmt + custosMes;
+            const aporte = totalMesProp - vA;
 
             document.getElementById('outParcela').innerText = fmt(pmt);
-            document.getElementById('outExtrasA').innerText = fmt(custosMes);
-            document.getElementById('outTotalA').innerText = fmt(totalA);
-            document.getElementById('outAporte').innerText = fmt(aporte);
+            document.getElementById('outTotalA').innerText = fmt(totalMesProp);
 
-            render(vCarro, vEntrada, aporte, vPrazo, tSelicMensalLiquida, pmt, tJuros, vFin, tInfMensal, depMensal);
-        }
-
-        function render(vC, vE, ap, meses, selic, pmt, jF, vF, inf, dep) {
-            let sD = vF, pFinanc = [], pAssin = [], sInvest = vE;
-            for(let m=0; m<=meses; m++) {
-                let vCarroHoje = vC * Math.pow((1 - dep + inf), m);
+            let sD = vFin, pF = [], pAs = [], sInv = vE;
+            for(let m=0; m<=vP; m++) {
+                let vCH = vC * Math.pow((1 - depMensal + infMensal), m);
                 if (m > 0) {
-                    sD -= (pmt - (sD * jF));
-                    sInvest = (sInvest + ap) * (1 + selic);
+                    sD -= (pmt - (sD * tJ));
+                    sInv = (sInv + aporte) * (1 + selicLiqMensal);
                 }
-                pFinanc.push(Math.max(0, vCarroHoje - Math.max(0, sD)));
-                pAssin.push(sInvest);
+                pF.push(Math.max(0, vCH - Math.max(0, sD)));
+                pAs.push(sInv);
             }
-            const fF = pFinanc[meses], fA = pAssin[meses];
-            document.getElementById('resFinalFinanc').innerText = fmt(fF);
-            document.getElementById('resFinalAssin').innerText = fmt(fA);
-            const painel = document.getElementById('painelVeredito');
-            const texto = document.getElementById('textoVeredito');
-            const dif = Math.abs(fA - fF);
-            painel.classList.remove('hidden');
 
-            if (fA > fF) {
-                document.getElementById('resCardB').className = "glass-panel p-6 text-center winner-card";
-                document.getElementById('resCardA').className = "glass-panel p-6 text-center opacity-30";
-                texto.innerHTML = `Veredito: <b>ASSINATURA</b> superior. Seu patrimônio final será <span class="text-green-400 font-bold">${fmt(dif)}</span> maior (Líquido de IR).`;
-            } else {
-                document.getElementById('resCardA').className = "glass-panel p-6 text-center winner-card";
-                document.getElementById('resCardB').className = "glass-panel p-6 text-center opacity-30";
-                texto.innerHTML = `Veredito: <b>PROPRIEDADE</b> superior. A valor residual supera o rendimento financeiro em <span class="text-white font-bold">${fmt(dif)}</span>.`;
-            }
+            const finalF = pF[vP], finalA = pAs[vP];
+            document.getElementById('resFinalFinanc').innerText = fmt(finalF);
+            document.getElementById('resFinalAssin').innerText = fmt(finalA);
+            
+            const dif = Math.abs(finalA - finalF);
+            document.getElementById('textoVeredito').innerHTML = finalA > finalF ? 
+                `Estratégia: A assinatura preserva <span class='text-green-400 font-bold'>${fmt(dif)}</span> extras no seu patrimônio.` :
+                `Estratégia: A posse direta apresenta vantagem residual de <span class='text-white font-bold'>${fmt(dif)}</span>.`;
 
             if (chart) chart.destroy();
             chart = new Chart(document.getElementById('meuGrafico'), {
                 type: 'line',
                 data: {
-                    labels: Array.from({length: meses + 1}, (_, i) => i),
+                    labels: Array.from({length: vP + 1}, (_, i) => i),
                     datasets: [
-                        { label: 'Propriedade', data: pFinanc, borderColor: '#333', borderWidth: 1, pointRadius: 0, fill: false },
-                        { label: 'Assinatura', data: pAssin, borderColor: '#00ff88', borderWidth: 2, pointRadius: 0, fill: false }
+                        { label: 'Propriedade', data: pF, borderColor: '#333', borderWidth: 1, pointRadius: 0 },
+                        { label: 'Assinatura', data: pAs, borderColor: '#00ff88', borderWidth: 2, pointRadius: 0 }
                     ]
                 },
-                options: { 
-                    responsive: true, maintainAspectRatio: false, 
-                    plugins: { legend: { display: false } },
-                    scales: { y: { display: false }, x: { display: false } }
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } }
             });
         }
         window.onload = calcular;
