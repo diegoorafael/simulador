@@ -11,7 +11,7 @@
         :root { --brand: #00ff88; --bg: #000000; --card: #0a0a0a; --danger: #ff4444; }
         body { background-color: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
         
-        .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; transition: 0.4s; }
+        .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; transition: 0.4s; overflow: hidden; }
         
         /* Centralização dos Números nos Quadrados */
         .result-card { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 160px; padding: 24px; border: 1px solid rgba(255,255,255,0.03); }
@@ -31,6 +31,10 @@
         .loser-dim { opacity: 0.3; filter: grayscale(1); }
         .text-neon { color: var(--brand); text-shadow: 0 0 15px rgba(0, 255, 136, 0.4); }
         
+        /* Estilo das Imagens nos Cards */
+        .car-thumb { width: 100%; height: 160px; object-fit: contain; margin-bottom: 10px; transition: 0.5s; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); }
+        .glass:hover .car-thumb { transform: scale(1.08) translateY(-5px); }
+
         .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #fff; color: #000; padding: 16px 32px; border-radius: 100px; font-weight: 800; font-size: 0.85rem; z-index: 100; box-shadow: 0 15px 45px rgba(0,0,0,0.7); }
     </style>
 </head>
@@ -46,20 +50,23 @@
     <main class="max-w-7xl mx-auto">
         
         <section class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
-            <div class="glass p-10 text-center">
-                <h3 class="text-2xl font-black uppercase italic mb-2">Polo Highline</h3>
-                <p class="text-[10px] text-gray-500 mb-8 tracking-[0.3em]">Hatch Premium (R$ 108k)</p>
-                <button onclick="setCarro('polo')" class="btn-luxury w-full">Analisar Polo</button>
+            <div class="glass p-8 text-center flex flex-col items-center">
+                <img src="https://www.vw.com.br/content/dam/vw-ngw/vw_pkw/importers/br/models/polo-2023/trimline-visualizer/polo-highline-cinza-platinum.png/_jcr_content/renditions/original.transform/med/img.png" alt="Polo" class="car-thumb">
+                <h3 class="text-xl font-black uppercase italic mb-1">Polo Highline</h3>
+                <p class="text-[9px] text-gray-500 mb-6 tracking-[0.3em]">Hatch Premium (R$ 108k)</p>
+                <button onclick="setCarro('polo')" class="btn-luxury w-full">Auditar Polo</button>
             </div>
-            <div class="glass p-10 text-center">
-                <h3 class="text-2xl font-black uppercase italic mb-2 text-green-400">T-Cross Highline</h3>
-                <p class="text-[10px] text-gray-500 mb-8 tracking-[0.3em]">SUV Executivo (R$ 171k)</p>
-                <button onclick="setCarro('tcross')" class="btn-luxury w-full">Analisar T-Cross</button>
+            <div class="glass p-8 text-center flex flex-col items-center">
+                <img src="https://www.vw.com.br/content/dam/vw-ngw/vw_pkw/importers/br/models/t-cross-2024/visualizer/t-cross-highline-branco-puro.png/_jcr_content/renditions/original.transform/med/img.png" alt="T-Cross" class="car-thumb">
+                <h3 class="text-xl font-black uppercase italic mb-1 text-green-400">T-Cross Highline</h3>
+                <p class="text-[9px] text-gray-500 mb-6 tracking-[0.3em]">SUV Executivo (R$ 171k)</p>
+                <button onclick="setCarro('tcross')" class="btn-luxury w-full">Auditar T-Cross</button>
             </div>
-            <div class="glass p-10 text-center">
-                <h3 class="text-2xl font-black uppercase italic mb-2">BMW 320i M Sport</h3>
-                <p class="text-[10px] text-gray-500 mb-8 tracking-[0.3em]">Status & Performance (R$ 360k)</p>
-                <button onclick="setCarro('bmw')" class="btn-luxury w-full">Analisar BMW</button>
+            <div class="glass p-8 text-center flex flex-col items-center">
+                <img src="https://www.bmw.com.br/content/dam/bmw/common/all-models/3-series/sedan/2022/navigation/bmw-3-series-sedan-lci-modelfinder.png" alt="BMW 320i" class="car-thumb">
+                <h3 class="text-xl font-black uppercase italic mb-1">BMW 320i M Sport</h3>
+                <p class="text-[9px] text-gray-500 mb-6 tracking-[0.3em]">Status & Performance (R$ 360k)</p>
+                <button onclick="setCarro('bmw')" class="btn-luxury w-full">Auditar BMW</button>
             </div>
         </section>
 
@@ -103,7 +110,7 @@
                             <div><label class="label-luxury">IPVA/Seg/Manut (% AA)</label><input type="number" id="pCustosAnuais" class="input-luxury" value="10.5" oninput="calcular()"></div>
                             <div><label class="label-luxury">Prazo (Meses)</label><input type="number" id="vPrazo" class="input-luxury" value="48" oninput="calcular()"></div>
                             <div class="bg-green-500/5 p-4 rounded-2xl border border-green-500/10">
-                                <label class="label-luxury text-green-500">Assinatura Mensal</label>
+                                <label class="label-luxury text-green-500">Mensalidade Assinatura</label>
                                 <input type="text" id="vAssinaturaDisp" class="input-luxury !border-green-500/30 !text-lg font-bold" value="R$ 2.450,00" oninput="mask(this, 'vAssinatura')">
                                 <input type="hidden" id="vAssinatura" value="2450">
                             </div>
