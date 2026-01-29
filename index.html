@@ -27,7 +27,7 @@
     <div class="max-w-6xl mx-auto">
         <header class="mb-8 text-center">
             <h1 class="text-3xl font-bold tracking-tight mb-2 uppercase text-white">MATEMÁTICA DO CARRO</h1>
-            <p class="text-gray-500 text-sm italic">Simulador de Viabilidade: Carro Próprio vs. Assinatura</p>
+            <p class="text-gray-500 text-sm italic">Simulador Profissional com Desconto de IR (15%)</p>
             <div class="h-1 w-20 bg-green-500 mx-auto mt-4 rounded-full"></div>
         </header>
 
@@ -46,23 +46,23 @@
             </div>
             <div>
                 <label class="label-clean">Entrada</label>
-                <p class="helper-text">Valor que você dará no ato.</p>
+                <p class="helper-text">Valor que você daria no ato.</p>
                 <input type="text" id="vEntradaDisp" class="input-clean" value="R$ 40.000,00" oninput="mask(this, 'vEntrada')">
                 <input type="hidden" id="vEntrada" value="40000">
             </div>
             <div>
                 <label class="label-clean">Depreciação (% AA)</label>
-                <p class="helper-text">Quanto o carro perde de valor ao ano.</p>
+                <p class="helper-text">Perda de valor anual do carro.</p>
                 <input type="number" id="pDepreciacaoAnual" class="input-clean !text-orange-400" value="12.0" step="0.1" oninput="calcular()">
             </div>
             <div>
-                <label class="label-clean">Selic / Rendimento</label>
-                <p class="helper-text">Quanto o seu dinheiro rende no banco.</p>
+                <label class="label-clean">Selic Bruta (% AA)</label>
+                <p class="helper-text">Rendimento do banco antes do imposto.</p>
                 <input type="number" id="tSelicAnual" class="input-clean !text-cyan-400 font-bold" value="12.75" step="0.01" oninput="calcular()">
             </div>
             <div>
                 <label class="label-clean">Prazo (Meses)</label>
-                <p class="helper-text">Duração total da comparação.</p>
+                <p class="helper-text">Tempo total da simulação.</p>
                 <input type="number" id="vPrazo" class="input-clean" value="48" oninput="calcular()">
             </div>
             <div>
@@ -77,7 +77,7 @@
             </div>
             <div>
                 <label class="label-clean">Mensalidade Assinatura</label>
-                <p class="helper-text">Valor fixo da locadora por mês.</p>
+                <p class="helper-text">Valor fixo mensal da locadora.</p>
                 <input type="text" id="vAssinaturaDisp" class="input-clean" value="R$ 2.400,00" oninput="mask(this, 'vAssinatura')">
                 <input type="hidden" id="vAssinatura" value="2400">
             </div>
@@ -85,31 +85,31 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
             <div class="glass-card p-8 border-t-4 border-red-500">
-                <h2 class="text-red-500 font-bold mb-6 uppercase tracking-widest text-sm">Cenário Financiamento</h2>
+                <h2 class="text-red-500 font-bold mb-6 uppercase tracking-widest text-sm text-center">Custo de Ter o Carro</h2>
                 <div class="mb-8">
-                    <label class="label-clean">Taxa de Juros (% AM)</label>
+                    <label class="label-clean">Taxa de Juros do Financiamento (% AM)</label>
                     <input type="number" id="tJuros" class="input-clean" value="1.60" step="0.01" oninput="calcular()">
                 </div>
                 <div class="space-y-4">
-                    <div class="flex justify-between"><span class="text-gray-400">Parcela Mensal</span> <span id="outParcela" class="font-bold text-white text-lg">R$ 0,00</span></div>
-                    <div class="flex justify-between"><span class="text-gray-400">Extras Mensais</span> <span id="outExtrasA" class="text-red-400 font-bold">R$ 0,00</span></div>
-                    <div class="pt-4 border-t border-white/5 flex justify-between items-center text-white">
-                        <span class="text-sm font-bold uppercase text-red-500">Custo Total Mensal</span>
+                    <div class="flex justify-between"><span class="text-gray-400 text-sm">Parcela</span> <span id="outParcela" class="font-bold">R$ 0,00</span></div>
+                    <div class="flex justify-between"><span class="text-gray-400 text-sm">Extras (Manut/IPVA)</span> <span id="outExtrasA" class="text-red-400 font-bold">R$ 0,00</span></div>
+                    <div class="pt-4 border-t border-white/5 flex justify-between items-center">
+                        <span class="text-xs font-bold uppercase text-red-500">Saída Mensal de Caixa</span>
                         <span id="outTotalA" class="text-2xl font-bold">R$ 0,00</span>
                     </div>
                 </div>
             </div>
 
             <div class="glass-card p-8 border-t-4 border-green-500">
-                <h2 class="text-green-500 font-bold mb-6 uppercase tracking-widest text-sm">Cenário Assinatura</h2>
-                <div class="space-y-6 mt-2">
+                <h2 class="text-green-500 font-bold mb-6 uppercase tracking-widest text-sm text-center">Vantagem da Assinatura</h2>
+                <div class="space-y-6">
                     <div class="bg-white/5 p-5 rounded-xl text-center">
-                        <p class="label-clean !mb-1">Investimento Mensal Automático</p>
+                        <p class="label-clean !mb-1">Investimento Mensal (Líquido)</p>
                         <p id="outAporte" class="text-3xl font-bold text-green-400">R$ 0,00</p>
-                        <p class="text-[9px] text-gray-500 mt-2 uppercase tracking-widest">Este valor trabalha para você</p>
+                        <p class="text-[9px] text-gray-500 mt-2 uppercase">Já descontado 15% de Imposto de Renda</p>
                     </div>
                     <div class="flex justify-between px-2">
-                        <span class="text-gray-400 text-sm">Custo Assinatura</span>
+                        <span class="text-gray-400 text-sm">Mensalidade Fixa</span>
                         <span id="outAssinLabel" class="font-bold">R$ 0,00</span>
                     </div>
                 </div>
@@ -119,15 +119,15 @@
         <div class="glass-card p-8">
             <h3 class="label-clean mb-8 text-center">Patrimônio Líquido Final (<span id="displayMeses">48</span> Meses)</h3>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-                <div id="resCardA" class="glass-card p-6 flex flex-col items-center text-center">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10 text-center">
+                <div id="resCardA" class="glass-card p-6 flex flex-col items-center">
                     <span id="trofeuA" class="hidden text-3xl mb-2">🏆</span>
-                    <p class="label-clean">Valor de Venda do Carro</p>
+                    <p class="label-clean">Patrimônio Carro (Venda)</p>
                     <p id="resFinalFinanc" class="text-3xl font-bold text-white">R$ 0,00</p>
                 </div>
-                <div id="resCardB" class="glass-card p-6 flex flex-col items-center text-center">
+                <div id="resCardB" class="glass-card p-6 flex flex-col items-center">
                     <span id="trofeuB" class="hidden text-3xl mb-2">🏆</span>
-                    <p class="label-clean">Dinheiro no Banco</p>
+                    <p class="label-clean">Patrimônio Banco (Líquido)</p>
                     <p id="resFinalAssin" class="text-3xl font-bold text-green-400">R$ 0,00</p>
                 </div>
             </div>
@@ -146,10 +146,10 @@
                     <thead>
                         <tr>
                             <th>Mês</th>
-                            <th>FIPE Estimada</th>
-                            <th>Saldo Devedor</th>
+                            <th>FIPE</th>
+                            <th>Dívida</th>
                             <th>Líquido (Carro)</th>
-                            <th>Invest. (Assinatura)</th>
+                            <th>Invest. (Líquido IR)</th>
                         </tr>
                     </thead>
                     <tbody id="corpoTabela"></tbody>
@@ -209,7 +209,11 @@
             const vPrazo = parseInt(document.getElementById('vPrazo').value) || 1;
             const vAssinatura = parseFloat(document.getElementById('vAssinatura').value) || 0;
             const tSelicAnual = parseFloat(document.getElementById('tSelicAnual').value) || 0;
-            const tSelicMensal = (Math.pow(1 + (tSelicAnual/100), 1/12) - 1);
+            
+            // CÁLCULO DA SELIC MENSAL JÁ LÍQUIDA (DESCONTO DE 15% IR)
+            const tSelicAnualLiquida = tSelicAnual * 0.85; 
+            const tSelicMensalLiquida = (Math.pow(1 + (tSelicAnualLiquida/100), 1/12) - 1);
+            
             const pCustos = (parseFloat(document.getElementById('pCustosAnuais').value) / 100) || 0;
             const tInfMensal = (Math.pow(1 + (parseFloat(document.getElementById('tInflacao').value)/100), 1/12) - 1);
             const pDepAnual = (parseFloat(document.getElementById('pDepreciacaoAnual').value) / 100) || 0;
@@ -228,7 +232,7 @@
             document.getElementById('outAssinLabel').innerText = fmt(vAssinatura);
             document.getElementById('outAporte').innerText = fmt(aporte);
 
-            render(vCarro, vEntrada, aporte, vPrazo, tSelicMensal, pmt, tJuros, vFin, tInfMensal, depMensal);
+            render(vCarro, vEntrada, aporte, vPrazo, tSelicMensalLiquida, pmt, tJuros, vFin, tInfMensal, depMensal);
         }
 
         function render(vC, vE, ap, meses, selic, pmt, jF, vF, inf, dep) {
@@ -260,11 +264,11 @@
             if (fA > fF) {
                 document.getElementById('resCardB').className = "glass-card p-6 flex flex-col items-center winner-card";
                 document.getElementById('resCardA').className = "glass-card p-6 flex flex-col items-center loser-card";
-                texto.innerHTML = `Vantagem para <b>ASSINATURA</b>. Seu patrimônio final será <span class="text-green-400 font-bold">${fmt(dif)}</span> maior. Isso equivale a uma economia invisível de <b>${fmt(dif/meses)} por mês</b>.`;
+                texto.innerHTML = `Veredito: <b>ASSINATURA</b> vence. Seu patrimônio final será <span class="text-green-400 font-bold">${fmt(dif)}</span> maior, já descontando 15% de IR sobre o lucro.`;
             } else {
                 document.getElementById('resCardA').className = "glass-card p-6 flex flex-col items-center winner-card";
                 document.getElementById('resCardB').className = "glass-card p-6 flex flex-col items-center loser-card";
-                texto.innerHTML = `Vantagem para <b>FINANCIAMENTO/COMPRA</b>. O valor de revenda do carro supera o rendimento do banco em <span class="text-red-400 font-bold">${fmt(dif)}</span> neste período.`;
+                texto.innerHTML = `Veredito: <b>CARRO PRÓPRIO</b> vence. O valor residual de venda supera o rendimento do banco em <span class="text-red-400 font-bold">${fmt(dif)}</span>.`;
             }
 
             if (chart) chart.destroy();
@@ -274,7 +278,7 @@
                     labels: Array.from({length: meses + 1}, (_, i) => i),
                     datasets: [
                         { label: 'Líquido Carro', data: pFinanc, borderColor: '#ef4444', borderWidth: 2, pointRadius: 0, fill: false },
-                        { label: 'Investimento Assinatura', data: pAssin, borderColor: '#00ff88', borderWidth: 4, pointRadius: 0, fill: false }
+                        { label: 'Investimento (Líquido)', data: pAssin, borderColor: '#00ff88', borderWidth: 4, pointRadius: 0, fill: false }
                     ]
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { color: '#8b949e', callback: (v) => 'R$ ' + v.toLocaleString('pt-BR') } }, x: { ticks: { color: '#8b949e' } } } }
