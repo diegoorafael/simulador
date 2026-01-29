@@ -11,27 +11,27 @@
         :root { --brand: #00ff88; --bg: #000000; --card: #0a0a0a; --danger: #ff4444; }
         body { background-color: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
         
-        .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; transition: 0.4s; }
         
-        .result-card { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 150px; padding: 24px; border: 1px solid rgba(255,255,255,0.03); }
+        /* Centralização dos Números nos Quadrados */
+        .result-card { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 160px; padding: 24px; border: 1px solid rgba(255,255,255,0.03); }
         
         .input-luxury { background: #111; border: 1px solid #222; color: #fff; padding: 14px; border-radius: 16px; width: 100%; outline: none; transition: 0.3s; font-size: 0.95rem; text-align: center; font-weight: 600; }
-        .input-luxury:focus { border-color: var(--brand); box-shadow: 0 0 20px rgba(0, 255, 136, 0.15); background: #151515; }
+        .input-luxury:focus { border-color: var(--brand); box-shadow: 0 0 20px rgba(0, 255, 136, 0.15); }
         
-        .label-luxury { font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 2.5px; font-weight: 800; margin-bottom: 10px; display: block; text-align: center; }
+        .label-luxury { font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; margin-bottom: 8px; display: block; text-align: center; }
         
         .btn-luxury { background: #fff; color: #000; font-weight: 800; padding: 16px; border-radius: 18px; font-size: 0.8rem; transition: 0.3s; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; }
         .btn-luxury:hover { background: var(--brand); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 255, 136, 0.2); }
         
-        .section-tag { font-size: 0.65rem; font-weight: 900; letter-spacing: 3px; color: var(--brand); text-transform: uppercase; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
-        .section-tag::after { content: ''; h-px; background: rgba(0, 255, 136, 0.2); flex-grow: 1; }
+        .section-tag { font-size: 0.7rem; font-weight: 900; letter-spacing: 3px; color: var(--brand); text-transform: uppercase; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+        .section-tag::after { content: ''; height: 1px; background: rgba(0, 255, 136, 0.2); flex-grow: 1; }
         
-        .winner-highlight { border: 2px solid var(--brand) !important; background: linear-gradient(180deg, rgba(0, 255, 136, 0.05) 0%, transparent 100%) !important; transform: scale(1.03); box-shadow: 0 20px 40px rgba(0, 255, 136, 0.1); }
-        .loser-dim { opacity: 0.35; filter: grayscale(0.8); }
-        .text-neon { color: var(--brand); text-shadow: 0 0 10px rgba(0, 255, 136, 0.5); }
+        .winner-highlight { border: 2px solid var(--brand) !important; background: linear-gradient(180deg, rgba(0, 255, 136, 0.08) 0%, transparent 100%) !important; transform: scale(1.03); box-shadow: 0 20px 40px rgba(0, 255, 136, 0.15); }
+        .loser-dim { opacity: 0.3; filter: grayscale(1); }
+        .text-neon { color: var(--brand); text-shadow: 0 0 15px rgba(0, 255, 136, 0.4); }
         
-        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #fff; color: #000; padding: 16px 32px; border-radius: 100px; font-weight: 800; font-size: 0.85rem; z-index: 100; box-shadow: 0 15px 45px rgba(0,0,0,0.7); transition: 0.3s; }
-        .whatsapp-float:hover { transform: scale(1.05); background: var(--brand); }
+        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #fff; color: #000; padding: 16px 32px; border-radius: 100px; font-weight: 800; font-size: 0.85rem; z-index: 100; box-shadow: 0 15px 45px rgba(0,0,0,0.7); }
     </style>
 </head>
 <body class="p-4 md:p-12">
@@ -39,9 +39,8 @@
     <a href="https://wa.me/5512983009090" class="whatsapp-float uppercase tracking-widest" target="_blank">Consultoria Private</a>
 
     <header class="max-w-7xl mx-auto mb-20 text-center">
-        <div class="inline-block px-4 py-1 border border-white/10 rounded-full text-[10px] tracking-[0.4em] uppercase text-gray-400 mb-6">Jan 2026 Update</div>
         <h1 class="text-5xl md:text-8xl font-extrabold tracking-tighter uppercase mb-4">Matemática <span class="text-green-500 italic">do Carro</span></h1>
-        <p class="text-gray-500 text-xs md:text-sm font-light tracking-[0.5em] uppercase">Private Asset Management Strategy</p>
+        <p class="text-gray-500 text-xs md:text-sm font-light tracking-[0.5em] uppercase">Private Asset Strategy & Liquidity</p>
     </header>
 
     <main class="max-w-7xl mx-auto">
@@ -49,17 +48,17 @@
         <section class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
             <div class="glass p-10 text-center">
                 <h3 class="text-2xl font-black uppercase italic mb-2">Polo Highline</h3>
-                <p class="text-[10px] text-gray-500 mb-8 tracking-[0.3em]">Hatch Premium</p>
+                <p class="text-[10px] text-gray-500 mb-8 tracking-[0.3em]">Hatch Premium (R$ 108k)</p>
                 <button onclick="setCarro('polo')" class="btn-luxury w-full">Analisar Polo</button>
             </div>
             <div class="glass p-10 text-center">
                 <h3 class="text-2xl font-black uppercase italic mb-2 text-green-400">T-Cross Highline</h3>
-                <p class="text-[10px] text-gray-500 mb-8 tracking-[0.3em]">SUV Executivo</p>
+                <p class="text-[10px] text-gray-500 mb-8 tracking-[0.3em]">SUV Executivo (R$ 171k)</p>
                 <button onclick="setCarro('tcross')" class="btn-luxury w-full">Analisar T-Cross</button>
             </div>
             <div class="glass p-10 text-center">
                 <h3 class="text-2xl font-black uppercase italic mb-2">BMW 320i M Sport</h3>
-                <p class="text-[10px] text-gray-500 mb-8 tracking-[0.3em]">Status & Performance</p>
+                <p class="text-[10px] text-gray-500 mb-8 tracking-[0.3em]">Status & Performance (R$ 360k)</p>
                 <button onclick="setCarro('bmw')" class="btn-luxury w-full">Analisar BMW</button>
             </div>
         </section>
@@ -67,13 +66,13 @@
         <section id="simulador" class="glass p-8 md:p-16 mb-24">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
                 
-                <div class="lg:col-span-5 space-y-14">
+                <div class="lg:col-span-5 space-y-12">
                     
                     <div>
-                        <div class="section-tag">01. Ativo Imobilizado</div>
-                        <div class="grid grid-cols-2 gap-6">
+                        <div class="section-tag">01. Dados do Veículo</div>
+                        <div class="grid grid-cols-2 gap-6 text-center">
                             <div class="col-span-2">
-                                <label class="label-luxury">Valor FIPE do Veículo</label>
+                                <label class="label-luxury">Valor FIPE do Ativo</label>
                                 <input type="text" id="vCarroDisp" class="input-luxury" value="R$ 100.000,00" oninput="mask(this, 'vCarro')">
                                 <input type="hidden" id="vCarro" value="100000">
                             </div>
@@ -84,4 +83,189 @@
                             </div>
                             <div>
                                 <label class="label-luxury">Depreciação (% AA)</label>
-                                <input type="number" id="pDepAnual" class="input-luxury" value="12.0"
+                                <input type="number" id="pDepAnual" class="input-luxury" value="12.0" oninput="calcular()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="section-tag">02. Indicadores Macro</div>
+                        <div class="grid grid-cols-2 gap-6 text-center">
+                            <div><label class="label-luxury">Taxa Selic (% AA)</label><input type="number" id="tSelicAnual" class="input-luxury !text-cyan-400" value="12.75" oninput="calcular()"></div>
+                            <div><label class="label-luxury">Inflação IPCA (% AA)</label><input type="number" id="tInflacaoAnual" class="input-luxury" value="4.50" oninput="calcular()"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="section-tag">03. Custos de Fluxo</div>
+                        <div class="grid grid-cols-2 gap-6 text-center">
+                            <div><label class="label-luxury">Juros Banco (% AM)</label><input type="number" id="tJurosMensal" class="input-luxury" value="1.60" oninput="calcular()"></div>
+                            <div><label class="label-luxury">IPVA/Seg/Manut (% AA)</label><input type="number" id="pCustosAnuais" class="input-luxury" value="10.5" oninput="calcular()"></div>
+                            <div><label class="label-luxury">Prazo (Meses)</label><input type="number" id="vPrazo" class="input-luxury" value="48" oninput="calcular()"></div>
+                            <div class="bg-green-500/5 p-4 rounded-2xl border border-green-500/10">
+                                <label class="label-luxury text-green-500">Assinatura Mensal</label>
+                                <input type="text" id="vAssinaturaDisp" class="input-luxury !border-green-500/30 !text-lg font-bold" value="R$ 2.450,00" oninput="mask(this, 'vAssinatura')">
+                                <input type="hidden" id="vAssinatura" value="2450">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 space-y-10">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="glass border-l-4 border-red-600 result-card">
+                            <p class="label-luxury text-red-500">Saída Mensal (Propriedade)</p>
+                            <p id="outTotalA" class="text-4xl font-extrabold mb-2 tracking-tighter">R$ 0,00</p>
+                            <p class="text-[10px] text-gray-600 uppercase font-bold">Parcela + Gastos Ocultos</p>
+                        </div>
+                        <div id="reinvestCard" class="glass border-l-4 border-green-500 bg-green-500/5 result-card">
+                            <p class="label-luxury text-green-500 font-black">Capital Reinvestido</p>
+                            <p id="outAporte" class="text-4xl font-extrabold mb-2 text-green-400 tracking-tighter">R$ 0,00</p>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">Diferencial de Liquidez</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6">
+                        <div id="resCardA" class="glass result-card">
+                            <p class="label-luxury">Valor Residual do Bem</p>
+                            <p id="resFinalFinanc" class="text-2xl font-bold">R$ 0,00</p>
+                        </div>
+                        <div id="resCardB" class="glass result-card">
+                            <p class="label-luxury text-green-500 font-black">Patrimônio Líquido Final</p>
+                            <p id="resFinalAssin" class="text-3xl font-black text-green-400">R$ 0,00</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#050505] p-8 rounded-[32px] border border-white/5 h-[400px] relative">
+                        <canvas id="meuGrafico"></canvas>
+                    </div>
+
+                    <div id="painelVeredito" class="bg-white/[0.02] p-8 rounded-3xl text-center border border-white/5 flex flex-col gap-2">
+                        <span class="text-gray-600 text-[10px] uppercase font-bold tracking-[0.4em]">Strategic Conclusion</span>
+                        <span id="textoVeredito" class="text-xl font-black tracking-tight uppercase"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let chart;
+        const fmt = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        function mask(i, id) {
+            let v = i.value.replace(/\D/g, "");
+            v = (v / 100).toFixed(2);
+            let p = v.split(".");
+            p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            i.value = "R$ " + p[0] + "," + p[1];
+            document.getElementById(id).value = v;
+            calcular();
+        }
+
+        function setCarro(modelo) {
+            const el = document.getElementById('simulador');
+            if (modelo === 'polo') {
+                updateField('vCarro', 108350, 'vCarroDisp');
+                updateField('vEntrada', 45000, 'vEntradaDisp');
+                document.getElementById('pDepAnual').value = "12.0";
+                updateField('vAssinatura', 2450, 'vAssinaturaDisp');
+                document.getElementById('pCustosAnuais').value = "10.5";
+            } else if (modelo === 'tcross') {
+                updateField('vCarro', 171400, 'vCarroDisp');
+                updateField('vEntrada', 60000, 'vEntradaDisp');
+                document.getElementById('pDepAnual').value = "12.0";
+                updateField('vAssinatura', 3850, 'vAssinaturaDisp');
+                document.getElementById('pCustosAnuais').value = "10.5";
+            } else if (modelo === 'bmw') {
+                updateField('vCarro', 360000, 'vCarroDisp');
+                updateField('vEntrada', 150000, 'vEntradaDisp');
+                document.getElementById('pDepAnual').value = "18.0";
+                updateField('vAssinatura', 9100, 'vAssinaturaDisp');
+                document.getElementById('pCustosAnuais').value = "14.5";
+            }
+            window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' });
+            calcular();
+        }
+
+        function updateField(id, val, disp) {
+            document.getElementById(id).value = val;
+            document.getElementById(disp).value = fmt(val);
+        }
+
+        function calcular() {
+            const vC = parseFloat(document.getElementById('vCarro').value) || 0;
+            const vE = parseFloat(document.getElementById('vEntrada').value) || 0;
+            const vA = parseFloat(document.getElementById('vAssinatura').value) || 0;
+            const vP = parseInt(document.getElementById('vPrazo').value) || 48;
+            const tS = parseFloat(document.getElementById('tSelicAnual').value) || 0;
+            const pD = parseFloat(document.getElementById('pDepAnual').value) || 0;
+            const pC = parseFloat(document.getElementById('pCustosAnuais').value) || 0;
+            const tI = parseFloat(document.getElementById('tInflacaoAnual').value) || 0;
+            const tJ = (parseFloat(document.getElementById('tJurosMensal').value) / 100) || 0;
+
+            const selicLiqM = (Math.pow(1 + ((tS * 0.85)/100), 1/12) - 1);
+            const depM = 1 - Math.pow(1 - (pD/100), 1/12);
+            const infM = (Math.pow(1 + (tI/100), 1/12) - 1);
+            const custosM = (vC * (pC/100)) / 12;
+
+            const vFin = vC - vE;
+            const pmt = vFin > 0 ? (vFin * tJ) / (1 - Math.pow(1 + tJ, -vP)) : 0;
+            const totalA = pmt + custosM;
+            const aporte = totalA - vA;
+
+            document.getElementById('outTotalA').innerText = fmt(totalA);
+            document.getElementById('outAporte').innerText = fmt(aporte);
+
+            let sD = vFin, pF = [], pAs = [], sInv = vE;
+            for(let m=0; m<=vP; m++) {
+                let vCH = vC * Math.pow((1 - depM + infM), m);
+                if (m > 0) { sD -= (pmt - (sD * tJ)); sInv = (sInv + aporte) * (1 + selicLiqM); }
+                pF.push(Math.max(0, vCH - Math.max(0, sD))); pAs.push(sInv);
+            }
+
+            const rF = pF[vP], rA = pAs[vP];
+            document.getElementById('resFinalFinanc').innerText = fmt(rF);
+            document.getElementById('resFinalAssin').innerText = fmt(rA);
+            
+            const cardB = document.getElementById('resCardB');
+            const cardA = document.getElementById('resCardA');
+            const cardRe = document.getElementById('reinvestCard');
+            const veredito = document.getElementById('textoVeredito');
+            
+            if (rA > rF) {
+                cardB.classList.add('winner-highlight'); cardA.classList.add('loser-dim');
+                cardRe.classList.add('winner-highlight');
+                veredito.innerHTML = `<span class="text-neon">Assinatura Vence: + ${fmt(rA - rF)}</span>`;
+            } else {
+                cardA.classList.add('winner-highlight'); cardB.classList.add('loser-dim');
+                cardRe.classList.remove('winner-highlight');
+                veredito.innerHTML = `Propriedade Vence: + ${fmt(rF - rA)}`;
+            }
+
+            if (chart) chart.destroy();
+            const ctx = document.getElementById('meuGrafico').getContext('2d');
+            const gradVerde = ctx.createLinearGradient(0, 0, 0, 400);
+            gradVerde.addColorStop(0, 'rgba(0, 255, 136, 0.15)');
+            gradVerde.addColorStop(1, 'transparent');
+            const gradVermelho = ctx.createLinearGradient(0, 0, 0, 400);
+            gradVermelho.addColorStop(0, 'rgba(255, 68, 68, 0.05)');
+            gradVermelho.addColorStop(1, 'transparent');
+
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: vP + 1}, (_, i) => i),
+                    datasets: [
+                        { label: 'Propriedade', data: pF, borderColor: '#ff4444', borderWidth: 2, pointRadius: 0, fill: true, backgroundColor: gradVermelho, borderDash: [6, 4] },
+                        { label: 'Assinatura', data: pAs, borderColor: '#00ff88', borderWidth: 4, pointRadius: 0, fill: true, backgroundColor: gradVerde }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#222', font: { size: 10 } } } } }
+            });
+        }
+        window.onload = calcular;
+    </script>
+</body>
+</html>
