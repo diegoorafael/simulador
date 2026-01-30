@@ -3,106 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Consultoria Financeira Automotiva | Private Strategy</title>
+    <title>Consultoria Private Strategy | Matemática do Carro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --brand: #00ff88; --bg: #000000; --card: #0a0a0a; }
-        body { background-color: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
-        
-        .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; transition: 0.4s; position: relative; }
-        .flex-center { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; width: 100%; }
-        
-        /* Ajuste de Inputs - Fonte menor no mobile para não quebrar */
-        .input-luxury { 
-            background: #111; border: 1px solid #222; color: #fff; 
-            padding: 10px 4px; border-radius: 12px; width: 100%; 
-            outline: none; transition: 0.3s; font-size: 0.85rem; 
-            text-align: center; font-weight: 600; line-height: 1;
+        body { background-color: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; }
+        .input-luxury {
+            background: #111; border: 1px solid #222; color: #fff;
+            padding: 10px; border-radius: 12px; width: 100%;
+            outline: none; transition: 0.3s; font-size: 0.85rem; text-align: center;
         }
-
-        /* Tooltip adaptado para touch */
-        .info-group { position: relative; width: 100%; }
-        .tooltip-text {
-            visibility: hidden; position: absolute; z-index: 100; bottom: 105%; left: 50%;
-            transform: translateX(-50%); background: #000; color: #fff;
-            padding: 10px; border-radius: 10px; font-size: 0.6rem; width: 160px;
-            border: 1px solid var(--brand); box-shadow: 0 5px 15px rgba(0,0,0,0.9);
-            opacity: 0; transition: 0.2s; pointer-events: none;
-        }
-        .info-group:active .tooltip-text, .info-group:hover .tooltip-text { visibility: visible; opacity: 1; }
-        
-        .label-luxury { font-size: 0.55rem; color: #555; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; margin-bottom: 4px; }
-
-        .btn-luxury { background: #fff; color: #000; font-weight: 800; padding: 12px; border-radius: 12px; font-size: 0.7rem; transition: 0.3s; cursor: pointer; text-transform: uppercase; width: 100%; }
-        
-        /* GRID DE FLUXO - MOBILE FIRST */
-        .fluxo-grid {
-            display: grid;
-            grid-template-columns: 1fr; /* Padrão Mobile: 1 coluna */
-            gap: 10px;
-            width: 100%;
-        }
-        @media (min-width: 768px) {
-            .fluxo-grid { grid-template-columns: repeat(3, 1fr); } /* Desktop: 3 colunas */
-        }
-
-        .fluxo-item { 
-            padding: 15px 10px; border-radius: 16px; 
-            border: 1px solid rgba(255,255,255,0.03); 
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-        }
-        .valor-fluxo { font-size: 1.2rem; font-weight: 900; white-space: nowrap; }
-
-        .section-tag { font-size: 0.65rem; font-weight: 900; letter-spacing: 2px; color: var(--brand); text-transform: uppercase; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; width: 100%; }
+        .input-luxury:focus { border-color: var(--brand); }
+        .label-luxury { font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; margin-bottom: 4px; display: block; }
+        .btn-luxury { background: #fff; color: #000; font-weight: 800; padding: 12px; border-radius: 12px; font-size: 0.7rem; transition: 0.3s; cursor: pointer; text-transform: uppercase; width: 100%; border:none; }
+        .btn-luxury:hover { background: var(--brand); transform: translateY(-2px); }
+        .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; }
+        .section-tag { font-size: 0.65rem; font-weight: 900; color: var(--brand); text-transform: uppercase; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .section-tag::after { content: ''; height: 1px; background: rgba(0, 255, 136, 0.1); flex-grow: 1; }
-        
-        .winner-highlight { border: 2px solid var(--brand) !important; background: rgba(0, 255, 136, 0.05) !important; }
+        .winner-highlight { border: 2px solid var(--brand) !important; background: rgba(0, 255, 136, 0.05) !important; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.01); } 100% { transform: scale(1); } }
+        @media print { .no-print { display: none; } }
     </style>
 </head>
-<body class="p-3 md:p-10">
+<body class="p-4 md:p-10">
 
+<div id="content-to-export">
     <header class="max-w-7xl mx-auto mb-10 text-center">
-        <h1 class="text-3xl md:text-7xl font-extrabold tracking-tighter uppercase">Matemática <span class="text-green-500 italic">do Carro</span></h1>
-        <p class="text-gray-500 text-[10px] uppercase tracking-widest">Consultoria Financeira Automotiva</p>
+        <h1 class="text-3xl md:text-5xl font-extrabold tracking-tighter uppercase">
+            Matemática <span class="text-green-500 italic">do Carro</span>
+        </h1>
+        <p class="text-gray-500 text-[10px] uppercase tracking-widest mt-2">Private Strategy • Relatório de Auditoria Patrimonial</p>
     </header>
 
     <main class="max-w-7xl mx-auto">
-        
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-            <div class="glass p-5 flex-center border-b-2 border-white/5">
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10 no-print">
+            <div class="glass p-5 flex flex-col items-center">
                 <h3 class="text-lg font-black uppercase mb-3 italic">Polo Highline</h3>
-                <button onclick="setCarro('polo')" class="btn-luxury">Auditar</button>
+                <button onclick="setCarro('polo')" class="btn-luxury">Selecionar</button>
             </div>
-            <div class="glass p-5 flex-center border-b-2 border-green-500/30">
+            <div class="glass p-5 flex flex-col items-center border-b-2 border-green-500/30">
                 <h3 class="text-lg font-black uppercase mb-3 italic text-green-400">T-Cross Highline</h3>
-                <button onclick="setCarro('tcross')" class="btn-luxury">Auditar</button>
+                <button onclick="setCarro('tcross')" class="btn-luxury">Selecionar</button>
             </div>
-            <div class="glass p-5 flex-center border-b-2 border-white/5">
+            <div class="glass p-5 flex flex-col items-center">
                 <h3 class="text-lg font-black uppercase mb-3 italic">BMW 320i M Sport</h3>
-                <button onclick="setCarro('bmw')" class="btn-luxury">Auditar</button>
+                <button onclick="setCarro('bmw')" class="btn-luxury">Selecionar</button>
             </div>
         </section>
 
-        <section id="simulador" class="glass p-4 md:p-12 mb-10">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16">
+        <section class="glass p-6 md:p-12 mb-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 
-                <div class="lg:col-span-4 space-y-8">
+                <div class="lg:col-span-4 space-y-6 no-print">
                     <div>
-                        <div class="section-tag">01. O Bem</div>
+                        <div class="section-tag">Dados do Veículo</div>
                         <div class="grid grid-cols-2 gap-3">
-                            <div class="col-span-2 info-group">
-                                <label class="label-luxury">Valor FIPE</label>
+                            <div class="col-span-2">
+                                <label class="label-luxury">Valor do Carro</label>
                                 <input type="text" id="vCarroDisp" class="input-luxury" value="R$ 100.000,00" oninput="mask(this, 'vCarro')">
                                 <input type="hidden" id="vCarro" value="100000">
                             </div>
-                            <div class="info-group">
+                            <div>
                                 <label class="label-luxury">Entrada</label>
                                 <input type="text" id="vEntradaDisp" class="input-luxury" value="R$ 40.000,00" oninput="mask(this, 'vEntrada')">
                                 <input type="hidden" id="vEntrada" value="40000">
                             </div>
-                            <div class="info-group">
+                            <div>
                                 <label class="label-luxury">Deprec. % AA</label>
                                 <input type="number" id="pDepAnual" class="input-luxury" value="12.0" oninput="calcular()">
                             </div>
@@ -110,180 +80,156 @@
                     </div>
 
                     <div>
-                        <div class="section-tag">02. Economia</div>
+                        <div class="section-tag">Configuração de Fluxo</div>
                         <div class="grid grid-cols-2 gap-3">
-                            <div class="info-group">
-                                <label class="label-luxury">Selic %</label>
-                                <input type="number" id="tSelicAnual" class="input-luxury !text-cyan-400" value="12.75" oninput="calcular()">
-                            </div>
-                            <div class="info-group">
-                                <label class="label-luxury">IPCA %</label>
-                                <input type="number" id="tInflacaoAnual" class="input-luxury" value="4.50" oninput="calcular()">
+                            <div><label class="label-luxury">Meses</label><input type="number" id="vPrazo" class="input-luxury" value="48" oninput="calcular()"></div>
+                            <div><label class="label-luxury">Juros % AM</label><input type="number" id="tJurosMensal" class="input-luxury" value="1.60" oninput="calcular()"></div>
+                            <div class="col-span-2"><label class="label-luxury">Assinatura Mensal</label>
+                                <input type="text" id="vAssinaturaDisp" class="input-luxury !text-green-400 font-bold" value="R$ 2.450,00" oninput="mask(this, 'vAssinatura')">
+                                <input type="hidden" id="vAssinatura" value="2450">
                             </div>
                         </div>
                     </div>
-
-                    <div>
-                        <div class="section-tag">03. Custos</div>
-                        <div class="grid grid-cols-3 gap-2">
-                            <div class="info-group">
-                                <label class="label-luxury">Meses</label>
-                                <input type="number" id="vPrazo" class="input-luxury" value="48" oninput="calcular()">
-                            </div>
-                            <div class="info-group">
-                                <label class="label-luxury">Juros %</label>
-                                <input type="number" id="tJurosMensal" class="input-luxury" value="1.60" oninput="calcular()">
-                            </div>
-                            <div class="info-group">
-                                <label class="label-luxury">Taxas %</label>
-                                <input type="number" id="pCustosAnuais" class="input-luxury" value="10.5" oninput="calcular()">
-                            </div>
-                        </div>
-                    </div>
+                    
+                    <button onclick="gerarPDF()" class="btn-luxury bg-green-500 text-black">Gerar Proposta PDF</button>
                 </div>
 
                 <div class="lg:col-span-8 space-y-6">
-                    
-                    <div class="glass p-4 border-t-2 border-brand/20">
-                        <div class="section-tag">Fluxo de Caixa Mensal</div>
-                        <div class="fluxo-grid">
-                            <div class="fluxo-item border-red-500/10">
-                                <p class="label-luxury text-red-500">Custo Próprio</p>
-                                <p id="outTotalA" class="valor-fluxo">R$ 0,00</p>
-                            </div>
-                            <div class="fluxo-item bg-green-500/5 border-green-500/20">
-                                <p class="label-luxury text-green-500">Assinatura</p>
-                                <input type="text" id="vAssinaturaDisp" class="bg-transparent text-white valor-fluxo text-center outline-none w-full font-black" value="R$ 2.450,00" oninput="mask(this, 'vAssinatura')">
-                                <input type="hidden" id="vAssinatura" value="2450">
-                            </div>
-                            <div class="fluxo-item border-brand/10">
-                                <p class="label-luxury text-brand">Sobra Mensal</p>
-                                <p id="outAporte" class="valor-fluxo text-brand">R$ 0,00</p>
-                            </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div id="resCardA" class="glass p-6 text-center">
+                            <p class="label-luxury">Patrimônio Carro (Final)</p>
+                            <p id="resFinalFinanc" class="text-2xl font-bold">R$ 0,00</p>
+                        </div>
+                        <div id="resCardB" class="glass p-6 text-center">
+                            <p class="label-luxury text-green-500">Patrimônio Banco (Final)</p>
+                            <p id="resFinalAssin" class="text-3xl font-black text-green-400">R$ 0,00</p>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <div id="resCardA" class="glass p-5 flex-center">
-                            <p class="label-luxury">Venda do Carro</p>
-                            <p id="resFinalFinanc" class="text-xl font-bold">R$ 0,00</p>
-                        </div>
-                        <div id="resCardB" class="glass p-5 flex-center transition-all">
-                            <p class="label-luxury text-green-500 font-black">Patrimônio no Banco</p>
-                            <p id="resFinalAssin" class="text-2xl font-black text-green-400">R$ 0,00</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-black p-2 rounded-2xl border border-white/5 h-[280px] md:h-[350px]">
+                    <div class="bg-black/40 p-4 rounded-2xl border border-white/5 h-[300px]">
                         <canvas id="meuGrafico"></canvas>
                     </div>
 
-                    <div id="painelVeredito" class="bg-white/5 p-4 rounded-xl text-center">
-                        <span id="textoVeredito" class="text-sm font-black uppercase text-green-500 tracking-tighter"></span>
+                    <div id="painelVeredito" class="bg-brand/10 p-5 rounded-xl text-center border border-brand/20">
+                        <h2 id="textoVeredito" class="text-lg font-black uppercase text-brand tracking-tighter"></h2>
+                        <p class="text-[10px] text-gray-400 mt-1 uppercase">Cálculo baseado em custo de oportunidade e valor residual inflacionado.</p>
                     </div>
                 </div>
             </div>
         </section>
     </main>
+</div>
 
-    <script>
-        let chart;
-        const fmt = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+<script>
+    let chart;
+    const fmt = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-        function mask(i, id) {
-            let v = i.value.replace(/\D/g, "");
-            v = (v / 100).toFixed(2);
-            let p = v.split(".");
-            p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-            i.value = "R$ " + p[0] + "," + p[1];
-            document.getElementById(id).value = v;
-            calcular();
+    function mask(i, id) {
+        let v = i.value.replace(/\D/g, "");
+        v = (v / 100).toFixed(2);
+        let p = v.split(".");
+        p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        i.value = "R$ " + p[0] + "," + p[1];
+        document.getElementById(id).value = v;
+        calcular();
+    }
+
+    function setCarro(modelo) {
+        if (modelo === 'polo') {
+            updateField('vCarro', 108000, 'vCarroDisp'); updateField('vEntrada', 30000, 'vEntradaDisp');
+            updateField('vAssinatura', 2300, 'vAssinaturaDisp');
+        } else if (modelo === 'tcross') {
+            updateField('vCarro', 175000, 'vCarroDisp'); updateField('vEntrada', 50000, 'vEntradaDisp');
+            updateField('vAssinatura', 3600, 'vAssinaturaDisp');
+        } else if (modelo === 'bmw') {
+            updateField('vCarro', 355000, 'vCarroDisp'); updateField('vEntrada', 120000, 'vEntradaDisp');
+            updateField('vAssinatura', 8900, 'vAssinaturaDisp');
         }
+        calcular();
+    }
 
-        function setCarro(modelo) {
-            if (modelo === 'polo') {
-                updateField('vCarro', 108350, 'vCarroDisp'); updateField('vEntrada', 45000, 'vEntradaDisp');
-                document.getElementById('pDepAnual').value = "12.0"; updateField('vAssinatura', 2450, 'vAssinaturaDisp');
-            } else if (modelo === 'tcross') {
-                updateField('vCarro', 171400, 'vCarroDisp'); updateField('vEntrada', 60000, 'vEntradaDisp');
-                document.getElementById('pDepAnual').value = "12.0"; updateField('vAssinatura', 3850, 'vAssinaturaDisp');
-            } else if (modelo === 'bmw') {
-                updateField('vCarro', 360000, 'vCarroDisp'); updateField('vEntrada', 150000, 'vEntradaDisp');
-                document.getElementById('pDepAnual').value = "18.0"; updateField('vAssinatura', 9100, 'vAssinaturaDisp');
+    function updateField(id, val, disp) {
+        document.getElementById(id).value = val;
+        document.getElementById(disp).value = fmt(val);
+    }
+
+    function calcular() {
+        const vC = parseFloat(document.getElementById('vCarro').value) || 0;
+        const vE = parseFloat(document.getElementById('vEntrada').value) || 0;
+        const vA = parseFloat(document.getElementById('vAssinatura').value) || 0;
+        const vP = parseInt(document.getElementById('vPrazo').value) || 1;
+        const tS = 12.75; // Fixos para o relatório ou vincular a inputs
+        const pD = parseFloat(document.getElementById('pDepAnual').value) || 12;
+        const tJ = (parseFloat(document.getElementById('tJurosMensal').value) / 100) || 0;
+
+        const selicLiqM = (Math.pow(1 + ((tS * 0.85)/100), 1/12) - 1);
+        const depM = 1 - Math.pow(1 - (pD/100), 1/12);
+        
+        const vFin = Math.max(0, vC - vE);
+        const pmt = vFin > 0 ? (vFin * tJ) / (1 - Math.pow(1 + tJ, -vP)) : 0;
+        const custosExtrasM = (vC * 0.10) / 12; // IPVA + Seguro + Revisão (10% ao ano)
+        
+        const totalMensalCompra = pmt + custosExtrasM;
+        const aporteMensal = Math.max(0, totalMensalCompra - vA);
+
+        let pF = [], pAs = [], sInv = vE, sD = vFin;
+        
+        for(let m=0; m<=vP; m++) {
+            let vCH = vC * Math.pow((1 - depM + 0.0035), m); // +0.35% inflação mensal
+            if (m > 0) {
+                sD = Math.max(0, sD - (pmt - (sD * tJ)));
+                sInv = (sInv + aporteMensal) * (1 + selicLiqM);
             }
-            calcular();
+            pF.push(Math.max(0, vCH - sD));
+            pAs.push(sInv);
         }
 
-        function updateField(id, val, disp) {
-            document.getElementById(id).value = val;
-            document.getElementById(disp).value = fmt(val);
+        document.getElementById('resFinalFinanc').innerText = fmt(pF[vP]);
+        document.getElementById('resFinalAssin').innerText = fmt(pAs[vP]);
+
+        const veredito = document.getElementById('textoVeredito');
+        if (pAs[vP] > pF[vP]) {
+            document.getElementById('resCardB').classList.add('winner-highlight');
+            document.getElementById('resCardA').classList.remove('winner-highlight');
+            veredito.innerHTML = `Estratégia Vencedora: ASSINATURA (+ ${fmt(pAs[vP] - pF[vP])})`;
+        } else {
+            document.getElementById('resCardA').classList.add('winner-highlight');
+            document.getElementById('resCardB').classList.remove('winner-highlight');
+            veredito.innerHTML = `Estratégia Vencedora: COMPRA (+ ${fmt(pF[vP] - pAs[vP])})`;
         }
 
-        function calcular() {
-            const vC = parseFloat(document.getElementById('vCarro').value) || 0;
-            const vE = parseFloat(document.getElementById('vEntrada').value) || 0;
-            const vA = parseFloat(document.getElementById('vAssinatura').value) || 0;
-            const vP = parseInt(document.getElementById('vPrazo').value) || 48;
-            const tS = parseFloat(document.getElementById('tSelicAnual').value) || 0;
-            const pD = parseFloat(document.getElementById('pDepAnual').value) || 0;
-            const pC = parseFloat(document.getElementById('pCustosAnuais').value) || 0;
-            const tI = parseFloat(document.getElementById('tInflacaoAnual').value) || 0;
-            const tJ = (parseFloat(document.getElementById('tJurosMensal').value) / 100) || 0;
+        updateChart(pF, pAs, vP);
+    }
 
-            const selicLiqM = (Math.pow(1 + ((tS * 0.85)/100), 1/12) - 1);
-            const depM = 1 - Math.pow(1 - (pD/100), 1/12);
-            const infM = (Math.pow(1 + (tI/100), 1/12) - 1);
-            const custosM = (vC * (pC/100)) / 12;
+    function updateChart(pF, pAs, vP) {
+        if (chart) chart.destroy();
+        const ctx = document.getElementById('meuGrafico').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: vP + 1}, (_, i) => i + 'm'),
+                datasets: [
+                    { label: 'Carro', data: pF, borderColor: '#ff4444', borderWidth: 2, pointRadius: 0 },
+                    { label: 'Banco', data: pAs, borderColor: '#00ff88', borderWidth: 2, pointRadius: 0 }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+    }
 
-            const vFin = vC - vE;
-            const pmt = vFin > 0 ? (vFin * tJ) / (1 - Math.pow(1 + tJ, -vP)) : 0;
-            const totalA = pmt + custosM;
-            const aporte = totalA - vA;
+    function gerarPDF() {
+        const element = document.getElementById('content-to-export');
+        const opt = {
+            margin: 0.5,
+            filename: 'Auditoria_Financeira_Automotiva.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, backgroundColor: '#000000' },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    }
 
-            document.getElementById('outTotalA').innerText = fmt(totalA);
-            document.getElementById('outAporte').innerText = fmt(aporte);
-
-            let pF = [], pAs = [], sInv = vE, sD = vFin;
-            for(let m=0; m<=vP; m++) {
-                let vCH = vC * Math.pow((1 - depM + infM), m);
-                if (m > 0) { sD -= (pmt - (sD * tJ)); sInv = (sInv + aporte) * (1 + selicLiqM); }
-                pF.push(Math.max(0, vCH - Math.max(0, sD))); pAs.push(sInv);
-            }
-
-            document.getElementById('resFinalFinanc').innerText = fmt(pF[vP]);
-            document.getElementById('resFinalAssin').innerText = fmt(pAs[vP]);
-            
-            const cardB = document.getElementById('resCardB'), cardA = document.getElementById('resCardA'), veredito = document.getElementById('textoVeredito');
-            cardB.classList.remove('winner-highlight'); cardA.classList.remove('winner-highlight');
-
-            if (pAs[vP] > pF[vP]) {
-                cardB.classList.add('winner-highlight');
-                veredito.innerHTML = `Estratégia Vencedora: Assinatura (+ ${fmt(pAs[vP] - pF[vP])})`;
-            } else {
-                cardA.classList.add('winner-highlight');
-                veredito.innerHTML = `Estratégia Vencedora: Propriedade (+ ${fmt(pF[vP] - pAs[vP])})`;
-            }
-
-            if (chart) chart.destroy();
-            const ctx = document.getElementById('meuGrafico').getContext('2d');
-            chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: Array.from({length: vP + 1}, (_, i) => i + 'm'),
-                    datasets: [
-                        { label: 'Carro', data: pF, borderColor: '#ff4444', borderWidth: 1, pointRadius: 0, borderDash: [5, 5] },
-                        { label: 'Banco', data: pAs, borderColor: '#00ff88', borderWidth: 3, pointRadius: 0, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.1)' }
-                    ]
-                },
-                options: { 
-                    responsive: true, maintainAspectRatio: false, 
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: { legend: { display: false } },
-                    scales: { y: { display: false }, x: { ticks: { color: '#444', font: { size: 9 } } } } 
-                }
-            });
-        }
-        window.onload = calcular;
-    </script>
+    window.onload = calcular;
+</script>
 </body>
 </html>
