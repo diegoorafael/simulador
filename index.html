@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultoria Financeira Automotiva | Private Strategy</title>
+    <title>Consultoria Financeira Automotiva | Estratégia Private</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.tailwindcss.com/"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;700;800&display=swap" rel="stylesheet">
@@ -11,169 +11,181 @@
         :root { --brand: #00ff88; --bg: #000000; --card: #0a0a0a; }
         body { background-color: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
         
-        .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; transition: 0.4s; }
+        .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; transition: 0.4s; position: relative; }
         .flex-center { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; width: 100%; }
         
-        /* Ajuste de Inputs para evitar cortes */
+        /* Ajuste de Inputs - Impede o corte do zero */
         .input-luxury { 
             background: #111; border: 1px solid #222; color: #fff; 
-            padding: 12px 4px; border-radius: 14px; width: 100%; 
+            padding: 14px 10px; border-radius: 16px; width: 100%; 
             outline: none; transition: 0.3s; font-size: 0.95rem; 
-            text-align: center; font-weight: 600; line-height: 1.2;
+            text-align: center; font-weight: 600; line-height: 1;
         }
-        .input-luxury:focus { border-color: var(--brand); box-shadow: 0 0 15px rgba(0, 255, 136, 0.15); }
+
+        /* Tooltip Estratégico - Texto ao passar o mouse */
+        .info-group { position: relative; cursor: help; width: 100%; }
+        .tooltip-text {
+            visibility: hidden; position: absolute; z-index: 50; bottom: 110%; left: 50%;
+            transform: translateX(-50%); background: #1a1a1a; color: #fff;
+            padding: 10px 14px; border-radius: 12px; font-size: 0.65rem; width: 220px;
+            border: 1px solid var(--brand); box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            text-transform: none; font-weight: 400; opacity: 0; transition: 0.3s;
+        }
+        .info-group:hover .tooltip-text { visibility: visible; opacity: 1; }
         
-        .label-luxury { font-size: 0.6rem; color: #555; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; margin-bottom: 6px; }
-        .desc-luxury { font-size: 0.6rem; color: #333; line-height: 1.2; margin-top: 4px; padding: 0 4px; }
+        .label-luxury { font-size: 0.65rem; color: #555; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; margin-bottom: 8px; }
 
         /* Botões */
-        .btn-luxury { background: #fff; color: #000; font-weight: 800; padding: 14px; border-radius: 18px; font-size: 0.75rem; transition: 0.3s; cursor: pointer; text-transform: uppercase; width: 100%; }
+        .btn-luxury { background: #fff; color: #000; font-weight: 800; padding: 16px; border-radius: 18px; font-size: 0.8rem; transition: 0.3s; cursor: pointer; text-transform: uppercase; width: 100%; }
         .btn-luxury:hover { background: var(--brand); transform: translateY(-2px); }
         
-        /* Layout de Fluxo Mensal Organizado */
-        .fluxo-item { flex: 1; padding: 16px 8px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.03); min-width: 0; }
+        /* Análise de Fluxo Mensal Corrigida */
+        .fluxo-container { display: flex; gap: 12px; width: 100%; align-items: stretch; }
+        .fluxo-item { 
+            flex: 1; min-width: 0; padding: 20px 10px; border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.03); display: flex; 
+            flex-direction: column; justify-content: center; align-items: center;
+        }
         
-        .section-tag { font-size: 0.7rem; font-weight: 900; letter-spacing: 2px; color: var(--brand); text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .section-tag { font-size: 0.75rem; font-weight: 900; letter-spacing: 3px; color: var(--brand); text-transform: uppercase; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; width: 100%; }
         .section-tag::after { content: ''; height: 1px; background: rgba(0, 255, 136, 0.1); flex-grow: 1; }
         
-        .winner-highlight { border: 2px solid var(--brand) !important; background: linear-gradient(180deg, rgba(0, 255, 136, 0.05) 0%, transparent 100%) !important; box-shadow: 0 0 25px rgba(0, 255, 136, 0.1); }
+        .winner-highlight { border: 2px solid var(--brand) !important; background: linear-gradient(180deg, rgba(0, 255, 136, 0.08) 0%, transparent 100%) !important; box-shadow: 0 0 30px rgba(0, 255, 136, 0.1); }
         .loser-dim { opacity: 0.3; filter: grayscale(1); }
     </style>
 </head>
 <body class="p-4 md:p-12">
 
-    <header class="max-w-7xl mx-auto mb-16 text-center">
-        <h1 class="text-4xl md:text-7xl font-extrabold tracking-tighter uppercase mb-2">Matemática <span class="text-green-500 italic">do Carro</span></h1>
-        <p class="text-gray-500 text-[10px] md:text-xs font-light tracking-[0.4em] uppercase">Consultoria Financeira Automotiva</p>
+    <header class="max-w-7xl mx-auto mb-20 text-center">
+        <h1 class="text-5xl md:text-8xl font-extrabold tracking-tighter uppercase mb-4">Matemática <span class="text-green-500 italic">do Carro</span></h1>
+        <p class="text-gray-500 text-xs md:text-sm font-light tracking-[0.4em] uppercase italic">Consultoria Financeira Automotiva</p>
     </header>
 
     <main class="max-w-7xl mx-auto">
         
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
-            <div class="glass p-8 flex-center">
-                <h3 class="text-xl font-black italic mb-1 uppercase">Polo Highline</h3>
-                <button onclick="setCarro('polo')" class="btn-luxury">Simular Cenário</button>
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
+            <div class="glass p-10 flex-center">
+                <h3 class="text-2xl font-black italic mb-1 uppercase">Polo Highline</h3>
+                <button onclick="setCarro('polo')" class="btn-luxury">Analisar</button>
             </div>
-            <div class="glass p-8 flex-center border-b-2 border-green-500/30">
-                <h3 class="text-xl font-black italic mb-1 uppercase text-green-400">T-Cross Highline</h3>
-                <button onclick="setCarro('tcross')" class="btn-luxury">Simular Cenário</button>
+            <div class="glass p-10 flex-center border-b-4 border-green-500/30">
+                <h3 class="text-2xl font-black italic mb-1 uppercase text-green-400">T-Cross Highline</h3>
+                <button onclick="setCarro('tcross')" class="btn-luxury">Analisar</button>
             </div>
-            <div class="glass p-8 flex-center">
-                <h3 class="text-xl font-black italic mb-1 uppercase">BMW 320i M Sport</h3>
-                <button onclick="setCarro('bmw')" class="btn-luxury">Simular Cenário</button>
+            <div class="glass p-10 flex-center">
+                <h3 class="text-2xl font-black italic mb-1 uppercase">BMW 320i M Sport</h3>
+                <button onclick="setCarro('bmw')" class="btn-luxury">Analisar</button>
             </div>
         </section>
 
-        <section id="simulador" class="glass p-6 md:p-12 mb-20">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <section id="simulador" class="glass p-8 md:p-16 mb-24">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
                 
-                <div class="lg:col-span-5 space-y-10">
+                <div class="lg:col-span-5 space-y-12">
                     <div>
-                        <div class="section-tag">01. Configuração do Ativo</div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="col-span-2 flex-center">
-                                <label class="label-luxury">Valor FIPE</label>
+                        <div class="section-tag">01. Dados do Bem</div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="col-span-2 info-group">
+                                <label class="label-luxury">Valor FIPE do Veículo</label>
                                 <input type="text" id="vCarroDisp" class="input-luxury" value="R$ 100.000,00" oninput="mask(this, 'vCarro')">
                                 <input type="hidden" id="vCarro" value="100000">
-                                <p class="desc-luxury">Preço de mercado para cálculo de depreciação e taxas.</p>
+                                <span class="tooltip-text">Preço base de mercado para cálculo de depreciação e custos proporcionais.</span>
                             </div>
-                            <div class="flex-center">
-                                <label class="label-luxury">Entrada</label>
+                            <div class="info-group">
+                                <label class="label-luxury">Capital de Entrada</label>
                                 <input type="text" id="vEntradaDisp" class="input-luxury" value="R$ 40.000,00" oninput="mask(this, 'vEntrada')">
                                 <input type="hidden" id="vEntrada" value="40000">
-                                <p class="desc-luxury">Capital imobilizado que deixa de render juros.</p>
+                                <span class="tooltip-text">Capital imobilizado que deixa de render juros em uma aplicação financeira.</span>
                             </div>
-                            <div class="flex-center">
-                                <label class="label-luxury">Depreciação %</label>
+                            <div class="info-group">
+                                <label class="label-luxury">Depreciação % AA</label>
                                 <input type="number" id="pDepAnual" class="input-luxury" value="12.0" oninput="calcular()">
-                                <p class="desc-luxury">Perda anual estimada do valor do veículo.</p>
+                                <span class="tooltip-text">Perda anual estimada do valor do veículo devido ao uso e tempo.</span>
                             </div>
                         </div>
                     </div>
 
                     <div>
-                        <div class="section-tag">02. Mercado Financeiro</div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="flex-center">
-                                <label class="label-luxury">Taxa Selic %</label>
+                        <div class="section-tag">02. Cenário Econômico</div>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="info-group">
+                                <label class="label-luxury">Selic % AA</label>
                                 <input type="number" id="tSelicAnual" class="input-luxury !text-cyan-400" value="12.75" oninput="calcular()">
-                                <p class="desc-luxury">Rentabilidade base para o capital reinvestido.</p>
+                                <span class="tooltip-text">Taxa de rendimento base para o capital que você mantém investido.</span>
                             </div>
-                            <div class="flex-center">
-                                <label class="label-luxury">IPCA %</label>
+                            <div class="info-group">
+                                <label class="label-luxury">IPCA % AA</label>
                                 <input type="number" id="tInflacaoAnual" class="input-luxury" value="4.50" oninput="calcular()">
-                                <p class="desc-luxury">Inflação acumulada que impacta o valor de revenda.</p>
+                                <span class="tooltip-text">Correção monetária que afeta tanto custos quanto o valor de revenda futuro.</span>
                             </div>
                         </div>
                     </div>
 
                     <div>
                         <div class="section-tag">03. Custos de Fluxo</div>
-                        <div class="grid grid-cols-3 gap-3">
-                            <div class="flex-center">
+                        <div class="grid grid-cols-3 gap-4 mb-8">
+                            <div class="info-group">
                                 <label class="label-luxury">Parcelas</label>
                                 <input type="number" id="vPrazo" class="input-luxury" value="48" oninput="calcular()">
-                                <p class="desc-luxury">Período total do planejamento.</p>
+                                <span class="tooltip-text">Duração total da estratégia em meses.</span>
                             </div>
-                            <div class="flex-center">
+                            <div class="info-group">
                                 <label class="label-luxury">Juros % AM</label>
                                 <input type="number" id="tJurosMensal" class="input-luxury" value="1.60" oninput="calcular()">
-                                <p class="desc-luxury">Custo mensal do financiamento bancário.</p>
+                                <span class="tooltip-text">Custo do dinheiro para o financiamento bancário do saldo devedor.</span>
                             </div>
-                            <div class="flex-center">
+                            <div class="info-group">
                                 <label class="label-luxury">Posse % AA</label>
                                 <input type="number" id="pCustosAnuais" class="input-luxury" value="10.5" oninput="calcular()">
-                                <p class="desc-luxury">IPVA, Seguro e Manutenções anuais.</p>
+                                <span class="tooltip-text">Soma de IPVA, Seguro e Manutenções preventivas do veículo.</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="lg:col-span-7 space-y-8">
+                <div class="lg:col-span-7 space-y-10">
                     
-                    <div class="glass p-6 border-t border-brand/20">
+                    <div class="glass p-8 border-t-2 border-brand/20">
                         <div class="section-tag">Análise de Fluxo Mensal</div>
-                        <div class="flex gap-4">
-                            <div class="fluxo-item flex-center border-red-500/20">
+                        <div class="fluxo-container">
+                            <div class="fluxo-item info-group">
                                 <p class="label-luxury text-red-500">Custo Próprio</p>
-                                <p id="outTotalA" class="text-xl md:text-2xl font-black">R$ 0,00</p>
-                                <p class="desc-luxury">Parcela + Gastos de Posse.</p>
+                                <p id="outTotalA" class="text-2xl font-black tracking-tighter">R$ 0,00</p>
+                                <span class="tooltip-text">Soma da parcela do financiamento com os gastos fixos mensais de posse.</span>
                             </div>
-                            <div class="fluxo-item flex-center border-green-500/20 bg-green-500/5">
+                            <div class="fluxo-item bg-green-500/5 info-group">
                                 <p class="label-luxury text-green-500">Assinatura</p>
-                                <div class="w-full">
-                                    <input type="text" id="vAssinaturaDisp" class="bg-transparent text-white text-xl md:text-2xl font-black text-center outline-none w-full" value="R$ 2.450,00" oninput="mask(this, 'vAssinatura')">
-                                    <input type="hidden" id="vAssinatura" value="2450">
-                                </div>
-                                <p class="desc-luxury">Valor fixo da locação mensal.</p>
+                                <input type="text" id="vAssinaturaDisp" class="bg-transparent text-white text-2xl font-black text-center outline-none w-full" value="R$ 2.450,00" oninput="mask(this, 'vAssinatura')">
+                                <input type="hidden" id="vAssinatura" value="2450">
+                                <span class="tooltip-text">Valor fixo da mensalidade da locação com tudo incluso.</span>
                             </div>
-                            <div class="fluxo-item flex-center border-brand/20">
+                            <div class="fluxo-item info-group">
                                 <p class="label-luxury text-brand">Sobra Mensal</p>
-                                <p id="outAporte" class="text-xl md:text-2xl font-black text-brand">R$ 0,00</p>
-                                <p class="desc-luxury">Diferencial de liquidez reinvestido.</p>
+                                <p id="outAporte" class="text-3xl font-black text-brand tracking-tighter">R$ 0,00</p>
+                                <span class="tooltip-text">Diferencial de liquidez que sobra no seu bolso para ser reinvestido mensalmente.</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div id="resCardA" class="glass p-6 flex-center">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div id="resCardA" class="glass p-8 flex-center info-group">
                             <p class="label-luxury">Revenda Líquida</p>
-                            <p id="resFinalFinanc" class="text-lg font-bold">R$ 0,00</p>
-                            <p class="desc-luxury">Valor do carro após depreciação e quitação.</p>
+                            <p id="resFinalFinanc" class="text-2xl font-bold">R$ 0,00</p>
+                            <span class="tooltip-text">Quanto sobra após vender o carro e quitar o saldo devedor do banco.</span>
                         </div>
-                        <div id="resCardB" class="glass p-6 flex-center transition-all">
+                        <div id="resCardB" class="glass p-8 flex-center info-group transition-all">
                             <p class="label-luxury text-green-500 font-black">Patrimônio no Banco</p>
-                            <p id="resFinalAssin" class="text-xl font-black text-green-400">R$ 0,00</p>
-                            <p class="desc-luxury">Capital acumulado (Entrada + Sobra + Juros).</p>
+                            <p id="resFinalAssin" class="text-3xl font-black text-green-400">R$ 0,00</p>
+                            <span class="tooltip-text">Acúmulo total do Capital de Entrada + Sobras Mensais + Juros Compostos.</span>
                         </div>
                     </div>
 
-                    <div class="bg-black p-4 rounded-3xl border border-white/5 h-[350px] flex-center relative">
+                    <div class="bg-[#050505] p-6 rounded-[32px] border border-white/5 h-[400px] flex-center relative">
                         <canvas id="meuGrafico"></canvas>
                     </div>
 
-                    <div id="painelVeredito" class="bg-white/5 p-6 rounded-2xl text-center flex-center">
-                        <span id="textoVeredito" class="text-md font-black uppercase italic tracking-widest"></span>
+                    <div id="painelVeredito" class="bg-white/[0.02] p-8 rounded-2xl text-center border border-white/5 flex-center">
+                        <span id="textoVeredito" class="text-xl font-black uppercase italic tracking-widest text-green-500"></span>
                     </div>
                 </div>
             </div>
@@ -254,27 +266,32 @@
 
             if (rA > rF) {
                 cardB.classList.add('winner-highlight'); cardA.classList.add('loser-dim');
-                veredito.innerHTML = `<span class="text-green-500">Assinatura Vence: + ${fmt(rA - rF)}</span>`;
+                veredito.innerHTML = `Assinatura Vence: + ${fmt(rA - rF)}`;
             } else {
                 cardA.classList.add('winner-highlight'); cardB.classList.add('loser-dim');
-                veredito.innerHTML = `<span class="text-white">Propriedade Vence: + ${fmt(rF - rA)}</span>`;
+                veredito.innerHTML = `Propriedade Vence: + ${fmt(rF - rA)}`;
             }
 
             if (chart) chart.destroy();
             const ctx = document.getElementById('meuGrafico').getContext('2d');
-            const grad = ctx.createLinearGradient(0, 0, 0, 300);
-            grad.addColorStop(0, 'rgba(0, 255, 136, 0.15)'); grad.addColorStop(1, 'transparent');
+            const grad = ctx.createLinearGradient(0, 0, 0, 400);
+            grad.addColorStop(0, 'rgba(0, 255, 136, 0.1)'); grad.addColorStop(1, 'transparent');
 
             chart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: Array.from({length: vP + 1}, (_, i) => i + 'm'),
                     datasets: [
-                        { label: 'Valor do Bem', data: pF, borderColor: '#ff4444', borderWidth: 1, pointRadius: 0, borderDash: [5, 5] },
-                        { label: 'Investimento', data: pAs, borderColor: '#00ff88', borderWidth: 3, pointRadius: 0, fill: true, backgroundColor: grad }
+                        { label: 'Valor Residual', data: pF, borderColor: '#ff4444', borderWidth: 1, pointRadius: 0, borderDash: [5, 5] },
+                        { label: 'Patrimônio no Banco', data: pAs, borderColor: '#00ff88', borderWidth: 4, pointRadius: 0, fill: true, backgroundColor: grad }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#444', font: { size: 9 } } } } }
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { display: false }, tooltip: { backgroundColor: '#000', padding: 12, borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1 } },
+                    scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#444', font: { size: 10, weight: 'bold' } } } } 
+                }
             });
         }
         window.onload = calcular;
