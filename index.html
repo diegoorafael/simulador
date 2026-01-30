@@ -1,326 +1,111 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Private Strategy | Auditoria Automotiva</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root { --brand: #00ff88; --bg: #000; --card: #0a0a0a; }
-        body { background-color: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
-        .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; transition: 0.3s; }
+<section id="resultados-ancora" class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-10">
+    
+    <div class="lg:col-span-4 space-y-6">
         
-        /* Feedback Visual do Carro Selecionado */
-        .car-selected { 
-            border: 2px solid var(--brand) !important; 
-            background: rgba(0, 255, 136, 0.08) !important;
-            transform: scale(1.02);
-            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.1);
-        }
-
-        .input-luxury {
-            background: #111; border: 1px solid #222; color: #fff;
-            padding: 10px; border-radius: 12px; width: 100%;
-            outline: none; transition: 0.3s; font-size: 0.85rem; text-align: center; font-weight: 600;
-        }
-        .input-luxury:focus { border-color: var(--brand); box-shadow: 0 0 10px rgba(0, 255, 136, 0.1); }
-        .label-luxury { font-size: 0.6rem; color: #666; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 800; margin-bottom: 6px; display: block; }
-        .btn-luxury { background: #fff; color: #000; font-weight: 800; padding: 14px; border-radius: 12px; font-size: 0.75rem; transition: 0.3s; cursor: pointer; text-transform: uppercase; width: 100%; border:none; }
-        .btn-luxury:hover { background: var(--brand); transform: translateY(-2px); }
-        
-        .section-tag { font-size: 0.7rem; font-weight: 900; color: var(--brand); text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-        .section-tag::after { content: ''; height: 1px; background: rgba(0, 255, 136, 0.15); flex-grow: 1; }
-        
-        .winner-highlight { border: 2px solid var(--brand) !important; background: rgba(0, 255, 136, 0.05) !important; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.2); } 70% { box-shadow: 0 0 0 15px rgba(0, 255, 136, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); } }
-        
-        .cost-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.8rem; }
-        @media print { .no-print { display: none !important; } }
-    </style>
-</head>
-<body class="p-4 md:p-10">
-
-<div id="content-to-export">
-    <header class="max-w-7xl mx-auto mb-12 text-center">
-        <div class="inline-block px-3 py-1 border border-brand/30 rounded-full text-[10px] text-brand font-bold tracking-[3px] uppercase mb-4">Relatório Confidencial</div>
-        <h1 class="text-4xl md:text-6xl font-extrabold tracking-tighter uppercase mb-2">
-            Matemática <span class="text-green-500 italic">do Carro</span>
-        </h1>
-        <p class="text-gray-500 text-xs uppercase tracking-[4px]">Private Strategy • Auditoria de Capital Automotivo</p>
-    </header>
-
-    <main class="max-w-7xl mx-auto">
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10 no-print">
-            <div id="card-polo" class="glass p-6 flex flex-col items-center cursor-pointer hover:border-white/20" onclick="setCarro('polo')">
-                <span class="text-[10px] text-gray-600 font-bold mb-1">Vantagem em Giro</span>
-                <h3 class="text-xl font-black uppercase italic">Polo Highline</h3>
-            </div>
-            <div id="card-tcross" class="glass p-6 flex flex-col items-center cursor-pointer hover:border-white/20" onclick="setCarro('tcross')">
-                <span class="text-[10px] text-gray-600 font-bold mb-1">Benchmark de Mercado</span>
-                <h3 class="text-xl font-black uppercase italic text-green-400">T-Cross Highline</h3>
-            </div>
-            <div id="card-bmw" class="glass p-6 flex flex-col items-center cursor-pointer hover:border-white/20" onclick="setCarro('bmw')">
-                <span class="text-[10px] text-gray-600 font-bold mb-1">Impacto Patrimonial</span>
-                <h3 class="text-xl font-black uppercase italic">BMW 320i M Sport</h3>
-            </div>
-        </section>
-
-        <section id="resultados-ancora" class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-10">
-            
-            <div class="lg:col-span-4 space-y-6">
-                <div class="glass p-6 no-print">
-                    <div class="section-tag">💎 Configuração do Bem</div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="col-span-2">
-                            <label class="label-luxury">Valor de Aquisição (FIPE)</label>
-                            <input type="text" id="vCarroDisp" class="input-luxury" value="R$ 100.000,00" oninput="mask(this, 'vCarro')">
-                            <input type="hidden" id="vCarro" value="100000">
-                        </div>
-                        <div>
-                            <label class="label-luxury">Aporte Entrada</label>
-                            <input type="text" id="vEntradaDisp" class="input-luxury" value="R$ 40.000,00" oninput="mask(this, 'vEntrada')">
-                            <input type="hidden" id="vEntrada" value="40000">
-                        </div>
-                        <div>
-                            <label class="label-luxury">Deprec. % Anual</label>
-                            <input type="number" id="pDepAnual" class="input-luxury" value="12.0" oninput="calcular()">
-                        </div>
-                    </div>
+        <div class="glass p-6 no-print">
+            <div class="section-tag">🚗 Ativo Imobilizado</div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="col-span-2">
+                    <label class="label-luxury">Valor de Mercado (FIPE)</label>
+                    <input type="text" id="vCarroDisp" class="input-luxury" value="R$ 100.000,00" oninput="mask(this, 'vCarro')">
+                    <input type="hidden" id="vCarro" value="100000">
                 </div>
-
-                <div class="glass p-6 no-print">
-                    <div class="section-tag">📈 Mercado e Finanças</div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label class="label-luxury">Prazo (Meses)</label><input type="number" id="vPrazo" class="input-luxury" value="48" oninput="calcular()"></div>
-                        <div><label class="label-luxury">Juros % AM</label><input type="number" id="tJurosMensal" class="input-luxury" value="1.60" oninput="calcular()"></div>
-                        <div class="col-span-2"><label class="label-luxury text-green-400">Assinatura Mensal (Full Service)</label>
-                            <input type="text" id="vAssinaturaDisp" class="input-luxury !text-green-400 border-green-900/50" value="R$ 2.450,00" oninput="mask(this, 'vAssinatura')">
-                            <input type="hidden" id="vAssinatura" value="2450">
-                        </div>
-                    </div>
+                <div>
+                    <label class="label-luxury">Depreciação Anual %</label>
+                    <input type="number" id="pDepAnual" class="input-luxury" value="12.0" oninput="calcular()">
                 </div>
-
-                <div class="glass p-6 no-print">
-                    <div class="section-tag">🌍 Cenário Econômico</div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label class="label-luxury text-cyan-400">Selic % Ano</label><input type="number" id="tSelicAnual" class="input-luxury !text-cyan-400 border-cyan-900/50" value="12.75" oninput="calcular()"></div>
-                        <div><label class="label-luxury">IPCA % Ano</label><input type="number" id="tInflacaoAnual" class="input-luxury" value="4.50" oninput="calcular()"></div>
-                    </div>
-                </div>
-
-                <div class="glass p-6 border-l-4 border-red-500">
-                    <div class="section-tag text-red-500">📊 Custo Mensal Oculto (Compra)</div>
-                    <div class="cost-row"><span>Parcela Financiamento:</span> <span id="detParcela" class="font-bold">R$ 0,00</span></div>
-                    <div class="cost-row"><span>Provisão IPVA/Seg/Mant:</span> <span id="detManut" class="font-bold">R$ 0,00</span></div>
-                    <div class="cost-row border-t border-white/10 mt-2 pt-2 text-red-400 font-black">
-                        <span>TOTAL SAÍDA MENSAL:</span> <span id="detTotal">R$ 0,00</span>
-                    </div>
-                    <div class="mt-4 p-4 bg-brand/10 rounded-xl text-center border border-brand/20">
-                        <p class="text-[11px] text-brand uppercase font-black">
-                            Sobra p/ Investimento Mensal: <span id="detSobra" class="text-white block text-lg mt-1">R$ 0,00</span>
-                        </p>
-                    </div>
-                </div>
-
-                <button onclick="gerarPDF()" class="btn-luxury bg-green-500 no-print">Exportar Auditoria Completa (PDF)</button>
-            </div>
-
-            <div class="lg:col-span-8 space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div id="resCardA" class="glass p-8 text-center transition-all border-t-4 border-red-500/30">
-                        <p class="label-luxury">Liquidez de Revenda (48m)</p>
-                        <p id="resFinalFinanc" class="text-3xl font-bold">R$ 0,00</p>
-                        <span class="text-[10px] text-gray-600 uppercase mt-2 block italic">Patrimônio em Bem Móvel</span>
-                    </div>
-                    <div id="resCardB" class="glass p-8 text-center transition-all border-t-4 border-green-500/30">
-                        <p class="label-luxury text-green-500">Capital Acumulado (48m)</p>
-                        <p id="resFinalAssin" class="text-4xl font-black text-green-400">R$ 0,00</p>
-                        <span class="text-[10px] text-gray-600 uppercase mt-2 block italic">Patrimônio Financeiro Líquido</span>
-                    </div>
-                </div>
-
-                <div class="glass p-6 h-[450px]">
-                    <div class="section-tag">Projeção de Evolução Patrimonial</div>
-                    <div class="h-[380px] w-full">
-                        <canvas id="meuGrafico"></canvas>
-                    </div>
-                </div>
-
-                <div id="painelVeredito" class="bg-brand/10 p-6 rounded-2xl text-center border-2 border-brand/30 shadow-2xl">
-                    <span class="text-[10px] text-brand font-black tracking-[5px] uppercase block mb-2">Conclusão da Auditoria</span>
-                    <h2 id="textoVeredito" class="text-2xl font-black uppercase text-brand tracking-tight"></h2>
+                <div>
+                    <label class="label-luxury">IPVA/Seg/Mant % Ano</label>
+                    <input type="number" id="pManutAnual" class="input-luxury" value="10.5" oninput="calcular()">
                 </div>
             </div>
-        </section>
+        </div>
 
-        <section class="max-w-7xl mx-auto mb-20">
-            <div class="glass p-10 border-l-4 border-brand">
-                <div class="section-tag">Fundamentação Estratégica</div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                    <div class="space-y-3">
-                        <div class="w-8 h-8 rounded-full bg-brand/20 flex items-center justify-center text-brand font-black">1</div>
-                        <h4 class="text-white font-bold uppercase text-xs">Eficiência de Capital</h4>
-                        <p class="text-gray-400 text-[11px] leading-relaxed italic">Ao não imobilizar a entrada, o capital mantém sua fluidez e capacidade de multiplicação via juros compostos.</p>
-                    </div>
-                    <div class="space-y-3">
-                        <div class="w-8 h-8 rounded-full bg-brand/20 flex items-center justify-center text-brand font-black">2</div>
-                        <h4 class="text-white font-bold uppercase text-xs">Gestão de Passivos</h4>
-                        <p class="text-gray-400 text-[11px] leading-relaxed italic">O veículo é um ativo depreciável e com alto custo de manutenção. A assinatura transfere esse risco integralmente para a locadora.</p>
-                    </div>
-                    <div class="space-y-3">
-                        <div class="w-8 h-8 rounded-full bg-brand/20 flex items-center justify-center text-brand font-black">3</div>
-                        <h4 class="text-white font-bold uppercase text-xs">Arbitragem de Taxas</h4>
-                        <p class="text-gray-400 text-[11px] leading-relaxed italic">A estratégia utiliza o diferencial entre a taxa de juros do financiamento e a Selic líquida para criar um superávit patrimonial.</p>
-                    </div>
+        <div class="glass p-6 no-print border-l-4 border-red-500/50">
+            <div class="section-tag text-red-400">💸 Alocação de Capital (Compra)</div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="col-span-2">
+                    <label class="label-luxury">Aporte de Entrada</label>
+                    <input type="text" id="vEntradaDisp" class="input-luxury" value="R$ 40.000,00" oninput="mask(this, 'vEntrada')">
+                    <input type="hidden" id="vEntrada" value="40000">
+                </div>
+                <div class="col-span-2">
+                    <label class="label-luxury">Taxa de Juros (Financiamento) % AM</label>
+                    <input type="number" id="tJurosMensal" class="input-luxury" value="1.60" oninput="calcular()">
                 </div>
             </div>
-        </section>
-    </main>
-</div>
+        </div>
 
-<script>
-    let chart;
-    const fmt = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        <div class="glass p-6 no-print border-l-4 border-green-500/50">
+            <div class="section-tag text-green-400">🔄 Modelo de Assinatura</div>
+            <div class="grid grid-cols-1 gap-4">
+                <div>
+                    <label class="label-luxury text-green-400">Mensalidade (Full Service)</label>
+                    <input type="text" id="vAssinaturaDisp" class="input-luxury !text-green-400 border-green-900/50" value="R$ 2.450,00" oninput="mask(this, 'vAssinatura')">
+                    <input type="hidden" id="vAssinatura" value="2450">
+                </div>
+            </div>
+        </div>
 
-    function mask(i, id) {
-        let v = i.value.replace(/\D/g, "");
-        v = (v / 100).toFixed(2);
-        let p = v.split(".");
-        p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        i.value = "R$ " + p[0] + "," + p[1];
-        document.getElementById(id).value = v;
-        calcular();
-    }
+        <div class="glass p-6 no-print">
+            <div class="section-tag">⚖️ Premissas de Mercado</div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="col-span-2">
+                    <label class="label-luxury">Horizonte de Tempo (Meses)</label>
+                    <input type="number" id="vPrazo" class="input-luxury" value="48" oninput="calcular()">
+                </div>
+                <div>
+                    <label class="label-luxury text-cyan-400">Rendimento Selic % AA</label>
+                    <input type="number" id="tSelicAnual" class="input-luxury !text-cyan-400 border-cyan-900/50" value="12.75" oninput="calcular()">
+                </div>
+                <div>
+                    <label class="label-luxury">Inflação (IPCA) % AA</label>
+                    <input type="number" id="tInflacaoAnual" class="input-luxury" value="4.50" oninput="calcular()">
+                </div>
+            </div>
+        </div>
 
-    function setCarro(modelo) {
-        document.getElementById('card-polo').classList.remove('car-selected');
-        document.getElementById('card-tcross').classList.remove('car-selected');
-        document.getElementById('card-bmw').classList.remove('car-selected');
+        <div class="glass p-6 bg-red-500/5">
+            <div class="section-tag text-red-500">📊 Custo Mensal Oculto (Compra)</div>
+            <div class="cost-row"><span>Parcela Financiamento:</span> <span id="detParcela" class="font-bold">R$ 0,00</span></div>
+            <div class="cost-row"><span>Provisão de Custos (IPVA/Mant):</span> <span id="detManut" class="font-bold">R$ 0,00</span></div>
+            <div class="cost-row border-t border-white/10 mt-2 pt-2 text-red-400 font-black">
+                <span>TOTAL SAÍDA MENSAL:</span> <span id="detTotal">R$ 0,00</span>
+            </div>
+            <div class="mt-4 p-4 bg-brand/10 rounded-xl text-center border border-brand/20">
+                <p class="text-[11px] text-brand uppercase font-black">
+                    Diferencial p/ Investimento: <span id="detSobra" class="text-white block text-lg mt-1">R$ 0,00</span>
+                </p>
+            </div>
+        </div>
 
-        if (modelo === 'polo') {
-            document.getElementById('card-polo').classList.add('car-selected');
-            updateField('vCarro', 108350, 'vCarroDisp'); updateField('vEntrada', 40000, 'vEntradaDisp');
-            updateField('vAssinatura', 2450, 'vAssinaturaDisp'); document.getElementById('pDepAnual').value = "11.0";
-        } else if (modelo === 'tcross') {
-            document.getElementById('card-tcross').classList.add('car-selected');
-            updateField('vCarro', 171400, 'vCarroDisp'); updateField('vEntrada', 60000, 'vEntradaDisp');
-            updateField('vAssinatura', 3850, 'vAssinaturaDisp'); document.getElementById('pDepAnual').value = "12.0";
-        } else if (modelo === 'bmw') {
-            document.getElementById('card-bmw').classList.add('car-selected');
-            updateField('vCarro', 360000, 'vCarroDisp'); updateField('vEntrada', 150000, 'vEntradaDisp');
-            updateField('vAssinatura', 9100, 'vAssinaturaDisp'); document.getElementById('pDepAnual').value = "18.0";
-        }
-        
-        calcular();
-        document.getElementById('resultados-ancora').scrollIntoView({ behavior: 'smooth' });
-    }
+        <button onclick="gerarPDF()" class="btn-luxury bg-green-500 no-print">Exportar Auditoria Completa (PDF)</button>
+    </div>
 
-    function updateField(id, val, disp) {
-        document.getElementById(id).value = val;
-        document.getElementById(disp).value = fmt(val);
-    }
+    <div class="lg:col-span-8 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div id="resCardA" class="glass p-8 text-center transition-all border-t-4 border-red-500/30">
+                <p class="label-luxury">Patrimônio Líquido (Compra)</p>
+                <p id="resFinalFinanc" class="text-3xl font-bold">R$ 0,00</p>
+                <span class="text-[10px] text-gray-600 uppercase mt-2 block italic">Valor do Carro - Dívida Quitada</span>
+            </div>
+            <div id="resCardB" class="glass p-8 text-center transition-all border-t-4 border-green-500/30">
+                <p class="label-luxury text-green-500">Patrimônio Financeiro (Assinatura)</p>
+                <p id="resFinalAssin" class="text-4xl font-black text-green-400">R$ 0,00</p>
+                <span class="text-[10px] text-gray-600 uppercase mt-2 block italic">Capital Acumulado + Rendimentos</span>
+            </div>
+        </div>
 
-    function calcular() {
-        const vC = parseFloat(document.getElementById('vCarro').value) || 0;
-        const vE = parseFloat(document.getElementById('vEntrada').value) || 0;
-        const vA = parseFloat(document.getElementById('vAssinatura').value) || 0;
-        const vP = parseInt(document.getElementById('vPrazo').value) || 1;
-        const pD = parseFloat(document.getElementById('pDepAnual').value) || 0;
-        const tJ = (parseFloat(document.getElementById('tJurosMensal').value) / 100) || 0;
-        const tS = parseFloat(document.getElementById('tSelicAnual').value) || 0;
-        const tI = parseFloat(document.getElementById('tInflacaoAnual').value) || 0;
-        
-        const tSelicM = (Math.pow(1 + (tS * 0.85 / 100), 1/12) - 1);
-        const tInfM = (Math.pow(1 + (tI / 100), 1/12) - 1);
-        const tDepM = 1 - Math.pow(1 - (pD/100), 1/12);
-        
-        const vFin = Math.max(0, vC - vE);
-        const pmt = vFin > 0 && tJ > 0 ? (vFin * tJ) / (1 - Math.pow(1 + tJ, -vP)) : (vFin/vP);
-        const manutM = (vC * 0.105) / 12; 
-        const totalCompraM = pmt + manutM;
-        const sobraM = Math.max(0, totalCompraM - vA);
+        <div class="glass p-6 h-[450px]">
+            <div class="section-tag">Projeção de Evolução Patrimonial</div>
+            <div class="h-[380px] w-full">
+                <canvas id="meuGrafico"></canvas>
+            </div>
+        </div>
 
-        document.getElementById('detParcela').innerText = fmt(pmt);
-        document.getElementById('detManut').innerText = fmt(manutM);
-        document.getElementById('detTotal').innerText = fmt(totalCompraM);
-        document.getElementById('detSobra').innerText = fmt(sobraM);
-
-        let pF = [], pAs = [], sInv = vE, sD = vFin;
-        
-        for(let m=0; m<=vP; m++) {
-            let vCH = vC * Math.pow((1 - tDepM + tInfM), m);
-            if (m > 0) {
-                sD = Math.max(0, sD - (pmt - (sD * tJ)));
-                sInv = (sInv + sobraM) * (1 + tSelicM);
-            }
-            pF.push(Math.round(Math.max(0, vCH - sD)));
-            pAs.push(Math.round(sInv));
-        }
-
-        document.getElementById('resFinalFinanc').innerText = fmt(pF[vP]);
-        document.getElementById('resFinalAssin').innerText = fmt(pAs[vP]);
-
-        const veredito = document.getElementById('textoVeredito');
-        document.getElementById('resCardB').classList.remove('winner-highlight');
-        document.getElementById('resCardA').classList.remove('winner-highlight');
-
-        if (pAs[vP] > pF[vP]) {
-            document.getElementById('resCardB').classList.add('winner-highlight');
-            veredito.innerHTML = `Estratégia Vencedora: ASSINATURA (+ ${fmt(pAs[vP] - pF[vP])})`;
-        } else {
-            document.getElementById('resCardA').classList.add('winner-highlight');
-            veredito.innerHTML = `Estratégia Vencedora: COMPRA (+ ${fmt(pF[vP] - pAs[vP])})`;
-        }
-
-        renderChart(pF, pAs, vP);
-    }
-
-    function renderChart(pF, pAs, vP) {
-        if (chart) chart.destroy();
-        const ctx = document.getElementById('meuGrafico').getContext('2d');
-        chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: Array.from({length: vP + 1}, (_, i) => i + 'm'),
-                datasets: [
-                    { label: 'Bem Móvel (Carro)', data: pF, borderColor: '#ff4444', borderWidth: 2, pointRadius: 0, hoverRadius: 8, tension: 0.3 },
-                    { label: 'Fundo Bancário (Capital)', data: pAs, borderColor: '#00ff88', borderWidth: 3, pointRadius: 0, hoverRadius: 8, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.05)', tension: 0.3 }
-                ]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                interaction: { mode: 'index', intersect: false },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#000', padding: 12, borderColor: '#222', borderWidth: 1,
-                        callbacks: { label: (ctx) => ctx.dataset.label + ': ' + fmt(ctx.parsed.y) }
-                    }
-                },
-                scales: { 
-                    y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { display: false } },
-                    x: { ticks: { color: '#444' } }
-                }
-            }
-        });
-    }
-
-    function gerarPDF() {
-        const element = document.getElementById('content-to-export');
-        const opt = {
-            margin: 0.3,
-            filename: 'Auditoria_Capital_PrivateStrategy.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, backgroundColor: '#000000' },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(element).save();
-    }
-
-    window.onload = calcular;
-</script>
-</body>
-</html>
+        <div id="painelVeredito" class="bg-brand/10 p-6 rounded-2xl text-center border-2 border-brand/30 shadow-2xl">
+            <span class="text-[10px] text-brand font-black tracking-[5px] uppercase block mb-2">Conclusão da Auditoria</span>
+            <h2 id="textoVeredito" class="text-2xl font-black uppercase text-brand tracking-tight"></h2>
+        </div>
+    </div>
+</section>
