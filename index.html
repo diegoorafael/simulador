@@ -24,9 +24,8 @@
         .btn-luxury { background: #fff; color: #000; font-weight: 800; padding: 16px; border-radius: 14px; transition: 0.3s; cursor: pointer; text-transform: uppercase; width: 100%; border:none; letter-spacing: 1px; }
         .btn-luxury:hover { background: var(--brand); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0, 255, 136, 0.2); }
         
-        /* Ajuste fino para os valores finais não quebrarem */
-        .res-value { font-family: 'JetBrains Mono', monospace; word-break: break-all; line-height: 1.2; }
-
+        .res-value { font-family: 'JetBrains Mono', monospace; line-height: 1.1; word-break: keep-all; }
+        
         @media print { .no-print { display: none !important; } body { background: #fff; color: #000; } }
     </style>
 </head>
@@ -44,12 +43,17 @@
                 </p>
                 <div class="flex items-center gap-4 mt-6">
                     <span class="px-3 py-1 bg-brand/10 border border-brand/20 rounded-full text-[10px] text-brand font-black uppercase tracking-widest">Auditoria de Capital</span>
+                    <span class="text-gray-600 text-[10px] tracking-[4px] uppercase font-bold">Private Strategy • Premium</span>
                 </div>
             </div>
-            <div class="flex gap-8 border-l border-white/10 pl-8 hidden lg:flex">
+            <div class="hidden lg:flex gap-8 border-l border-white/10 pl-8">
                 <div class="text-right">
-                    <p class="text-[9px] text-gray-500 uppercase font-black">Taxa Selic</p>
+                    <p class="text-[9px] text-gray-500 uppercase font-black">SELIC ATUAL</p>
                     <p class="text-brand font-mono text-xl" id="displaySelic">10.84%</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[9px] text-gray-500 uppercase font-black">IPCA PROJETADO</p>
+                    <p class="text-cyan-500 font-mono text-xl" id="displayIpca">4.50%</p>
                 </div>
             </div>
         </div>
@@ -57,15 +61,15 @@
 
     <section class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10 no-print">
         <button onclick="setCarro('polo')" id="card-polo" class="glass p-6 text-left group transition-all">
-            <span class="text-[9px] text-gray-500 block mb-1 font-bold group-hover:text-brand uppercase">Categoria Hatch</span>
+            <span class="text-[9px] text-gray-500 block mb-1 font-bold group-hover:text-brand uppercase tracking-widest">Categoria Hatch</span>
             <span class="text-lg font-black italic uppercase">VW Polo Highline</span>
         </button>
         <button onclick="setCarro('tcross')" id="card-tcross" class="glass p-6 text-left group transition-all car-selected">
-            <span class="text-[9px] text-gray-500 block mb-1 font-bold group-hover:text-brand uppercase">Categoria SUV</span>
+            <span class="text-[9px] text-gray-500 block mb-1 font-bold group-hover:text-brand uppercase tracking-widest">Categoria SUV</span>
             <span class="text-lg font-black italic uppercase text-green-400">VW T-Cross Highline</span>
         </button>
         <button onclick="setCarro('bmw')" id="card-bmw" class="glass p-6 text-left group transition-all">
-            <span class="text-[9px] text-gray-500 block mb-1 font-bold group-hover:text-brand uppercase">Categoria Premium</span>
+            <span class="text-[9px] text-gray-500 block mb-1 font-bold group-hover:text-brand uppercase tracking-widest">Categoria Premium</span>
             <span class="text-lg font-black italic uppercase">BMW 320i M Sport</span>
         </button>
     </section>
@@ -73,11 +77,24 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         <div class="lg:col-span-4 space-y-8">
+            
+            <div class="glass p-7 border-l-4 border-brand">
+                <div class="section-header text-brand">01. Investimento Inicial</div>
+                <div class="space-y-5">
+                    <div>
+                        <label class="label-luxury">Aporte de Entrada (R$)</label>
+                        <input type="text" id="vEntradaDisp" class="input-luxury" value="R$ 65.000,00" oninput="mask(this, 'vEntrada')">
+                        <input type="hidden" id="vEntrada" value="65000">
+                    </div>
+                    <p class="text-[10px] text-gray-500 italic uppercase leading-tight">Valor que será utilizado na compra ou investido na estratégia de assinatura.</p>
+                </div>
+            </div>
+
             <div class="glass p-7">
-                <div class="section-header text-white">01. O Veículo</div>
+                <div class="section-header text-white">02. Dados do Veículo</div>
                 <div class="grid grid-cols-2 gap-5">
                     <div class="col-span-2">
-                        <label class="label-luxury">Valor FIPE (R$)</label>
+                        <label class="label-luxury">Valor FIPE do Bem</label>
                         <input type="text" id="vCarroDisp" class="input-luxury" value="R$ 171.400,00" oninput="mask(this, 'vCarro')">
                         <input type="hidden" id="vCarro" value="171400">
                     </div>
@@ -86,70 +103,55 @@
                         <input type="number" id="pDepAnual" class="input-luxury" value="12.0" oninput="calcular()">
                     </div>
                     <div>
-                        <label class="label-luxury">Prazo (Meses)</label>
+                        <label class="label-luxury">Prazo Auditoria (Meses)</label>
                         <input type="number" id="vPrazo" class="input-luxury" value="48" oninput="calcular()">
                     </div>
                 </div>
             </div>
 
-            <div class="glass p-7 border-l-4 border-red-500/50">
-                <div class="section-header text-red-400">02. Fluxo de Compra</div>
-                <div class="space-y-5">
+            <div class="glass p-7 border-l-4 border-white/20">
+                <div class="section-header text-white">03. Taxas e Custos</div>
+                <div class="grid grid-cols-2 gap-5">
                     <div>
-                        <label class="label-luxury">Entrada / Aporte</label>
-                        <input type="text" id="vEntradaDisp" class="input-luxury" value="R$ 65.000,00" oninput="mask(this, 'vEntrada')">
-                        <input type="hidden" id="vEntrada" value="65000">
+                        <label class="label-luxury">Financiamento % AM</label>
+                        <input type="number" id="tJurosMensal" class="input-luxury" value="1.60" oninput="calcular()">
                     </div>
-                    <div class="grid grid-cols-2 gap-5">
-                        <div>
-                            <label class="label-luxury">Juros Financ. % AM</label>
-                            <input type="number" id="tJurosMensal" class="input-luxury" value="1.60" oninput="calcular()">
-                        </div>
-                        <div>
-                            <label class="label-luxury">Custos Fixos % Ano</label>
-                            <input type="number" id="pCustosFixos" class="input-luxury" value="10.5" oninput="calcular()">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="glass p-7 border-l-4 border-green-500/50">
-                <div class="section-header text-green-400">03. Assinatura & Selic</div>
-                <div class="space-y-5">
                     <div>
-                        <label class="label-luxury text-green-500">Valor Assinatura Mensal</label>
+                        <label class="label-luxury">Manutenção/Seg % Ano</label>
+                        <input type="number" id="pCustosFixos" class="input-luxury" value="10.5" oninput="calcular()">
+                    </div>
+                    <div>
+                        <label class="label-luxury">Assinatura Mensal (R$)</label>
                         <input type="text" id="vAssinaturaDisp" class="input-luxury !text-green-400" value="R$ 3.950,00" oninput="mask(this, 'vAssinatura')">
                         <input type="hidden" id="vAssinatura" value="3950">
                     </div>
-                    <div class="grid grid-cols-2 gap-5">
-                        <div>
-                            <label class="label-luxury text-cyan-400">Selic Líquida % AA</label>
-                            <input type="number" id="tSelicAnual" class="input-luxury" value="10.84" oninput="calcular()">
-                        </div>
-                        <div>
-                            <label class="label-luxury">Inflação % AA</label>
-                            <input type="number" id="tInflacaoAnual" class="input-luxury" value="4.50" oninput="calcular()">
-                        </div>
+                    <div>
+                        <label class="label-luxury">Selic Líquida % AA</label>
+                        <input type="number" id="tSelicAnual" class="input-luxury" value="10.84" oninput="calcular()">
                     </div>
                 </div>
             </div>
 
-            <button onclick="gerarPDF()" class="btn-luxury no-print">Gerar Relatório PDF</button>
+            <button onclick="gerarPDF()" class="btn-luxury no-print">Exportar Auditoria PDF</button>
         </div>
 
         <div class="lg:col-span-8 space-y-8">
+            
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                <div class="glass p-6 text-center">
-                    <span class="label-luxury">Gasto Mensal Compra</span>
+                <div class="glass p-6 text-center border-b-2 border-red-500/30">
+                    <span class="label-luxury">Saída Mensal Compra</span>
                     <span id="detTotal" class="text-xl font-bold text-red-500">R$ 0,00</span>
+                    <p class="text-[9px] text-gray-600 mt-2 uppercase">Parcela + Provisões</p>
                 </div>
-                <div class="glass p-6 text-center">
-                    <span class="label-luxury">Gasto Mensal Assin.</span>
+                <div class="glass p-6 text-center border-b-2 border-green-500/30">
+                    <span class="label-luxury">Saída Mensal Assin.</span>
                     <span id="detAssinatura" class="text-xl font-bold text-green-400">R$ 0,00</span>
+                    <p class="text-[9px] text-gray-600 mt-2 uppercase">Mensalidade Flat</p>
                 </div>
-                <div class="glass p-6 text-center bg-brand/5 border-brand/30">
-                    <span class="label-luxury text-brand">Sobra p/ Investir</span>
+                <div class="glass p-6 text-center bg-brand/5 border-b-2 border-brand">
+                    <span class="label-luxury text-brand">Sobra Reinvestida</span>
                     <span id="detSobra" class="text-xl font-bold text-white">R$ 0,00</span>
+                    <p class="text-[9px] text-brand/60 mt-2 uppercase">Diferencial Mensal</p>
                 </div>
             </div>
 
@@ -159,22 +161,21 @@
                 </div>
             </div>
 
-            <div id="painelVeredito" class="glass p-6 md:p-10 border-2 border-brand overflow-hidden">
-                <div class="flex flex-col gap-8">
+            <div id="painelVeredito" class="glass p-8 md:p-10 border-2 border-brand overflow-hidden">
+                <div class="flex flex-col gap-10">
                     <div class="text-center md:text-left">
-                        <span class="text-[10px] text-brand font-black uppercase tracking-[5px]">Análise de Viabilidade</span>
+                        <span class="text-[10px] text-brand font-black uppercase tracking-[5px]">Veredito de Capital</span>
                         <h2 id="textoVeredito" class="text-3xl md:text-5xl font-black uppercase italic mt-2 leading-tight"></h2>
-                        <p class="text-gray-500 text-xs md:text-sm mt-2 font-medium">Patrimônio líquido estimado ao final do período.</p>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-white/10 pt-8">
-                        <div class="flex flex-col items-center md:items-start">
-                            <p class="label-luxury">Patrimônio Compra</p>
-                            <p id="resFinalFinanc" class="res-value text-2xl md:text-3xl font-bold text-white"></p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-white/5 pt-8">
+                        <div class="flex flex-col items-center md:items-start overflow-hidden">
+                            <p class="label-luxury">Patrimônio Líquido Compra</p>
+                            <p id="resFinalFinanc" class="res-value text-2xl md:text-3xl font-bold text-white whitespace-nowrap"></p>
                         </div>
-                        <div class="flex flex-col items-center md:items-start md:border-l md:border-white/10 md:pl-8">
-                            <p class="label-luxury text-green-500">Patrimônio Assinatura</p>
-                            <p id="resFinalAssin" class="res-value text-2xl md:text-4xl font-black text-green-400"></p>
+                        <div class="flex flex-col items-center md:items-start md:border-l md:border-white/10 md:pl-10 overflow-hidden">
+                            <p class="label-luxury text-green-500 font-black">Patrimônio Líquido Assinatura</p>
+                            <p id="resFinalAssin" class="res-value text-2xl md:text-4xl font-black text-green-400 whitespace-nowrap"></p>
                         </div>
                     </div>
                 </div>
@@ -229,10 +230,8 @@
         const pCF = parseFloat(document.getElementById('pCustosFixos').value) || 0;
         const tJ = (parseFloat(document.getElementById('tJurosMensal').value) / 100) || 0;
         const tS = parseFloat(document.getElementById('tSelicAnual').value) || 0;
-        const tI = parseFloat(document.getElementById('tInflacaoAnual').value) || 0;
         
         const tSelicM = (Math.pow(1 + (tS / 100), 1/12) - 1);
-        const tInfM = (Math.pow(1 + (tI / 100), 1/12) - 1);
         const tDepM = 1 - Math.pow(1 - (pD/100), 1/12);
         
         const vFin = Math.max(0, vC - vE);
@@ -249,7 +248,7 @@
         let pCompraArr = [], pAssinArr = [], sInv = vE, sD = vFin;
         
         for(let m=0; m<=vP; m++) {
-            let valorCarroAtual = vC * Math.pow((1 - tDepM + tInfM), m);
+            let valorCarroAtual = vC * Math.pow((1 - tDepM), m);
             if (m > 0) {
                 sD = Math.max(0, sD - (pmt - (sD * tJ)));
                 sInv = (sInv + sobraM) * (1 + tSelicM);
@@ -262,7 +261,7 @@
         document.getElementById('resFinalAssin').innerText = fmt(pAssinArr[vP]);
 
         const veredito = document.getElementById('textoVeredito');
-        veredito.innerHTML = pAssinArr[vP] > pCompraArr[vP] ? 'Vantagem: <span class="text-green-500">Assinatura</span>' : 'Vantagem: <span class="text-red-500">Compra</span>';
+        veredito.innerHTML = pAssinArr[vP] > pCompraArr[vP] ? 'Vantagem: <span class="text-green-500">Assinatura</span>' : 'Vantagem: <span class="text-red-500">Compra Direta</span>';
 
         renderChart(pCompraArr, pAssinArr, vP);
     }
