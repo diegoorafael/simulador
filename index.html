@@ -11,7 +11,15 @@
     <style>
         :root { --brand: #00ff88; --bg: #000; --card: #0a0a0a; }
         body { background-color: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
-        .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; }
+        .glass { background: var(--card); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; transition: 0.3s; }
+        
+        /* Estilo para o carro selecionado */
+        .car-selected { 
+            border: 2px solid var(--brand) !important; 
+            background: rgba(0, 255, 136, 0.05) !important;
+            transform: translateY(-5px);
+        }
+
         .input-luxury {
             background: #111; border: 1px solid #222; color: #fff;
             padding: 10px; border-radius: 12px; width: 100%;
@@ -41,17 +49,17 @@
 
     <main class="max-w-7xl mx-auto">
         <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10 no-print">
-            <div class="glass p-5 flex flex-col items-center cursor-pointer hover:border-white/20 transition-all" onclick="setCarro('polo')">
+            <div id="card-polo" class="glass p-5 flex flex-col items-center cursor-pointer hover:border-white/20" onclick="setCarro('polo')">
                 <h3 class="text-lg font-black uppercase mb-1 italic">Polo Highline</h3>
-                <span class="text-[9px] text-gray-500 uppercase">Eficiência Urbana</span>
+                <span class="text-[9px] text-gray-500 uppercase italic">Compacto Premium</span>
             </div>
-            <div class="glass p-5 flex flex-col items-center cursor-pointer border-green-500/30 border-b-2 transition-all" onclick="setCarro('tcross')">
+            <div id="card-tcross" class="glass p-5 flex flex-col items-center cursor-pointer hover:border-white/20" onclick="setCarro('tcross')">
                 <h3 class="text-lg font-black uppercase mb-1 italic text-green-400">T-Cross Highline</h3>
-                <span class="text-[9px] text-gray-500 uppercase">Equilíbrio de Mercado</span>
+                <span class="text-[9px] text-gray-500 uppercase italic">SUV Versátil</span>
             </div>
-            <div class="glass p-5 flex flex-col items-center cursor-pointer hover:border-white/20 transition-all" onclick="setCarro('bmw')">
+            <div id="card-bmw" class="glass p-5 flex flex-col items-center cursor-pointer hover:border-white/20" onclick="setCarro('bmw')">
                 <h3 class="text-lg font-black uppercase mb-1 italic">BMW 320i M Sport</h3>
-                <span class="text-[9px] text-gray-500 uppercase">Alto Luxo Patrimonial</span>
+                <span class="text-[9px] text-gray-500 uppercase italic">Performance & Status</span>
             </div>
         </section>
 
@@ -60,7 +68,7 @@
                 
                 <div class="lg:col-span-4 space-y-6">
                     <div class="no-print">
-                        <div class="section-tag">01. O Bem & Aquisição</div>
+                        <div class="section-tag">01. Ativos e Depreciação</div>
                         <div class="grid grid-cols-2 gap-3">
                             <div class="col-span-2">
                                 <label class="label-luxury">Valor FIPE</label>
@@ -80,11 +88,11 @@
                     </div>
 
                     <div class="no-print">
-                        <div class="section-tag">02. Fluxo e Taxas</div>
+                        <div class="section-tag">02. Mensalidades</div>
                         <div class="grid grid-cols-2 gap-3">
                             <div><label class="label-luxury">Meses</label><input type="number" id="vPrazo" class="input-luxury" value="48" oninput="calcular()"></div>
                             <div><label class="label-luxury">Juros AM %</label><input type="number" id="tJurosMensal" class="input-luxury" value="1.60" oninput="calcular()"></div>
-                            <div class="col-span-2"><label class="label-luxury">Assinatura Mensal</label>
+                            <div class="col-span-2"><label class="label-luxury text-green-400">Mensalidade Assinatura</label>
                                 <input type="text" id="vAssinaturaDisp" class="input-luxury !text-green-400" value="R$ 2.450,00" oninput="mask(this, 'vAssinatura')">
                                 <input type="hidden" id="vAssinatura" value="2450">
                             </div>
@@ -92,7 +100,7 @@
                     </div>
 
                     <div class="no-print">
-                        <div class="section-tag">03. Cenário Econômico</div>
+                        <div class="section-tag">03. Economia Digital</div>
                         <div class="grid grid-cols-2 gap-3">
                             <div><label class="label-luxury text-cyan-400">Selic % Ano</label><input type="number" id="tSelicAnual" class="input-luxury !text-cyan-400" value="12.75" oninput="calcular()"></div>
                             <div><label class="label-luxury">IPCA % Ano</label><input type="number" id="tInflacaoAnual" class="input-luxury" value="4.50" oninput="calcular()"></div>
@@ -100,30 +108,30 @@
                     </div>
 
                     <div class="bg-white/5 p-5 rounded-xl border border-white/5">
-                        <div class="section-tag">Explicação do Custo Total</div>
-                        <div class="cost-row"><span>Parcela Média:</span> <span id="detParcela">R$ 0,00</span></div>
-                        <div class="cost-row"><span>Manutenção/Seg/IPVA (Mês):</span> <span id="detManut">R$ 0,00</span></div>
-                        <div class="cost-row border-t border-white/10 mt-2 pt-2 text-red-400 font-bold">
-                            <span>TOTAL COMPRA:</span> <span id="detTotal">R$ 0,00</span>
+                        <div class="section-tag">Explicação do Custo Total (Compra)</div>
+                        <div class="cost-row"><span>Parcela (Financ.):</span> <span id="detParcela">R$ 0,00</span></div>
+                        <div class="cost-row"><span>Manut/Seg/IPVA (Estimado):</span> <span id="detManut">R$ 0,00</span></div>
+                        <div class="cost-row border-t border-white/10 mt-2 pt-2 text-red-400 font-black">
+                            <span>SAÍDA MENSAL TOTAL:</span> <span id="detTotal">R$ 0,00</span>
                         </div>
                         <div class="mt-4 p-3 bg-brand/5 rounded-lg text-center">
                             <p class="text-[10px] text-brand uppercase font-black">
-                                Diferença p/ Investir: <span id="detSobra" class="text-white ml-1">R$ 0,00</span>
+                                Sobra p/ Banco: <span id="detSobra" class="text-white ml-1">R$ 0,00</span>
                             </p>
                         </div>
                     </div>
 
-                    <button onclick="gerarPDF()" class="btn-luxury bg-green-500 no-print">Exportar Auditoria PDF</button>
+                    <button onclick="gerarPDF()" class="btn-luxury bg-green-500 no-print">Gerar Relatório de Auditoria</button>
                 </div>
 
                 <div class="lg:col-span-8 space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div id="resCardA" class="glass p-6 text-center transition-all">
-                            <p class="label-luxury">Liquidez de Venda (Carro)</p>
+                        <div id="resCardA" class="glass p-6 text-center">
+                            <p class="label-luxury">Venda Líquida do Carro</p>
                             <p id="resFinalFinanc" class="text-2xl font-bold">R$ 0,00</p>
                         </div>
-                        <div id="resCardB" class="glass p-6 text-center transition-all">
-                            <p class="label-luxury text-green-500">Patrimônio Líquido (Banco)</p>
+                        <div id="resCardB" class="glass p-6 text-center">
+                            <p class="label-luxury text-green-500">Saldo Final Investido</p>
                             <p id="resFinalAssin" class="text-3xl font-black text-green-400">R$ 0,00</p>
                         </div>
                     </div>
@@ -133,8 +141,8 @@
                     </div>
 
                     <div id="painelVeredito" class="bg-brand/10 p-5 rounded-xl text-center border border-brand/20">
-                        <h2 id="textoVeredito" class="text-xl font-black uppercase text-brand tracking-tighter"></h2>
-                        <p class="text-[11px] text-gray-400 mt-1 uppercase">Vantagem patrimonial projetada ao final do período.</p>
+                        <h2 id="textoVeredito" class="text-xl font-black uppercase text-brand"></h2>
+                        <p class="text-[11px] text-gray-400 mt-1 uppercase">Vantagem patrimonial calculada em 48 meses.</p>
                     </div>
                 </div>
             </div>
@@ -145,16 +153,22 @@
                 <div class="section-tag">Análise Estratégica Private Strategy</div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div>
-                        <h4 class="text-brand font-bold uppercase text-xs mb-2">1. Custo de Oportunidade</h4>
-                        <p class="text-gray-400 text-xs leading-relaxed">O capital não imobilizado no bem trabalha gerando juros desde o dia 1.</p>
+                        <h4 class="text-brand font-bold uppercase text-xs mb-2 italic">1. Custo de Oportunidade</h4>
+                        <p class="text-gray-400 text-[11px] leading-relaxed">
+                            Ao assinar, você evita a imobilização da entrada. Esse capital rende juros compostos desde o primeiro dia, superando a valorização de qualquer bem móvel.
+                        </p>
                     </div>
                     <div>
-                        <h4 class="text-brand font-bold uppercase text-xs mb-2">2. Juros Compostos</h4>
-                        <p class="text-gray-400 text-xs leading-relaxed">A rentabilidade da Selic Líquida supera a curva de valor residual do veículo.</p>
+                        <h4 class="text-brand font-bold uppercase text-xs mb-2 italic">2. Inversão de Curva</h4>
+                        <p class="text-gray-400 text-[11px] leading-relaxed">
+                            O carro é um passivo que deprecia. A conta bancária é um ativo que aprecia. A assinatura permite que você aproveite a valorização do dinheiro enquanto usa o carro.
+                        </p>
                     </div>
                     <div>
-                        <h4 class="text-brand font-bold uppercase text-xs mb-2">3. Eficiência Operacional</h4>
-                        <p class="text-gray-400 text-xs leading-relaxed">Eliminação de riscos de manutenção e flutuação de mercado.</p>
+                        <h4 class="text-brand font-bold uppercase text-xs mb-2 italic">3. Blindagem Patrimonial</h4>
+                        <p class="text-gray-400 text-[11px] leading-relaxed">
+                            Riscos de revenda, sinistros severos e manutenções corretivas ficam com a locadora. Seu único compromisso é uma mensalidade fixa e previsível.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -176,22 +190,28 @@
         calcular();
     }
 
-    // Função atualizada com o Scroll Automático
     function setCarro(modelo) {
+        // Remove a cor de seleção de todos os cards
+        document.getElementById('card-polo').classList.remove('car-selected');
+        document.getElementById('card-tcross').classList.remove('car-selected');
+        document.getElementById('card-bmw').classList.remove('car-selected');
+
+        // Adiciona a cor ao card clicado e altera os valores
         if (modelo === 'polo') {
-            updateField('vCarro', 108350, 'vCarroDisp'); updateField('vEntrada', 40000, 'vEntradaDisp');
-            updateField('vAssinatura', 2450, 'vAssinaturaDisp'); document.getElementById('pDepAnual').value = "11.0";
+            document.getElementById('card-polo').classList.add('car-selected');
+            updateField('vCarro', 108350, 'vCarroDisp'); updateField('vEntrada', 35000, 'vEntradaDisp');
+            updateField('vAssinatura', 2390, 'vAssinaturaDisp'); document.getElementById('pDepAnual').value = "11.0";
         } else if (modelo === 'tcross') {
+            document.getElementById('card-tcross').classList.add('car-selected');
             updateField('vCarro', 171400, 'vCarroDisp'); updateField('vEntrada', 60000, 'vEntradaDisp');
-            updateField('vAssinatura', 3850, 'vAssinaturaDisp'); document.getElementById('pDepAnual').value = "12.0";
+            updateField('vAssinatura', 3790, 'vAssinaturaDisp'); document.getElementById('pDepAnual').value = "12.0";
         } else if (modelo === 'bmw') {
-            updateField('vCarro', 360000, 'vCarroDisp'); updateField('vEntrada', 150000, 'vEntradaDisp');
-            updateField('vAssinatura', 9100, 'vAssinaturaDisp'); document.getElementById('pDepAnual').value = "18.0";
+            document.getElementById('card-bmw').classList.add('car-selected');
+            updateField('vCarro', 360000, 'vCarroDisp'); updateField('vEntrada', 120000, 'vEntradaDisp');
+            updateField('vAssinatura', 8950, 'vAssinaturaDisp'); document.getElementById('pDepAnual').value = "18.0";
         }
         
         calcular();
-
-        // Faz a tela deslizar suavemente até a seção de resultados
         document.getElementById('resultados-ancora').scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -246,10 +266,10 @@
 
         if (pAs[vP] > pF[vP]) {
             document.getElementById('resCardB').classList.add('winner-highlight');
-            veredito.innerHTML = `ASSINATURA VENCE POR ${fmt(pAs[vP] - pF[vP])}`;
+            veredito.innerHTML = `Vencedor: Assinatura (+ ${fmt(pAs[vP] - pF[vP])})`;
         } else {
             document.getElementById('resCardA').classList.add('winner-highlight');
-            veredito.innerHTML = `COMPRA VENCE POR ${fmt(pF[vP] - pAs[vP])}`;
+            veredito.innerHTML = `Vencedor: Compra (+ ${fmt(pF[vP] - pAs[vP])})`;
         }
 
         renderChart(pF, pAs, vP);
@@ -263,8 +283,8 @@
             data: {
                 labels: Array.from({length: vP + 1}, (_, i) => i + 'm'),
                 datasets: [
-                    { label: 'Propriedade', data: pF, borderColor: '#ff4444', borderWidth: 2, pointRadius: 0, hoverRadius: 8, tension: 0.3 },
-                    { label: 'Investimento', data: pAs, borderColor: '#00ff88', borderWidth: 3, pointRadius: 0, hoverRadius: 8, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.05)', tension: 0.3 }
+                    { label: 'Valor Líquido Carro', data: pF, borderColor: '#ff4444', borderWidth: 2, pointRadius: 0, hoverRadius: 8, tension: 0.3 },
+                    { label: 'Saldo Bancário', data: pAs, borderColor: '#00ff88', borderWidth: 3, pointRadius: 0, hoverRadius: 8, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.05)', tension: 0.3 }
                 ]
             },
             options: {
@@ -289,7 +309,7 @@
         const element = document.getElementById('content-to-export');
         const opt = {
             margin: 0.3,
-            filename: 'Auditoria_Financeira_PrivateStrategy.pdf',
+            filename: 'Analise_Estrategica_Automotiva.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2, backgroundColor: '#000000' },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
